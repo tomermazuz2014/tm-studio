@@ -59,7 +59,8 @@ a { color: inherit; }
 h1, h2, h3, p { margin: 0; }
 ::selection { background: var(--accent); color: var(--on-accent); }
 :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 4px; border-radius: 10px; }
-.wrap { width: 100%; max-width: 1240px; margin-inline: auto; padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
+/* the page runs the full width of the window, with only a gutter at each side */
+.wrap { width: 100%; max-width: 2200px; margin-inline: auto; padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
 .ltr { direction: ltr; unicode-bidi: isolate; }
 
 /* ---------- Header ---------- */
@@ -627,10 +628,6 @@ body.is-locked { overflow: hidden; }
         <p class="say" id="say" aria-hidden="true"></p>
         <div class="tap" aria-hidden="true"><i></i><i></i></div>
       </div>
-      <button class="pause" id="pause" type="button" aria-pressed="false" aria-label="השהיית האנימציה">
-        <svg class="i-pause" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="3" y="2" width="3.6" height="12" rx="1"/><rect x="9.4" y="2" width="3.6" height="12" rx="1"/></svg>
-        <svg class="i-play" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.4v11.2a.8.8 0 0 0 1.2.7l9-5.6a.8.8 0 0 0 0-1.4l-9-5.6A.8.8 0 0 0 4 2.4Z"/></svg>
-      </button>
     </div>
 
     <div class="world" id="world">
@@ -1474,7 +1471,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   }
   if (sheets[0].complete && sheets[0].naturalWidth) start(); else sheets[0].addEventListener('load', start);
 
-  pauseBtn.addEventListener('click', function () {
+  if (pauseBtn) pauseBtn.addEventListener('click', function () {
     paused = !paused;
     pauseBtn.setAttribute('aria-pressed', String(paused));
     pauseBtn.setAttribute('aria-label', paused ? 'הפעלת האנימציה' : 'השהיית האנימציה');
