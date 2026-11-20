@@ -44,7 +44,7 @@
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; scrollbar-color: var(--dim) var(--bg); background: var(--bg); }
 /* The page stops dead at its two ends: no rubber band, so no strip of bare page can be pulled into view.
    Where a phone still stretches it, what shows behind the Works surface is the same stone. */
-html, body { overscroll-behavior-y: none; }
+html, body { overscroll-behavior: none; }
 html.is-low { background: #E8E2D8; }
 /* The page runs under the phone's notch and corners, edge to edge; only the content keeps clear of them. */
 body { padding-top: env(safe-area-inset-top); }
@@ -357,10 +357,18 @@ main { flex: 1; }
 .svc-hero p { font-size: clamp(1.375rem, 3vw, 2.25rem); font-weight: 500; line-height: 1.25; max-width: 23ch; text-wrap: balance; }
 .svc-hero p b { font-weight: 500; color: var(--accent); }
 .svc-group { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr); gap: 0 clamp(20px, 5vw, 72px); padding-block: clamp(36px, 7vh, 80px); border-top: 1px solid var(--line); }
-.svc-side { position: sticky; top: 28px; align-self: start; display: grid; gap: 10px; }
+.svc-side { position: sticky; top: 28px; align-self: start; display: grid; gap: 10px; grid-column: 1; grid-row: 1 / span 2; z-index: 1; margin-bottom: calc(var(--ph, 0px) * .24); }
+/* Under each title he stands holding it up. The title follows the reader down the list, comes down onto his hands and
+   presses him flat; scroll back and he springs up again. */
+.svc-press { display: none; grid-column: 1; grid-row: 1 / span 2; align-self: end; justify-self: start; height: var(--ph); pointer-events: none; }
+.svc-press img { display: block; height: 100%; width: auto; transform-origin: 50% 100%; will-change: transform; }
+@media (prefers-reduced-motion: no-preference) and (min-width: 761px), (prefers-reduced-motion: no-preference) and (orientation: landscape) {
+  .svc-group { --ph: clamp(150px, 46svh, 300px); }
+  .svc-press { display: block; }
+}
 .svc-side h2 { font-family: var(--font-en); font-weight: 400; font-size: clamp(3.5rem, 6.6vw, 5.75rem); line-height: .95; letter-spacing: 0; text-align: right; }
 .svc-side p { color: var(--muted); font-size: 1.0625rem; max-width: 22ch; }
-.svc-list { list-style: none; margin: 0; padding: 0; }
+.svc-list { list-style: none; margin: 0; padding: 0; grid-column: 2; }
 .svc-list li { display: grid; grid-template-columns: 3rem minmax(0, 1fr); align-items: baseline; gap: 6px 12px; padding-block: clamp(18px, 2.6vw, 28px); border-bottom: 1px solid var(--line); }
 .svc-list li:first-child { padding-top: 6px; }
 .svc-n { font: 500 .8125rem/1 var(--font-mono); color: var(--accent); letter-spacing: .04em; }
@@ -385,7 +393,8 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 }
 @media (max-width: 760px) and (orientation: portrait) {
   .svc-group { grid-template-columns: minmax(0, 1fr); gap: 22px; }
-  .svc-side { position: static; }
+  .svc-side { position: static; grid-row: auto; margin-bottom: 0; }
+  .svc-list, .svc-shots { grid-column: 1; }
   .svc-side p { max-width: none; }
   .svc-list li { grid-template-columns: 2.25rem minmax(0, 1fr); }
   .svc-shots { grid-column: 1; }
@@ -400,6 +409,13 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 .turn h2 { font-size: 1.75rem; font-weight: 900; line-height: 1.15; }
 .turn p { color: var(--muted); font-size: 1.0625rem; }
 .turn button { margin-top: 26px; min-height: 44px; padding: 0 8px; border: 0; background: none; color: var(--muted); font: 500 .9375rem/1 var(--font-sans); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 6px; cursor: pointer; }
+/* If the phone stays upright (its rotation may be locked), after a few seconds the site is shown turned on its side
+   anyway: the same page, in a frame as wide as the screen is tall, rotated a quarter turn. */
+.wide { position: fixed; left: 100%; top: 0; z-index: 99; border: 0; transform-origin: 0 0; transform: rotate(90deg); background: var(--bg); }
+/* inside the turned frame a sideways lock on scrolling would stop the page from being scrolled at all */
+html.is-framed, html.is-framed body { overflow-x: visible; }
+html.is-wide .turn { display: none !important; }
+html.is-wide body > :not(.wide):not(script) { display: none !important; }      /* nothing keeps running underneath */
 @keyframes turn { 0%, 18% { transform: rotate(0); } 48%, 82% { transform: rotate(-90deg); } 100% { transform: rotate(0); } }
 @media (orientation: portrait) and (max-width: 760px) and (pointer: coarse) {
   html:not(.no-turn) .turn { display: grid; }
@@ -630,7 +646,7 @@ body.is-locked { overflow: hidden; }
   <img src="logo.webp" alt="Tomer Mazuz, AI Digital Creator" width="900" height="295">
   <div class="turn-ph" aria-hidden="true"></div>
   <h2 id="turn-h">סובבו את הטלפון</h2>
-  <p>האתר מוצג לרוחב המסך.</p>
+  <p>האתר מוצג לרוחב המסך.<br>אם הסיבוב נעול, הוא יוצג לרוחב בעוד רגע.</p>
 </div>
 
 <header class="wrap header">
@@ -732,6 +748,7 @@ body.is-locked { overflow: hidden; }
       <h2 id="svc-design" lang="en" dir="ltr">Design</h2>
       <p>עיצוב שנראה טוב ונוח לשימוש, בעברית ובכל מסך.</p>
     </div>
+    <div class="svc-press" aria-hidden="true"><img src="push.webp" alt="" width="480" height="1077" loading="lazy" decoding="async"></div>
     <ol class="svc-list">
       <li><span class="svc-n ltr">01</span><h3>עיצוב אתרים ודפי נחיתה</h3><p>עיצוב שמותאם לעסק, מהמסך הראשון ועד כפתור הפנייה.</p></li>
       <li><span class="svc-n ltr">02</span><h3>עיצוב אפליקציות</h3><p>מסכים, זרימות וחוויית שימוש לאפליקציות מובייל.</p></li>
@@ -749,6 +766,7 @@ body.is-locked { overflow: hidden; }
       <h2 id="svc-dev" lang="en" dir="ltr">Development</h2>
       <p>פיתוח מקצה לקצה, מהרעיון הראשון ועד מוצר שעובד.</p>
     </div>
+    <div class="svc-press" aria-hidden="true"><img src="push.webp" alt="" width="480" height="1077" loading="lazy" decoding="async"></div>
     <ol class="svc-list">
       <li><span class="svc-n ltr">01</span><h3>אתרים לעסקים</h3><p>אתרי תדמית, קטלוגים ופורטפוליו, עם חיפוש, סינון וגלריות.</p></li>
       <li><span class="svc-n ltr">02</span><h3>חנויות Shopify</h3><p>חנות אונליין עם חוויית קנייה נוחה במובייל.</p></li>
@@ -827,6 +845,29 @@ body.is-locked { overflow: hidden; }
 </div>
 
 <script>
+(function () {
+  var root = document.documentElement;
+  if (/[?&]wide=1(&|$)/.test(location.search)) { root.classList.add('is-framed'); return; }   // this copy is the one inside the turned frame
+  if (!window.matchMedia) return;
+  var tall = window.matchMedia('(orientation: portrait) and (max-width: 760px) and (pointer: coarse)'), timer = 0, frame = null;
+  function size() { if (frame) { frame.style.width = window.innerHeight + 'px'; frame.style.height = window.innerWidth + 'px'; } }
+  function drop() { if (frame) { frame.remove(); frame = null; } root.classList.remove('is-wide'); }
+  function show() {
+    timer = 0; if (!tall.matches || frame) return;
+    var f = frame = document.createElement('iframe'); f.className = 'wide'; f.title = document.title; f.setAttribute('allow', 'autoplay');
+    f.addEventListener('load', function () {
+      var ok = false; try { ok = !!f.contentDocument.getElementById('top'); } catch (e) {}
+      if (f !== frame) return;
+      if (ok) root.classList.add('is-wide'); else drop();           // where the page may not be framed, the request to turn stays
+    });
+    f.src = location.pathname + '?wide=1' + location.hash;
+    document.body.appendChild(f); size();
+  }
+  function check() { clearTimeout(timer); timer = 0; if (tall.matches) { if (!frame) timer = setTimeout(show, 5000); } else drop(); }
+  if (tall.addEventListener) tall.addEventListener('change', check); else if (tall.addListener) tall.addListener(check);
+  window.addEventListener('resize', size);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', check); else check();
+})();
 // A small player for clips that carry their own transparency: the picture is in the top part of the video and its
 // matte below it; a canvas joins the two, so the figure never has a background. fh = picture height, off = where
 // the matte starts, th = full height of the video. Returns null when the browser cannot do it.
@@ -1586,7 +1627,29 @@ function tmFilm(cv, src, fh, off, th, o) {
   }
   if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { moonSeen = e[0].isIntersecting; moonGo(); }, { rootMargin: '200px' }).observe(moonBox);
   else moonSeen = true;
-  function filmFor(on) { svcOn = on; moonGo(); if (!on) { film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
+  // ---- the titles press him down: how much room is left between a title and the floor decides how tall he is ----
+  var presses = [].map.call(document.querySelectorAll('.svc-group'), function (g) {
+    return { side: g.querySelector('.svc-side'), box: g.querySelector('.svc-press'), img: g.querySelector('.svc-press img'), cur: 1, vel: 0, to: 1 };
+  }), pressRaf = 0, pressT = 0;
+  function pressFrame(now) {
+    pressRaf = 0;
+    var dt = Math.min(0.05, (now - pressT) / 1000) || 0.016, live = false; pressT = now;
+    presses.forEach(function (p) {
+      var h = p.box.offsetHeight;
+      if (!h) { p.img.style.transform = ''; return; }
+      p.to = Math.max(0.24, Math.min(1, (p.box.getBoundingClientRect().bottom - p.side.getBoundingClientRect().bottom) / h));
+      // pressed, he follows the title exactly; let go, he springs back up and overshoots a little
+      if (p.to < p.cur) { p.cur = p.to; p.vel = 0; }
+      else { p.vel += ((p.to - p.cur) * 190 - p.vel * 13) * dt; p.cur += p.vel * dt; if (p.cur > p.to && p.to < 1) { p.cur = p.to; p.vel = 0; } }
+      if (Math.abs(p.to - p.cur) > 0.0015 || Math.abs(p.vel) > 0.01) live = true; else { p.cur = p.to; p.vel = 0; }
+      p.img.style.transform = 'scale(' + (1 + (1 - Math.min(1, p.cur)) * 0.55).toFixed(3) + ', ' + p.cur.toFixed(3) + ')';
+    });
+    if (live) pressRaf = requestAnimationFrame(pressFrame);
+  }
+  function pressGo() { if (svcOn && !still && !pressRaf) { pressT = performance.now(); pressRaf = requestAnimationFrame(pressFrame); } }
+  window.addEventListener('scroll', pressGo, { passive: true });
+  window.addEventListener('resize', pressGo);
+  function filmFor(on) { svcOn = on; moonGo(); pressGo(); if (!on) { film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
   window.addEventListener('hashchange', route); route();
   svc.addEventListener('click', function (e) {
     var b = e.target.closest('.svc-shot');
