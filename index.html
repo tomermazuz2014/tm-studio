@@ -97,15 +97,18 @@ h1, h2, h3, p { margin: 0; }
 
 /* ---------- Hero ---------- */
 main { flex: 1; }
-.hero { min-height: calc(100svh - 92px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: center; gap: clamp(16px, 4vw, 56px); padding-block: 8px 0; }
-/* On a wide screen the words stand in the middle of the page, with him to their left. */
+.hero { min-height: calc(100svh - 92px); display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); align-items: center; gap: clamp(16px, 4vw, 56px); padding-block: 8px 0; }
+/* He stands on the right, the words on the left. */
+.hero > .copy { grid-column: 2; grid-row: 1; }
+.hero > .stage { grid-column: 1; grid-row: 1; }
+/* On a wide screen the words stand in the middle of the page, with him to their right. */
 @media (min-width: 1500px) {
   .hero { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
-  .copy { grid-column: 2; grid-row: 1; text-align: center; }
+  .hero > .copy { grid-column: 2; grid-row: 1; text-align: center; }
   .copy h1, .copy h1[dir="ltr"] { text-align: center; }
   .copy .lead { margin-inline: auto; }
   .copy .actions { justify-content: center; }
-  .stage { grid-column: 3; grid-row: 1; margin-inline: 0 auto; }
+  .hero > .stage { grid-column: 1; grid-row: 1; margin-inline: auto 0; }
 }
 .copy > * { animation: rise .7s var(--ease-out) backwards; }
 .copy > :nth-child(2) { animation-delay: 70ms; }
@@ -192,7 +195,7 @@ main { flex: 1; }
 .code { left: 73%; top: 53%; width: 33%; max-width: 220px; transform: translateZ(90px); }
 /* each time he comes back he comes from the other side and stands mirrored; the floating pieces change sides with him */
 .code, .phone, .toast { transition: left .9s cubic-bezier(.77, 0, .175, 1); }
-.stage.is-flip .code { left: -6%; }
+.stage.is-flip .code { left: 1%; }                               /* he stands right of the words: the card stays inside his space */
 .stage.is-flip .phone { left: 88%; }
 .stage.is-flip .toast { left: 2%; }
 .code pre { margin: 0; padding: 2px 14px 14px; font: 400 clamp(.625rem, 1.15vw, .75rem)/1.75 var(--font-mono); color: var(--code-ink); white-space: pre; overflow: hidden; }
@@ -335,13 +338,16 @@ main { flex: 1; }
 .how-cta .btn { border: 0; cursor: pointer; }
 @media (max-width: 640px) { .how-steps { grid-template-columns: 1fr; } }
 /* He rides a dragon across the page at the height of the title: in from the left, out to the right. The flight passes
-   behind the words. */
+   in front of the words (clicks still go through to them). */
 .how > .wrap { position: relative; z-index: 1; }
-.how-fly { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.how-fly { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 .how-dragon { position: absolute; left: 0; top: 0; width: clamp(300px, 42vw, 820px); aspect-ratio: 1200 / 768; opacity: 0; will-change: transform;
   -webkit-mask-image: linear-gradient(transparent 0, #000 7%, #000 92%, transparent 100%); mask-image: linear-gradient(transparent 0, #000 7%, #000 92%, transparent 100%); }
 .how-dragon img, .how-dragon canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .how-dragon canvas[hidden] { display: none; }
+/* a second rider crosses the open space low on the page at the same moment, the other way: from the right, out to the left */
+.how-dragon-2 { width: clamp(240px, 32vw, 620px); }
+.how-dragon-2 img, .how-dragon-2 canvas { transform: scaleX(-1); }
 .how-dragon.is-live img { opacity: 0; }
 
 /* ---------- Services: a page of its own, reached at #services ---------- */
@@ -487,7 +493,8 @@ html.is-wide body > :not(.wide):not(script) { display: none !important; }      /
   .header { padding-block: 6px; }
   .brand img { height: 44px; }
   .hero { min-height: calc(100svh - 56px); padding-block: 0; gap: clamp(16px, 3vw, 32px); }
-  .copy h1[dir="ltr"] { font-size: clamp(3rem, 20svh, 5.5rem); }
+  .copy h1[dir="ltr"] { font-size: clamp(2.5rem, 16svh, 5.5rem); }
+  .hero > .copy { align-self: start; padding-top: 6px; }      /* the words sit on the left now: their button stays above the call button in that corner */
   .lead { margin-top: 12px; font-size: 1rem; max-width: 34ch; }
   .actions { margin-top: 16px; }
   .btn { min-height: 48px; padding-block: 10px; }
@@ -824,6 +831,8 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 
 @media (max-width: 860px) and (orientation: portrait) {
   .hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 28px; padding-block: 4px 0; }
+  .hero > .copy { grid-column: 1; grid-row: 1; }
+  .hero > .stage { grid-column: 1; grid-row: 2; }
   .copy h1 { font-size: clamp(2.75rem, 13vw, 4.25rem); }
   .copy h1[dir="ltr"] { font-size: clamp(4rem, 20vw, 6.25rem); }
   .lead { margin-top: 16px; }
@@ -1001,7 +1010,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 
 <main id="how" hidden>
 <section class="how" aria-labelledby="how-h">
-  <div class="how-fly" aria-hidden="true"><div class="how-dragon" id="how-dragon"><img src="dragon.webp" alt="" width="800" height="512" draggable="false"><canvas id="dragon-c" width="1200" height="768" hidden></canvas></div></div>
+  <div class="how-fly" aria-hidden="true"><div class="how-dragon" id="how-dragon"><img src="dragon.webp" alt="" width="800" height="512" draggable="false"><canvas id="dragon-c" width="1200" height="768" hidden></canvas></div><div class="how-dragon how-dragon-2" id="how-dragon-2"><img src="dragon.webp" alt="" width="800" height="512" draggable="false"><canvas id="dragon-c2" width="1200" height="768" hidden></canvas></div></div>
   <div class="wrap">
     <header class="how-head">
       <h1 id="how-h" lang="en" dir="ltr">How I Work</h1>
@@ -1650,8 +1659,12 @@ function tmFilm(cv, src, fh, off, th, o) {
       var cv = $('chat-c'), box = cv.parentNode;
       film = tmFilm(cv, 'tomer-live.mp4', 690, 704, 1408, {
         loop: true, when: function () { return !chat.hidden; },
-        onPaint: function () { if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); } },
-        onDead: function () { cv.hidden = true; box.classList.remove('is-live'); }
+        onPaint: function () {
+          if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); }
+          if (cx2) { try { cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.drawImage(cv, 0, 0, cv2.width, cv2.height);       // the second rider is the same picture, copied
+            if (cv2.hidden) { cv2.hidden = false; box2.classList.add('is-live'); } } catch (e) {} }
+        },
+        onDead: function () { cv.hidden = true; box.classList.remove('is-live'); if (cv2) { cv2.hidden = true; box2.classList.remove('is-live'); } }
       }) || { video: null };
     }
     if (film.video) { var go = film.video.play(); if (go && go.catch) go.catch(function () {}); }
@@ -2133,6 +2146,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   // ---- How I Work: the dragon flight ----
   (function () {
     var box = document.getElementById('how-dragon'), cv = document.getElementById('dragon-c');
+    var box2 = document.getElementById('how-dragon-2'), cv2 = document.getElementById('dragon-c2'), cx2 = cv2 && cv2.getContext('2d');
     if (!box) return;
     var sec = how.querySelector('.how'), quiet = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var FLY = 7, WAIT = 4, t0 = -1, clipOn = null, seen = false;
@@ -2146,8 +2160,12 @@ function tmFilm(cv, src, fh, off, th, o) {
       clipOn = tmFilm(cv, 'dragon.mp4', 768, 768, 1536, {
         loop: true, whole: true,
         onLoaded: function () { var g = clipOn && clipOn.video ? clipOn.video.play() : null; if (g && g.catch) g.catch(function () {}); },
-        onPaint: function () { if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); } },
-        onDead: function () { cv.hidden = true; box.classList.remove('is-live'); }
+        onPaint: function () {
+          if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); }
+          if (cx2) { try { cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.drawImage(cv, 0, 0, cv2.width, cv2.height);       // the second rider is the same picture, copied
+            if (cv2.hidden) { cv2.hidden = false; box2.classList.add('is-live'); } } catch (e) {} }
+        },
+        onDead: function () { cv.hidden = true; box.classList.remove('is-live'); if (cv2) { cv2.hidden = true; box2.classList.remove('is-live'); } }
       }) || false;
     }
     // the path: straight across at the height of the title, from the left edge out past the right one, riding a slow swell
@@ -2157,8 +2175,18 @@ function tmFilm(cv, src, fh, off, th, o) {
       var x0 = -q.d * 0.7, x1 = q.w + q.d * 0.7, wave = Math.sin(u * Math.PI * 5);
       return [x0 + (x1 - x0) * u, y + wave * q.d * 0.022, Math.cos(u * Math.PI * 5) * 2];
     }
+    // the second one: from past the right edge out past the left one, low on the page beside the booking button
+    var low = sec.querySelector('#how-book');
+    function at2(u, q, d) {
+      var o = sec.getBoundingClientRect(), r = low ? low.getBoundingClientRect() : null;
+      var y = r ? r.top - o.top + r.height * 0.5 : q.h * 0.8;
+      y = Math.min(y, window.innerHeight - o.top - d * 0.3);                // on a short screen the button is below the fold: keep him in sight
+      var x0 = q.w + d * 0.7, x1 = -d * 0.7, wave = Math.sin(u * Math.PI * 5 + 1.3);
+      return [x0 + (x1 - x0) * u, y + wave * d * 0.022, -Math.cos(u * Math.PI * 5 + 1.3) * 2];
+    }
     function frame(now) {
       requestAnimationFrame(frame);
+      if (box2) box2.style.opacity = 0;
       if (window.tmStill) { box.style.opacity = 0; t0 = -1; return; }
       if (how.hidden || document.hidden) { t0 = -1; if (clipOn && clipOn.video && !clipOn.video.paused) clipOn.video.pause(); return; }
       if (!seen) { seen = true; clip(); }
@@ -2169,6 +2197,11 @@ function tmFilm(cv, src, fh, off, th, o) {
       var q = size(), u = t / FLY, p = at(u, q);
       box.style.opacity = 1;
       box.style.transform = 'translate3d(' + (p[0] - q.d / 2).toFixed(1) + 'px,' + (p[1] - q.d * 0.32).toFixed(1) + 'px,0) rotate(' + p[2].toFixed(1) + 'deg)';
+      if (box2) {
+        var d2 = box2.clientWidth, p2 = at2(u, q, d2);
+        box2.style.opacity = 1;
+        box2.style.transform = 'translate3d(' + (p2[0] - d2 / 2).toFixed(1) + 'px,' + (p2[1] - d2 * 0.32).toFixed(1) + 'px,0) rotate(' + p2[2].toFixed(1) + 'deg)';
+      }
     }
     requestAnimationFrame(frame);
   })();
