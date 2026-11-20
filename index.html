@@ -12,7 +12,6 @@
 <link rel="preload" href="fonts/ploni-900.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/dynalight-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ploni-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="tm-0.webp">
 <style>
 @font-face { font-family: "Ploni"; src: url("fonts/ploni-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Ploni"; src: url("fonts/ploni-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
@@ -123,9 +122,11 @@ main { flex: 1; }
 .world { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform; pointer-events: none; }
 .z { position: absolute; transform-style: preserve-3d; }
 .window { position: absolute; inset: 0 0 -1px; }
-.cam { position: absolute; top: 0; bottom: 0; left: 50%; aspect-ratio: 1; transform: translateX(-50%); --tip: 44%; }
-.cam.is-flip { --tip: 56%; }
-.cam canvas { display: block; width: 100%; height: 100%; }
+.cam { position: absolute; top: 0; bottom: 0; left: 50%; aspect-ratio: 1; transform: translateX(-50%); --tip: 41%; }
+.cam.is-flip { --tip: 59%; }
+.cam canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.cam canvas[hidden] { display: none; }
+.cam.is-flip canvas { transform: scaleX(-1); }
 .still { position: absolute; left: 50%; bottom: 0; height: 100%; width: auto; transform: translateX(-50%); }
 .is-live .still { display: none; }
 
@@ -139,7 +140,7 @@ main { flex: 1; }
 .is-flip .say { left: auto; right: 64%; border-radius: 16px 16px 4px 16px; transform-origin: 100% 100%; }
 .say.is-on { opacity: 1; transform: none; transition-duration: .28s; }
 
-.tap { position: absolute; left: var(--tip); top: 35%; width: 0; height: 0; pointer-events: none; }
+.tap { position: absolute; left: var(--tip); top: 30%; width: 0; height: 0; pointer-events: none; }
 .tap i { position: absolute; width: 150px; height: 150px; margin: -75px; border-radius: 50%; border: 2px solid var(--ink); opacity: 0; }
 .is-press .tap i { animation: ripple 1.5s cubic-bezier(.2, .6, .3, 1) 2; }
 .is-press .tap i:nth-child(2) { animation-delay: .38s; }
@@ -778,7 +779,8 @@ body.is-locked { overflow: hidden; }
     <div class="window">
       <div class="cam" id="cam">
         <canvas id="film" role="img" aria-label="מייסד TM Studio נכנס לפריים, מנופף לשלום ומצביע אל הצופה"></canvas>
-        <img class="still" src="me.webp" alt="מייסד TM Studio מצביע אל הצופה" width="1235" height="1523" draggable="false">
+        <canvas id="film-v" width="1080" height="1080" hidden aria-hidden="true"></canvas>
+        <img class="still" src="me.webp" alt="מייסד TM Studio מצביע אל הצופה" width="1080" height="1080" draggable="false">
         <p class="say" id="say" aria-hidden="true"></p>
         <div class="tap" aria-hidden="true"><i></i><i></i></div>
       </div>
@@ -1625,95 +1627,126 @@ function tmFilm(cv, src, fh, off, th, o) {
   var say = document.getElementById('say'), cta = document.getElementById('cta'), pauseBtn = document.getElementById('pause');
   if (calm || !film.getContext) return;            // the still photo and the finished cards stay as they are
 
-  // ---- the film: 141 cut-out frames in three sheets, 10 x 5 cells of 345 x 431, shot at 15 fps ----
-  var CW = 345, CH = 431, FRAME = 431, PER = 50, COLS = 10, FPS = 15;
-  var sheets = [0, 1, 2].map(function (i) { var im = new Image(); im.decoding = 'async'; im.src = 'tm-' + i + '.webp'; return im; });
-  function offset(f) { return f <= 18 ? 86.25 : (f >= 121 ? 0 : 17.25); }   // where each cell sits in the camera frame
-
-  // ---- the sequence: walk in, wave, point (held a little longer), lower the hand, walk out ----
-  var seq = [], marks = {};
-  function run(a, b) { var s = a <= b ? 1 : -1; for (var f = a; f !== b + s; f += s) seq.push([f]); }
-  run(0, 29);  marks.hi = seq.length;
-  run(30, 62); marks.hiOff = seq.length;
-  run(63, 79); marks.point = seq.length;
-  run(80, 83); marks.build = seq.length;
-  run(84, 100); run(99, 88); run(89, 104); marks.pointOff = seq.length;
-  run(105, 111);
-  seq.push([111, 112, .34], [111, 112, .67]);   // soften the one cut in the footage
-  run(112, 140);
-  var GAP = 16;                                  // empty window before he comes back
-
-  var ctx = film.getContext('2d'), flip = false, pos = 0, paused = false, visible = true, last = 0, acc = 0, started = false;
-
-  function size() {
-    var r = film.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
-    film.width = Math.max(1, Math.round(r.width * d)); film.height = Math.max(1, Math.round(r.height * d));
-    paint();
-  }
-  function cell(f, alpha) {
-    var im = sheets[Math.floor(f / PER)];
-    if (!im.complete || !im.naturalWidth) return false;
-    var q = f % PER, k = film.width / FRAME;
-    ctx.globalAlpha = alpha;
-    // half a pixel in from the cell's edges, so nothing of the neighbouring frames is pulled in when it is scaled
-    ctx.drawImage(im, (q % COLS) * CW + 0.5, Math.floor(q / COLS) * CH + 1, CW - 1, CH - 1.5, offset(f) * k, 0, CW * k, film.height);
-    return true;
-  }
-  function paint() {
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, film.width, film.height);
-    var s = seq[pos];
-    if (!s) return true;
-    if (flip) ctx.setTransform(-1, 0, 0, 1, film.width, 0);
-    ctx.imageSmoothingQuality = 'high';
-    var ok = cell(s[0], 1);
-    if (ok && s.length > 1) cell(s[1], s[2]);
-    if (ok) {
-      // The footage ends at its two sides. Where he reaches a side (stepping in, stepping out, leaning in to point)
-      // his picture thins out softly over a short stretch instead of stopping on a straight cut.
-      var k = film.width / FRAME, x0 = offset(s[0]) * k, w = CW * k, fw = w * 0.085, g;
-      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'destination-out';
-      g = ctx.createLinearGradient(x0, 0, x0 + fw, 0); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g; ctx.fillRect(x0 - 2, 0, fw + 2, film.height);
-      g = ctx.createLinearGradient(x0 + w, 0, x0 + w - fw, 0); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g; ctx.fillRect(x0 + w - fw, 0, fw + 2, film.height);
-      ctx.globalCompositeOperation = 'source-over';
-    }
-    return ok;
-  }
+  // ---- the film: his cut-out picture as a clip (picture above, matte below), 11 seconds at 24 frames a second:
+  // walk in, wave, point (held a little longer), lower the hand, walk out. Where a browser will not start a silent clip
+  // by itself, the same sequence plays from still frames: three sheets of 10 x 5 cells of 400 x 400, 12 a second.
+  var DUR = 11.04, GAP = 1.05, MARKS = [['hi', 3.12], ['hiOff', 5.38], ['point', 6.46], ['build', 6.79], ['pointOff', 8.96]];
+  var C = 400, PER = 50, COLS = 10, SFPS = 12, CELLS = 133;
+  var filmV = document.getElementById('film-v'), ctx = null, sheets = null;
+  var flip = false, visible = true, mode = '', next = 0, player = null, vid = null, resting = false, due = false, watch = 0, seen = false, T = 0, shown = -1, last = 0;
 
   function talk(text) { say.textContent = text; say.classList.add('is-on'); }
-  function cue() {
-    if (pos === 0) { stage.classList.add('is-idle'); cam.classList.toggle('is-flip', flip); stage.classList.toggle('is-flip', flip); }
-    if (pos === marks.hi) talk('היי!');
-    if (pos === marks.hiOff || pos === marks.pointOff) say.classList.remove('is-on');
-    if (pos === marks.point) {
+  function fire(name) {
+    if (name === 'hi') talk('היי!');
+    else if (name === 'hiOff' || name === 'pointOff') say.classList.remove('is-on');
+    else if (name === 'point') {
       talk('יש לך רעיון?');
       stage.classList.remove('is-press'); void stage.offsetWidth; stage.classList.add('is-press');
-    }
-    if (pos === marks.build) {
+    } else if (name === 'build') {
       stage.classList.remove('is-idle');
       cta.classList.remove('is-called'); void cta.offsetWidth; cta.classList.add('is-called');
     }
   }
+  function begin() {                                   // a new round; he comes back from the side he left by
+    next = 0; say.classList.remove('is-on');
+    stage.classList.add('is-idle'); cam.classList.toggle('is-flip', flip); stage.classList.toggle('is-flip', flip);
+  }
+  function at(t) { while (next < MARKS.length && t >= MARKS[next][1]) fire(MARKS[next++][0]); }
 
-  function step() {
-    var next = pos + 1;
-    if (next >= seq.length + GAP) { next = 0; flip = !flip; }        // he comes back from the side he left by
-    var s = seq[next];
-    if (s) {                                                          // wait for a sheet that is still loading
-      var a = sheets[Math.floor(s[0] / PER)];
-      if (!a.complete || !a.naturalWidth) return;
+  // ---- the clip ----
+  function roll() {
+    if (mode !== 'video') return;
+    if (!visible) { due = true; return; }
+    due = false;
+    var go = null; try { go = vid.play(); } catch (e) { stills(0); return; }
+    if (go && go.catch) go.catch(function (err) { if (!err || err.name !== 'AbortError') stills(vid.currentTime || 0); });
+  }
+  function clip() {
+    player = filmV ? tmFilm(filmV, 'hero.mp4', 1080, 1080, 2160, {
+      onPaint: function (t) {
+        if (mode !== 'video') return;
+        if (!seen && t > 2.6) {                         // it plays, but no picture arrives: go on with the still frames
+          seen = true;
+          if (player.alphaAt(0.5, 0.55) < 40) { stills(t); return; }
+        }
+        if (filmV.hidden && t > 0.02) { filmV.hidden = false; stage.classList.add('is-live'); }
+        at(t);
+      },
+      onDead: function () { if (mode === 'video') stills(vid ? vid.currentTime : 0); }
+    }) : null;
+    if (!player) { stills(0); return; }
+    mode = 'video'; vid = player.video; begin();
+    vid.addEventListener('ended', function () {
+      if (mode !== 'video') return;
+      resting = true;
+      setTimeout(function () {
+        if (mode !== 'video') return;
+        resting = false; flip = !flip; begin();
+        try { vid.currentTime = 0; } catch (e) {}
+        roll();
+      }, GAP * 1000);
+    });
+    roll();
+    var t0 = performance.now();
+    (function check() {                                // it never starts: the still frames take over
+      if (mode !== 'video') return;
+      if (vid.currentTime > 0.1) return;
+      var waited = performance.now() - t0;
+      if (!visible) { t0 = performance.now(); watch = setTimeout(check, 500); return; }
+      if (waited > (vid.readyState >= 3 ? 2500 : 12000)) { stills(0); return; }
+      watch = setTimeout(check, 300);
+    })();
+  }
+
+  // ---- the same sequence from still frames ----
+  function size() {
+    var r = film.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
+    film.width = Math.max(1, Math.round(r.width * d)); film.height = Math.max(1, Math.round(r.height * d));
+    shown = -1; paint();
+  }
+  function paint() {
+    if (!ctx) return true;
+    var k = Math.floor(T * SFPS);
+    if (k === shown) return true;
+    if (k >= CELLS) { ctx.clearRect(0, 0, film.width, film.height); shown = k; return true; }
+    var im = sheets[Math.floor(k / PER)];
+    if (!im.complete || !im.naturalWidth) return false;
+    var q = k % PER;
+    ctx.clearRect(0, 0, film.width, film.height);
+    ctx.imageSmoothingQuality = 'high';
+    // half a pixel in from the cell's edges, so nothing of the neighbouring frames is pulled in when it is scaled
+    ctx.drawImage(im, (q % COLS) * C + 0.5, Math.floor(q / COLS) * C + 0.5, C - 1, C - 1, 0, 0, film.width, film.height);
+    shown = k; return true;
+  }
+  function stills(from) {
+    if (mode === 'still') return;
+    mode = 'still'; clearTimeout(watch);
+    if (player) { player.dead = true; if (vid) { try { vid.pause(); } catch (e) {} } }
+    if (filmV) filmV.hidden = true;
+    ctx = film.getContext('2d');
+    if (!ctx) return;                                  // nothing can be drawn here: the still photo stays
+    if (!from || from >= DUR) { from = 0; begin(); }
+    T = from;
+    sheets = [0, 1, 2].map(function (i) { var im = new Image(); im.decoding = 'async'; im.src = 'tm-' + i + '.webp'; return im; });
+    function go() {
+      stage.classList.add('is-live'); size();
+      if ('ResizeObserver' in window) new ResizeObserver(size).observe(film); else window.addEventListener('resize', size);
     }
-    pos = next; cue(); paint();
+    var first = sheets[Math.floor(Math.min(CELLS - 1, Math.floor(T * SFPS)) / PER)];
+    if (first.complete && first.naturalWidth) go(); else first.addEventListener('load', go);
+  }
+  function step(dt) {
+    if (mode !== 'still' || !ctx || !stage.classList.contains('is-live')) return;
+    var was = T; T += dt / 1000;
+    if (T >= DUR + GAP) { T = 0; flip = !flip; begin(); }
+    if (!paint()) { T = was; return; }                 // wait for a sheet that is still loading
+    at(T);
   }
   function loop(t) {
     requestAnimationFrame(loop);
     var dt = Math.min(t - last, 200); last = t;
-    if (paused || !visible) return;
-    acc += dt;
-    var tick = 1000 / FPS;
-    while (acc >= tick) { acc -= tick; step(); }
+    if (!visible) return;
+    step(dt);
     drift(t);
   }
 
@@ -1731,23 +1764,19 @@ function tmFilm(cv, src, fh, off, th, o) {
     world.style.transform = 'rotateY(' + (cx * -8).toFixed(2) + 'deg) rotateX(' + (cy * 5).toFixed(2) + 'deg)';
   }
 
-  function start() {
-    if (started) return; started = true;
-    stage.classList.add('is-live');
-    size(); cue(); paint();
-    if ('ResizeObserver' in window) new ResizeObserver(size).observe(film); else window.addEventListener('resize', size);
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting && !document.hidden; }).observe(stage);
-    document.addEventListener('visibilitychange', function () { visible = !document.hidden; });
-    requestAnimationFrame(function (t) { last = t; requestAnimationFrame(loop); });
+  function see(on) {
+    visible = on;
+    if (mode !== 'video' || !vid) return;
+    if (!on) { try { vid.pause(); } catch (e) {} }
+    else if (!resting && (due || vid.paused)) roll();
   }
-  if (sheets[0].complete && sheets[0].naturalWidth) start(); else sheets[0].addEventListener('load', start);
-
-  if (pauseBtn) pauseBtn.addEventListener('click', function () {
-    paused = !paused;
-    pauseBtn.setAttribute('aria-pressed', String(paused));
-    pauseBtn.setAttribute('aria-label', paused ? 'הפעלת האנימציה' : 'השהיית האנימציה');
-    stage.classList.toggle('is-paused', paused);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { see(e[0].isIntersecting && !document.hidden); }).observe(stage);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { see(false); return; }
+    var r = stage.getBoundingClientRect(); see(r.bottom > 0 && r.top < window.innerHeight && r.width > 0);
   });
+  clip();
+  requestAnimationFrame(function (t) { last = t; requestAnimationFrame(loop); });
 
 })();
 (function () {
