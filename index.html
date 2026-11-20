@@ -1029,7 +1029,7 @@ function tmFilm(cv, src, fh, off, th, o) {
     var v = window.visualViewport;
     root.style.setProperty('--vvh', (v ? v.height : window.innerHeight) + 'px');
     root.style.setProperty('--vvt', (v ? v.offsetTop : 0) + 'px');
-    if (!chat.hidden) { var h = chat.getBoundingClientRect().height; var low = window.innerHeight < 520; chat.style.setProperty('--hh', Math.round(Math.max(low ? 118 : 210, Math.min(380, h * (low ? 0.34 : 0.47)))) + 'px'); }
+    if (!chat.hidden) { var h = chat.getBoundingClientRect().height; var low = window.innerHeight < 520; chat.style.setProperty('--hh', Math.round(Math.max(low ? 160 : 210, Math.min(380, h * (low ? 0.46 : 0.47)))) + 'px'); }
   }
   if (window.visualViewport) { window.visualViewport.addEventListener('resize', fit); window.visualViewport.addEventListener('scroll', fit); }
   window.addEventListener('resize', fit);
