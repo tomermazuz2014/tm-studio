@@ -676,17 +676,20 @@ body.is-locked { overflow: hidden; }
 /* A phone on its side is wide but very low. The window is the same one, his portrait filling it and the words written
    over it, only tighter; and booking a call goes one step at a time, so that nothing ever has to be scrolled. */
 @media (orientation: landscape) and (max-height: 520px) {
-  .chat { width: min(330px, calc(100vw - 24px)); }
-  .chat-face, .is-talking .chat-face { top: 0; height: 82%; }
-  .chat-face img, .chat-face canvas, .is-talking .chat-face img, .is-talking .chat-face canvas { object-fit: cover; object-position: 50% 16%; }
-  .chat-head::after { background: linear-gradient(to bottom, rgba(23, 26, 16, 0) 20%, rgba(23, 26, 16, .84) 50%, #171A10 68%); }
+  .chat { width: min(360px, calc(100vw - 24px)); }
+  /* he is seen whole and from further back: head and shoulders in the upper part, the words under his chin */
+  .chat-face, .is-talking .chat-face { top: 4px; height: 60%; }
+  .chat-face img, .chat-face canvas, .is-talking .chat-face img, .is-talking .chat-face canvas { object-fit: contain; object-position: 50% 0; }
+  .chat-head::after { background: linear-gradient(to bottom, rgba(23, 26, 16, 0) 40%, rgba(23, 26, 16, .8) 58%, #171A10 70%); }
+  .chat-name { display: none; }
+  .chat.is-booking { width: min(330px, calc(100vw - 24px)); }
   .chat-x, .is-talking .chat-x { top: 8px; left: 8px; width: 36px; height: 36px; }
   .chat-tabs { padding: 8px 10px 0; }
-  .chat-tabs button { min-height: 32px; font-size: .9375rem; }
-  .chat-log { max-height: 68%; padding: 18px 12px 6px; gap: 7px; }
+  .chat-tabs button { min-height: 30px; padding: 0 10px; font-size: .875rem; }
+  .chat-log { max-height: 62%; padding: 16px 12px 6px; gap: 7px; }
   .is-talking .chat-log { max-height: 80%; }
   .msg { padding: 7px 12px; font-size: .875rem; line-height: 1.45; }
-  .msg--bot { padding: 0; font-size: .9375rem; }
+  .msg--bot { padding: 0; font-size: .8125rem; max-width: 100%; text-shadow: 0 1px 8px rgba(23, 26, 16, .9); }
   .chat-quick { flex-direction: row; flex-wrap: nowrap; align-items: center; overflow-x: auto; scrollbar-width: none; margin-inline: -12px; padding-inline: 12px; flex: none; }
   .chat-quick::-webkit-scrollbar { display: none; }
   .chat-quick button, .chat-card { flex: none; min-height: 38px; padding: 6px 12px; font-size: .8125rem; }
