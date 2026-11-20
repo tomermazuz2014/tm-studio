@@ -544,7 +544,7 @@ body.is-locked { overflow: hidden; }
   <p class="works-hint" id="works-hint">לחצו על עבודה כדי לפתוח אותה.</p>
   <div class="wstage" id="orbit">
     <div class="works-head"><h2 id="works-h" lang="en" dir="ltr">Works</h2></div>
-    <div class="host" id="host" aria-hidden="true"><img id="host-i" src="works-stand.webp" alt="" width="1198" height="928" draggable="false"><canvas id="host-c" width="1198" height="928" hidden></canvas></div>
+    <div class="host" id="host" aria-hidden="true"><img id="host-i" src="works-stand.webp" alt="" width="1198" height="928" draggable="false"><canvas id="host-c" width="1198" height="928" hidden></canvas><canvas id="host-s" width="719" height="557" hidden></canvas></div>
     <button class="work palm" type="button" style="--i:0;--o:0;--x:29.2%;--y:12%;--dn:.128;--xm:29.2%;--ym:12.4%;--dm:.124" data-w="0" aria-label="PING, פתיחת העבודה"><span class="disc"><img src="logos/ping.webp" alt="" width="520" height="292" style="--lw:62%;--lh:40%" draggable="false"></span><span class="work-name">PING</span></button>
     <button class="work palm" type="button" style="--i:1;--o:1;--x:70.4%;--y:12%;--dn:.128;--xm:70.4%;--ym:12.4%;--dm:.124" data-w="1" aria-label="Barkai Real Estate, פתיחת העבודה"><span class="disc"><img src="logos/barkai.webp" alt="" width="461" height="520" style="--lw:50%;--lh:56%" draggable="false"></span><span class="work-name">Barkai Real Estate</span></button>
     <button class="work" type="button" style="--i:2;--o:2;--x:17.5%;--y:41%;--dn:.112;--xm:28.6%;--ym:49%;--dm:.116" data-w="2" aria-label="Studio Alma, פתיחת העבודה"><span class="disc"><img src="logos/alma.webp" alt="" width="410" height="499" style="--lw:46%;--lh:56%" draggable="false"></span><span class="work-name">Studio Alma</span></button>
@@ -703,6 +703,11 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (o.onPaint) o.onPaint(v.currentTime);
     return true;
   };
+  api.alphaAt = function (x, y) {                     // how solid the drawn picture is at a point (0..1 across, 0..1 down); call right after a paint
+    var px = new Uint8Array(4);
+    try { gl.readPixels(Math.round(x * cv.width), Math.round((1 - y) * cv.height), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); } catch (e) { return 255; }
+    return px[3];
+  };
   function tick() {
     if (api.dead) return;
     if (!v.paused && (!o.when || o.when())) api.paint();
@@ -803,27 +808,92 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (wide.addEventListener) wide.addEventListener('change', flip); else if (wide.addListener) wide.addListener(flip);
   }
   function settle() { if (film) film.dead = true; leave(); }
+
+  // Some phones will not start a silent clip by themselves (Low Power Mode, some in-app browsers). For them the same
+  // sequence is kept as still frames in a few sheets and drawn on a plain canvas; it needs nothing from the video player.
+  var SEQ = { fps: 12, w: 719, h: 557, n: 4, f: [[0,0,0,275,536,114,7],[0,277,0,275,536,114,7],[0,554,0,275,535,114,8],[0,831,0,275,535,114,8],[0,1108,0,275,535,114,8],[0,1385,0,275,535,114,8],[0,1662,0,275,535,114,8],[0,0,538,275,535,114,8],[0,277,538,275,535,114,8],[0,554,538,275,535,114,8],[0,831,538,275,535,114,8],[0,1108,538,275,535,114,8],[0,1385,538,275,534,114,9],[0,1662,538,275,535,114,8],[0,0,1075,275,534,114,9],[0,277,1075,275,535,114,8],[0,554,1075,275,535,114,8],[0,831,1075,275,535,114,8],[0,1108,1075,275,535,114,8],[0,1385,1075,327,535,95,8],[0,0,1612,414,535,51,8],[0,416,1612,439,535,38,8],[0,857,1612,441,535,37,8],[0,1300,1612,439,535,38,8],[1,0,0,436,535,39,8],[1,438,0,435,535,40,8],[1,875,0,434,536,40,7],[1,1311,0,433,536,41,7],[1,0,538,432,535,41,8],[1,434,538,431,536,41,7],[1,867,538,431,536,41,7],[1,1300,538,430,536,42,7],[1,0,1076,428,536,43,7],[1,430,1076,428,536,43,7],[1,860,1076,428,536,43,7],[1,1290,1076,428,536,43,7],[1,0,1614,428,536,43,7],[1,430,1614,427,536,44,7],[1,859,1614,427,535,45,8],[1,1288,1614,426,535,46,8],[2,0,0,426,535,46,8],[2,428,0,424,535,47,8],[2,854,0,421,535,47,8],[2,1277,0,408,535,53,8],[2,0,537,381,536,67,7],[2,383,537,320,536,99,7],[2,705,537,275,535,114,8],[2,982,537,275,535,114,8],[2,1259,537,275,535,114,8],[2,1536,537,275,535,114,8],[2,0,1075,275,535,114,8],[2,277,1075,275,533,114,10],[2,554,1075,275,533,114,10],[2,831,1075,275,533,114,10],[2,1108,1075,275,533,114,10],[2,1385,1075,275,533,114,10],[2,1662,1075,275,534,114,9],[2,0,1612,275,535,114,8],[2,277,1612,278,535,114,8],[2,557,1612,301,535,115,8],[2,860,1612,334,534,116,9],[2,1196,1612,364,533,116,10],[2,1562,1612,377,530,118,13],[3,0,0,379,527,118,16],[3,381,0,381,527,118,16],[3,764,0,357,530,142,13],[3,1123,0,303,534,197,9],[3,1428,0,250,536,253,7],[3,1680,0,275,534,271,9],[3,0,538,333,530,272,13],[3,335,538,408,524,275,19],[3,745,538,407,524,282,19],[3,1154,538,366,528,324,15],[3,1522,538,201,527,451,10],[3,1725,538,217,538,474,5],[3,0,1078,204,536,482,3],[3,206,1078,241,538,474,5],[3,449,1078,244,532,474,11],[3,695,1078,241,527,477,16],[3,938,1078,204,268,512,272],[0,0,0,0,0,0,0]] };
+  var hostS = document.getElementById('host-s'), still = null, alt = false, guard = 0, checked = false;
+  function stills() {                                              // fetch the sheets
+    if (still) return; still = { im: [], left: SEQ.n, bad: false, then: null };
+    for (var k = 0; k < SEQ.n; k++) (function (k) {
+      var im = new Image(); im.decoding = 'async';
+      im.onload = function () { if (--still.left === 0 && still.then) still.then(); };
+      im.onerror = function () { still.bad = true; if (still.then) still.then(); };
+      im.src = 'works-seq-' + k + '.webp'; still.im[k] = im;
+    })(k);
+  }
+  function playStills() {
+    var g = hostS.getContext('2d'), t0 = 0, last = -1;
+    function frame(now) {
+      if (gone) return;
+      var t = (now - t0) / 1000, k = Math.min(SEQ.f.length - 1, Math.floor(t * SEQ.fps));
+      if (k !== last) {
+        last = k; g.clearRect(0, 0, SEQ.w, SEQ.h);
+        var f = SEQ.f[k]; if (f[3]) g.drawImage(still.im[f[0]], f[1], f[2], f[3], f[4], f[5], f[6], f[3], f[4]);
+      }
+      if (t >= CLAP) pop();
+      if (t >= FRONT) host.classList.add('is-front');
+      if (k >= SEQ.f.length - 1) { leave(); return; }
+      requestAnimationFrame(frame);
+    }
+    function go() {
+      still.then = null;
+      if (gone) return;
+      if (still.bad || !g) { settle(); return; }
+      hostC.hidden = true; hostS.hidden = false; host.classList.add('is-live');
+      t0 = performance.now(); requestAnimationFrame(frame);
+    }
+    stills();
+    if (still.bad || still.left === 0) go();
+    else { still.then = go; setTimeout(function () { if (still.then) { still.then = null; settle(); } }, 9000); }   // the sheets never arrived
+  }
+  function fail() {                                                // the clip cannot play here: go on with the still frames
+    clearTimeout(guard);
+    if (gone) return;
+    if (!begun) { blocked = true; stills(); return; }             // not on screen yet: remember, and have the frames ready
+    if (alt) { settle(); return; }                                // the still frames failed as well
+    alt = true;
+    if (film) { film.dead = true; if (film.video) { try { film.video.pause(); } catch (e) {} } }
+    playStills();
+  }
+  var blocked = false;
   if (!calm && 'IntersectionObserver' in window) {
     works.classList.add('has-host'); orbit.classList.add('is-wait');
     var prep = function () {                                         // fetch the clip early, so it is ready when the section arrives
       if (film) return;
       film = tmFilm(hostC, 'tomer-works.mp4', 928, 928, 1856, {
-        onPaint: function (t) { if (!begun) return; if (hostC.hidden) { hostC.hidden = false; host.classList.add('is-live'); } if (t >= CLAP) pop(); if (t >= FRONT) host.classList.add('is-front'); },
-        onDead: settle
+        onPaint: function (t) {
+          if (!begun || alt) return;
+          if (!checked && t > 0.25) { checked = true; if (film.alphaAt(0.36, 0.42) < 40) { fail(); return; } }   // it plays, but no picture arrives
+          if (hostC.hidden) { hostC.hidden = false; host.classList.add('is-live'); }
+          if (t >= CLAP) pop();
+          if (t >= FRONT) host.classList.add('is-front');
+        },
+        onDead: function () { if (!alt) fail(); }
       }) || { video: null, dead: true };
-      if (film.video) film.video.addEventListener('ended', leave);
+      var v = film.video;
+      if (!v) { blocked = true; stills(); return; }
+      v.addEventListener('ended', function () { if (!alt) leave(); });
+      // ask now whether this browser lets a silent clip start by itself; if it does not, the still frames are fetched instead
+      var ask = null; try { ask = v.play(); } catch (e) { blocked = true; }
+      if (ask && ask.then) ask.then(function () { if (!begun) { v.pause(); try { v.currentTime = 0; } catch (e) {} } }, function (err) {
+        if (err && err.name === 'AbortError') return;
+        blocked = true; if (begun) fail(); else stills();
+      });
+      if (blocked) stills();
     };
     if (document.readyState === 'complete') setTimeout(prep, 200); else window.addEventListener('load', function () { setTimeout(prep, 200); });
     var here = new IntersectionObserver(function (e) {
       if (!e[0].isIntersecting || begun) return; begun = true; here.disconnect(); prep();
       var v = film.video, t0 = performance.now();
-      if (!v || film.dead) { settle(); return; }
+      if (!v || film.dead || blocked) { fail(); return; }
       (function wait() {                                             // give a slow connection a moment before going on without the clip
-        if (film.dead) return;
-        if (v.readyState < 3) { if (performance.now() - t0 > 2500) settle(); else setTimeout(wait, 120); return; }
-        var go = v.play(); if (go && go.catch) go.catch(settle);
-        setTimeout(function () { if (!film.dead && v.currentTime < 0.1) settle(); }, 1600);        // playback never started
-        setTimeout(leave, ((v.duration || 7) + 3) * 1000);
+        if (film.dead || alt) return;
+        if (v.readyState < 3) { if (performance.now() - t0 > 2500) fail(); else setTimeout(wait, 120); return; }
+        try { v.currentTime = 0; } catch (e) {}
+        var go = v.play(); if (go && go.catch) go.catch(function (err) { if (!err || err.name !== 'AbortError') fail(); });
+        setTimeout(function () { if (!alt && !film.dead && v.currentTime < 0.1) fail(); }, 1600);     // playback never started
+        guard = setTimeout(leave, ((v.duration || 7) + 3) * 1000);
       })();
     }, { threshold: 0.45 });
     here.observe(orbit);
