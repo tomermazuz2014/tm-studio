@@ -360,7 +360,7 @@ main { flex: 1; }
 .svc-side { position: sticky; top: 28px; align-self: start; display: grid; gap: 10px; grid-column: 1; grid-row: 1 / span 2; z-index: 1; margin-bottom: calc(var(--ph, 0px) * .24); }
 /* Under each title he stands holding it up. The title follows the reader down the list, comes down onto his hands and
    presses him flat; scroll back and he springs up again. */
-.svc-press { display: none; grid-column: 1; grid-row: 1 / span 2; align-self: end; justify-self: start; height: var(--ph); pointer-events: none; }
+.svc-press { display: none; grid-column: 1; grid-row: 1 / span 2; align-self: end; justify-self: center; height: var(--ph); pointer-events: none; }
 .svc-press img { display: block; height: 100%; width: auto; transform-origin: 50% 100%; will-change: transform; }
 @media (prefers-reduced-motion: no-preference) and (min-width: 761px), (prefers-reduced-motion: no-preference) and (orientation: landscape) {
   .svc-group { --ph: clamp(150px, 46svh, 300px); }
@@ -1597,12 +1597,17 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (b) { film.pause(); document.dispatchEvent(new CustomEvent('tm:open-work', { detail: { id: +b.getAttribute('data-w'), from: b } })); }
   });
   function playFilm() {
-    filmBox.classList.remove('is-ended'); playBtn.hidden = true;
+    clearTimeout(again); filmBox.classList.remove('is-ended'); playBtn.hidden = true;
     try { film.currentTime = 0; } catch (e) {}
     var go = film.play(); if (go && go.catch) go.catch(function () { playBtn.hidden = false; });
   }
   film.addEventListener('timeupdate', focus);
-  film.addEventListener('ended', function () { filmBox.classList.add('is-ended'); });
+  // It runs in a loop: the closing title stays on the last picture for a few seconds, then the film starts again.
+  var again = 0;
+  film.addEventListener('ended', function () {
+    filmBox.classList.add('is-ended'); clearTimeout(again);
+    if (!still) again = setTimeout(function () { if (svcOn && film.ended) playFilm(); }, 4500);
+  });
   film.addEventListener('click', function () { if (film.ended || film.currentTime === 0) playFilm(); else if (film.paused) film.play(); });
   playBtn.addEventListener('click', playFilm);
   document.getElementById('svc-talk').addEventListener('click', function () { document.getElementById('ask').click(); });
@@ -1629,7 +1634,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   else moonSeen = true;
   // ---- the titles press him down: how much room is left between a title and the floor decides how tall he is ----
   var presses = [].map.call(document.querySelectorAll('.svc-group'), function (g) {
-    return { side: g.querySelector('.svc-side'), box: g.querySelector('.svc-press'), img: g.querySelector('.svc-press img'), cur: 1, vel: 0, to: 1 };
+    return { group: g, side: g.querySelector('.svc-side'), box: g.querySelector('.svc-press'), img: g.querySelector('.svc-press img'), cur: 1, vel: 0, to: 1, h: 0, wide: 0.5 };
   }), pressRaf = 0, pressT = 0;
   function pressFrame(now) {
     pressRaf = 0;
@@ -1637,19 +1642,27 @@ function tmFilm(cv, src, fh, off, th, o) {
     presses.forEach(function (p) {
       var h = p.box.offsetHeight;
       if (!h) { p.img.style.transform = ''; return; }
-      p.to = Math.max(0.24, Math.min(1, (p.box.getBoundingClientRect().bottom - p.side.getBoundingClientRect().bottom) / h));
+      // He is as tall as the whole way from under the title to the floor, so he holds it from the very first moment
+      // and is pressed all the way down the list; only the width of the column can keep him shorter than that.
+      var floor = p.box.getBoundingClientRect().bottom, gr = p.group.getBoundingClientRect(), col = p.side.offsetWidth;
+      var room = floor - (gr.top + parseFloat(getComputedStyle(p.group).paddingTop)) - p.side.offsetHeight;
+      var want = Math.round(Math.max(120, Math.min(room, col * 0.94 * 1077 / 480)));
+      if (Math.abs(want - p.h) > 1) { p.h = want; p.group.style.setProperty('--ph', want + 'px'); h = want; }
+      p.wide = Math.max(0.04, Math.min(0.55, col / (h * 480 / 1077) - 1));       // squashed, he spreads no wider than his column
+      p.to = Math.max(0.24, Math.min(1, (floor - p.side.getBoundingClientRect().bottom) / h));
       // pressed, he follows the title exactly; let go, he springs back up and overshoots a little
       if (p.to < p.cur) { p.cur = p.to; p.vel = 0; }
       else { p.vel += ((p.to - p.cur) * 190 - p.vel * 13) * dt; p.cur += p.vel * dt; if (p.cur > p.to && p.to < 1) { p.cur = p.to; p.vel = 0; } }
       if (Math.abs(p.to - p.cur) > 0.0015 || Math.abs(p.vel) > 0.01) live = true; else { p.cur = p.to; p.vel = 0; }
-      p.img.style.transform = 'scale(' + (1 + (1 - Math.min(1, p.cur)) * 0.55).toFixed(3) + ', ' + p.cur.toFixed(3) + ')';
+      p.img.style.transform = 'scale(' + (1 + (1 - Math.min(1, p.cur)) * p.wide).toFixed(3) + ', ' + p.cur.toFixed(3) + ')';
     });
     if (live) pressRaf = requestAnimationFrame(pressFrame);
   }
   function pressGo() { if (svcOn && !still && !pressRaf) { pressT = performance.now(); pressRaf = requestAnimationFrame(pressFrame); } }
   window.addEventListener('scroll', pressGo, { passive: true });
   window.addEventListener('resize', pressGo);
-  function filmFor(on) { svcOn = on; moonGo(); pressGo(); if (!on) { film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
+  window.addEventListener('load', pressGo);
+  function filmFor(on) { svcOn = on; moonGo(); pressGo(); if (!on) { clearTimeout(again); film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
   window.addEventListener('hashchange', route); route();
   svc.addEventListener('click', function (e) {
     var b = e.target.closest('.svc-shot');
