@@ -938,7 +938,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 <main id="services" hidden>
   <div class="wrap svc-top">
     <section class="svc-film" id="svc-film" aria-label="סרטון פתיחה">
-      <video id="svc-v" src="film/services.mp4" poster="film/poster.jpg" muted playsinline preload="metadata" aria-label="תומר נכנס, מתיישב מול הלפטופ, והמצלמה נכנסת לתוך המסך: אתר, אפליקציה ומערכת שבנה"></video>
+      <video id="svc-v" src="film/services-s.mp4" poster="film/poster-s.jpg" muted playsinline preload="metadata" aria-label="תומר יושב מול הלפטופ, והמצלמה נכנסת לתוך המסך: אתר, אפליקציה ומערכת שבנה"></video>
       <div class="film-caps" id="svc-caps">
         <button class="film-cap" type="button" data-w="4"><img src="film/cap-limi.webp" alt="" width="288" height="192" loading="lazy"><span><b>בניית אתרים</b><i lang="en" dir="ltr">limi</i></span></button>
         <button class="film-cap" type="button" data-w="0"><img src="film/cap-ping.webp" alt="" width="288" height="192" loading="lazy"><span><b>בניית אפליקציות</b><i lang="en" dir="ltr">PING</i></span></button>
@@ -2049,12 +2049,12 @@ function tmFilm(cv, src, fh, off, th, o) {
   var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // Which part of the wide picture a narrow screen keeps, by time: the laptop while he sits down and the camera goes
   // in, then him on his way to the door, then him and the tile he touches, then him in front of the board.
-  var FOCUS = [[0, 46], [3.9, 42], [6.3, 50], [8.8, 58], [10.1, 78], [12.5, 58], [13.5, 52], [17, 50], [19.6, 38]];
+  var FOCUS = [[0, 46], [0.9, 42], [3.3, 50], [5.8, 58], [7.1, 78], [9.5, 58], [10.5, 52], [14, 50], [16.6, 38]];
   // and which height a short, wide screen keeps: his head and the laptop, then him in the room, his face in the PING
   // space, the tile as it fills the picture, and at the end him from the head down
-  var FOCUS_Y = [[0, 30], [4.2, 48], [8, 38], [12.6, 16], [16.6, 50], [20, 34], [21.4, 26]];
+  var FOCUS_Y = [[0, 30], [1.2, 48], [5, 38], [9.6, 16], [13.6, 50], [17, 34], [18.4, 26]];
   // when each service's card shows: [from, to, card]
-  var CAPS = [[7.9, 12.5, 0], [12.5, 18.3, 1], [18.9, 1e9, 2]], caps = [].slice.call(document.querySelectorAll('.film-cap'));
+  var CAPS = [[4.9, 9.5, 0], [9.5, 15.3, 1], [15.9, 1e9, 2]], caps = [].slice.call(document.querySelectorAll('.film-cap'));
   function focus() {
     var t = film.currentTime, x = FOCUS[0][1], on = -1;
     FOCUS.forEach(function (f) { if (t >= f[0]) x = f[1]; });
@@ -2076,7 +2076,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   film.addEventListener('timeupdate', focus);
   // It runs in a loop and starts again the moment it ends. The closing title comes up over the last seconds, once he
   // has stopped and looks at the camera, so it is still seen on every round.
-  var again = 0, CLOSE = 21.2;
+  var again = 0, CLOSE = 18.2;
   film.loop = !still;
   film.addEventListener('timeupdate', function () { if (film.loop) filmBox.classList.toggle('is-ended', film.currentTime >= CLOSE); });
   film.addEventListener('ended', function () { filmBox.classList.add('is-ended'); });
