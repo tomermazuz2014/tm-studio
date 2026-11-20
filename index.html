@@ -2,7 +2,8 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
 <title>TM Studio TLV</title>
 <meta name="description" content="TM Studio בונה אתרים, אפליקציות ומערכות לעסקים. שולחים הודעה עם הרעיון ומתחילים.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +41,9 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; scrollbar-color: var(--dim) var(--bg); }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; scrollbar-color: var(--dim) var(--bg); background: var(--bg); }
+/* The page runs under the phone's notch and corners, edge to edge; only the content keeps clear of them. */
+body { padding-top: env(safe-area-inset-top); }
 body {
   margin: 0; min-height: 100svh; display: flex; flex-direction: column;
   background: var(--bg); color: var(--ink); caret-color: var(--accent);
@@ -52,7 +55,7 @@ a { color: inherit; }
 h1, h2, h3, p { margin: 0; }
 ::selection { background: var(--accent); color: var(--on-accent); }
 :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 4px; border-radius: 10px; }
-.wrap { width: 100%; max-width: 1240px; margin-inline: auto; padding-inline: var(--gutter); }
+.wrap { width: 100%; max-width: 1240px; margin-inline: auto; padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
 .ltr { direction: ltr; unicode-bidi: isolate; }
 
 /* ---------- Header ---------- */
@@ -183,7 +186,7 @@ main { flex: 1; }
 .works-head h2 { font-family: var(--font-en); font-size: clamp(3.5rem, calc(var(--sw) * .09), 8rem); font-weight: 400; line-height: .95; letter-spacing: 0; white-space: nowrap; }
 .works.has-host .works-head { opacity: 0; transform: translate(-50%, -38%) scale(.94); transition: none; }
 /* a small footnote in the bottom left corner of the section */
-.works-hint { position: absolute; left: var(--gutter); bottom: 80px; z-index: 3; max-width: 15rem; font-size: .8125rem; line-height: 1.45; color: var(--ink); opacity: .72; }
+.works-hint { position: absolute; left: max(var(--gutter), env(safe-area-inset-left)); bottom: 80px; z-index: 3; max-width: 15rem; font-size: .8125rem; line-height: 1.45; color: var(--ink); opacity: .72; }
 .works-hint::before { content: "* "; color: var(--accent); font-weight: 700; opacity: 1; }
 /* the stage has the proportions of the footage, and everything on it is placed as a share of it, so the spheres stay on his palms at any size */
 .wstage { --sw: min(100vw, calc(89svh * 1916 / 1080)); position: relative; width: var(--sw); aspect-ratio: 1916 / 1080; }
@@ -371,7 +374,7 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 .sheet.is-open { clip-path: circle(150vmax at var(--ox, 50%) var(--oy, 50%)); opacity: 1; transition: clip-path .75s var(--ease-out), opacity .12s ease; }
 /* a project opens as one screen: its words on one side, its pictures on the other, all in view with nothing to scroll */
 .sheet-in { height: 100%; padding-block: clamp(14px, 3.5vh, 36px); display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.6fr); grid-template-rows: minmax(0, 1fr); align-items: center; gap: clamp(18px, 3.6vw, 56px); }
-.sheet .x { inset-inline-end: auto; inset-inline-start: var(--gutter); top: 12px; }
+.sheet .x { left: auto; right: max(var(--gutter), env(safe-area-inset-right)); top: calc(12px + env(safe-area-inset-top)); }
 .x { position: fixed; top: 16px; inset-inline-end: var(--gutter); z-index: 2; width: 48px; height: 48px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; display: grid; place-items: center; box-shadow: 0 8px 18px -10px var(--shade); transition: transform .16s var(--ease-out); }
 .x:active { transform: scale(.94); }
 .x svg { width: 20px; height: 20px; }
