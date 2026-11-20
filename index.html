@@ -569,6 +569,41 @@ body.is-locked { overflow: hidden; }
 /* The call button: a low, dark olive pill. On a press its words fade, it closes round a ring of small dots that gives
    a short turn, and the same olive shape then grows out of that corner into the assistant's window. Closing runs it
    backwards. */
+/* ---------- accessibility: a button in the corner opposite the call button, and its panel ---------- */
+.a11y-btn { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 21; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: #1D4ED8; color: #FFFFFF; box-shadow: 0 14px 28px -16px rgba(0, 0, 0, .55), 0 3px 8px -4px rgba(0, 0, 0, .35); transition: transform .16s var(--ease-out); }
+.a11y-btn svg { width: 26px; height: 26px; }
+.a11y-btn:active { transform: scale(.94); }
+.a11y-btn:focus-visible, .a11y button:focus-visible, .a11y a:focus-visible { outline: 3px solid #F59E0B; outline-offset: 2px; }
+.a11y { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(max(16px, env(safe-area-inset-bottom)) + 60px); z-index: 22; width: min(340px, calc(100vw - 32px)); max-height: calc(100dvh - 100px); overflow-y: auto;
+  padding: 16px; border-radius: 20px; background: #FFFFFF; color: #111111; box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .45), 0 0 0 1px rgba(0, 0, 0, .08); font: 400 1rem/1.4 var(--font-he); direction: rtl; display: grid; gap: 12px; }
+.a11y[hidden] { display: none; }
+.a11y-top { display: flex; align-items: center; justify-content: space-between; }
+.a11y h2 { font-size: 1.125rem; font-weight: 700; }
+.a11y-x { width: 36px; height: 36px; border: 0; border-radius: 50%; background: #F1F1F1; color: #111; font-size: 1rem; cursor: pointer; }
+.a11y-size { display: grid; grid-template-columns: 1fr 44px auto 44px; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 14px; background: #F4F4F4; }
+.a11y-size span { font-size: .9375rem; font-weight: 500; }
+.a11y-size b { min-width: 48px; text-align: center; font-size: .9375rem; }
+.a11y-size button { height: 40px; border: 0; border-radius: 10px; background: #FFFFFF; color: #111; font: 700 1rem/1 var(--font-he); cursor: pointer; box-shadow: 0 0 0 1px rgba(0, 0, 0, .12); }
+.a11y-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.a11y-grid button { min-height: 52px; padding: 8px; border: 0; border-radius: 14px; background: #F4F4F4; color: #111; font: 500 .9375rem/1.2 var(--font-he); cursor: pointer; transition: background-color .15s ease, color .15s ease; }
+.a11y-grid button[aria-pressed="true"] { background: #1D4ED8; color: #FFFFFF; }
+.a11y-foot { display: flex; justify-content: space-between; gap: 8px; }
+.a11y-foot button { border: 0; background: none; color: #1D4ED8; font: 500 .9375rem/1 var(--font-he); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; padding: 6px 2px; }
+.a11y-statement { display: grid; gap: 8px; padding-top: 10px; border-top: 1px solid #E5E5E5; font-size: .875rem; line-height: 1.6; color: #222; }
+.a11y-statement[hidden] { display: none; }
+.a11y-statement a { color: #1D4ED8; text-decoration: underline; }
+.a11y-date { color: #666; font-size: .8125rem; }
+/* what the choices do */
+html.a11y-contrast { filter: contrast(1.45) saturate(1.1); }
+html.a11y-gray { filter: grayscale(1); }
+html.a11y-contrast.a11y-gray { filter: grayscale(1) contrast(1.45); }
+html.a11y-links a, html.a11y-links button.nav-link { text-decoration: underline !important; text-decoration-thickness: 2px !important; text-underline-offset: 4px; outline: 2px solid #F59E0B; outline-offset: 2px; }
+html.a11y-font, html.a11y-font * { font-family: Arial, "Arial Hebrew", Helvetica, sans-serif !important; letter-spacing: normal !important; }
+html.a11y-still *, html.a11y-still *::before, html.a11y-still *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html.a11y-cursor, html.a11y-cursor * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M4 2l28 16-12 3 7 13-6 3-7-13-10 9z' fill='%23111' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E") 4 2, auto !important; }
+@media (orientation: landscape) and (max-height: 500px) { .a11y-btn { width: 42px; height: 42px; } .a11y { bottom: calc(max(12px, env(safe-area-inset-bottom)) + 52px); max-height: calc(100dvh - 70px); } }
+
 .ask {
   position: fixed; left: max(16px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 20;
   display: inline-flex; align-items: center; height: 48px; min-width: 48px; margin: 0; padding: 0; border: 0; border-radius: 24px; overflow: hidden; cursor: pointer; direction: rtl;
@@ -1010,6 +1045,27 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   </div>
 </div>
 
+<button class="a11y-btn" id="a11y-btn" type="button" aria-haspopup="dialog" aria-controls="a11y" aria-expanded="false" aria-label="תפריט נגישות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.2" r="2.2" fill="currentColor"/><path d="M4.5 8.2 12 9.6l7.5-1.4M12 9.6v4.6m0 0-3.2 6.4m3.2-6.4 3.2 6.4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="a11y" id="a11y" role="dialog" aria-modal="false" aria-labelledby="a11y-h" hidden>
+  <div class="a11y-top"><h2 id="a11y-h">נגישות</h2><button type="button" class="a11y-x" id="a11y-x" aria-label="סגירת תפריט הנגישות">✕</button></div>
+  <div class="a11y-size" role="group" aria-label="גודל טקסט"><span>גודל טקסט</span><button type="button" data-size="-1" aria-label="הקטנת טקסט">א−</button><b id="a11y-pct">100%</b><button type="button" data-size="1" aria-label="הגדלת טקסט">א+</button></div>
+  <div class="a11y-grid">
+    <button type="button" data-a="contrast" aria-pressed="false">ניגודיות גבוהה</button>
+    <button type="button" data-a="gray" aria-pressed="false">גווני אפור</button>
+    <button type="button" data-a="links" aria-pressed="false">הדגשת קישורים</button>
+    <button type="button" data-a="font" aria-pressed="false">גופן קריא</button>
+    <button type="button" data-a="still" aria-pressed="false">עצירת אנימציות</button>
+    <button type="button" data-a="cursor" aria-pressed="false">סמן גדול</button>
+  </div>
+  <div class="a11y-foot"><button type="button" id="a11y-reset">איפוס</button><button type="button" id="a11y-st">הצהרת נגישות</button></div>
+  <div class="a11y-statement" id="a11y-statement" hidden>
+    <p>אני רואה חשיבות רבה בכך שהאתר יהיה נוח ושמיש לכל אחד ואחת, כולל אנשים עם מוגבלות.</p>
+    <p>האתר נבנה לפי ההנחיות של WCAG 2.1 ברמה AA ככל האפשר: ניווט מלא במקלדת, תיאורים טקסטואליים לתמונות, התאמה לקוראי מסך, ניגודיות צבעים, התאמה לטלפונים, ואפשרות לעצור אנימציות. בתפריט הזה אפשר גם להגדיל טקסט, להגביר ניגודיות, להדגיש קישורים ולהחליף לגופן פשוט.</p>
+    <p>ייתכן שעדיין יש חלקים שאינם נגישים במלואם, כמו חלק מהסרטונים והאנימציות. נתקלתם בבעיה? ספרו לי ואתקן בהקדם:</p>
+    <p>תומר מזוז · <a href="https://wa.me/972503232367" target="_blank" rel="noopener">וואטסאפ 050-3232367</a> · <a href="https://ig.me/m/tmstudio.tlv" target="_blank" rel="noopener">אינסטגרם</a></p>
+    <p class="a11y-date">עודכן לאחרונה: נובמבר 2026</p>
+  </div>
+</div>
 <button class="ask" id="ask" type="button" aria-haspopup="dialog" aria-controls="chat" aria-expanded="false">
   <span class="ask-label" lang="en" dir="ltr">Let’s work together</span>
   <span class="ask-ico" aria-hidden="true"><svg class="i-talk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.4a8.1 8.1 0 0 1-8.5 7.9 9 9 0 0 1-3.2-.6L4 20.2l1.3-4.1a7.6 7.6 0 0 1-1.8-4.7C3.5 7.1 7.3 3.6 12 3.6s8.5 3.5 8.5 7.8Z"/></svg><svg class="i-dots" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="20.60" cy="12.00" r="1.25"/><circle cx="18.96" cy="17.05" r="1.25"/><circle cx="14.66" cy="20.18" r="1.25"/><circle cx="9.34" cy="20.18" r="1.25"/><circle cx="5.04" cy="17.05" r="1.25"/><circle cx="3.40" cy="12.00" r="1.25"/><circle cx="5.04" cy="6.95" r="1.25"/><circle cx="9.34" cy="3.82" r="1.25"/><circle cx="14.66" cy="3.82" r="1.25"/><circle cx="18.96" cy="6.95" r="1.25"/><circle cx="16.09" cy="13.33" r="1.05"/><circle cx="12.00" cy="16.30" r="1.05"/><circle cx="7.91" cy="13.33" r="1.05"/><circle cx="9.47" cy="8.52" r="1.05"/><circle cx="14.53" cy="8.52" r="1.05"/></svg></span>
@@ -1925,7 +1981,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   function loop(t) {
     requestAnimationFrame(loop);
     var dt = Math.min(t - last, 200); last = t;
-    if (!visible) return;
+    if (!visible || window.tmStill) return;
     step(dt);
     drift(t);
   }
@@ -2103,6 +2159,7 @@ function tmFilm(cv, src, fh, off, th, o) {
     }
     function frame(now) {
       requestAnimationFrame(frame);
+      if (window.tmStill) { box.style.opacity = 0; t0 = -1; return; }
       if (how.hidden || document.hidden) { t0 = -1; if (clipOn && clipOn.video && !clipOn.video.paused) clipOn.video.pause(); return; }
       if (!seen) { seen = true; clip(); }
       if (clipOn && clipOn.video && clipOn.loaded && clipOn.video.paused && !clipOn.dead) { var g = clipOn.video.play(); if (g && g.catch) g.catch(function () {}); }
@@ -2129,6 +2186,47 @@ function tmFilm(cv, src, fh, off, th, o) {
   window.addEventListener('resize', tone);
   window.addEventListener('hashchange', function () { requestAnimationFrame(tone); });
   tone();
+})();
+</script>
+<script>
+(function () {
+  // ---- accessibility menu: choices are kept for the next visit on this device ----
+  var root = document.documentElement, btn = document.getElementById('a11y-btn'), box = document.getElementById('a11y'), pct = document.getElementById('a11y-pct');
+  var state = { size: 0 }, KEYS = ['contrast', 'gray', 'links', 'font', 'still', 'cursor'], SIZES = [100, 112, 125, 140];
+  try { state = JSON.parse(localStorage.getItem('tm-a11y') || '{}') || {}; } catch (e) { state = {}; }
+  if (typeof state.size !== 'number') state.size = 0;
+  function save() { try { localStorage.setItem('tm-a11y', JSON.stringify(state)); } catch (e) {} }
+  function stillNow(on) {
+    window.tmStill = on;
+    if (on) [].forEach.call(document.querySelectorAll('video'), function (v) { try { v.pause(); } catch (e) {} });
+  }
+  function apply() {
+    KEYS.forEach(function (k) {
+      root.classList.toggle('a11y-' + k, !!state[k]);
+      var b = box.querySelector('[data-a="' + k + '"]'); if (b) b.setAttribute('aria-pressed', String(!!state[k]));
+    });
+    root.style.fontSize = state.size ? SIZES[state.size] + '%' : '';
+    pct.textContent = SIZES[state.size] + '%';
+    stillNow(!!state.still);
+  }
+  // while animations are stopped, nothing may start playing again on its own
+  document.addEventListener('play', function (e) { if (window.tmStill && e.target.pause) e.target.pause(); }, true);
+  function open(on) {
+    box.hidden = !on; btn.setAttribute('aria-expanded', String(on));
+    if (on) box.querySelector('button').focus(); else btn.focus();
+  }
+  btn.addEventListener('click', function () { open(box.hidden); });
+  document.getElementById('a11y-x').addEventListener('click', function () { open(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) open(false); });
+  document.addEventListener('pointerdown', function (e) { if (!box.hidden && !box.contains(e.target) && !btn.contains(e.target)) { box.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+  box.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.hasAttribute('data-a')) { var k = b.getAttribute('data-a'); state[k] = !state[k]; save(); apply(); }
+    else if (b.hasAttribute('data-size')) { state.size = Math.max(0, Math.min(SIZES.length - 1, state.size + (+b.getAttribute('data-size')))); save(); apply(); }
+    else if (b.id === 'a11y-reset') { state = { size: 0 }; save(); apply(); }
+    else if (b.id === 'a11y-st') { var st = document.getElementById('a11y-statement'); st.hidden = !st.hidden; if (!st.hidden) st.scrollIntoView({ block: 'nearest' }); }
+  });
+  apply();
 })();
 </script>
 </body>
