@@ -272,6 +272,22 @@ main { flex: 1; }
 }
 
 /* ---------- Services: a page of its own, reached at #services ---------- */
+/* It opens with a short film; when the film ends, a title and a button appear over its last frame. */
+.svc-film { position: relative; margin-top: 4px; aspect-ratio: 16 / 9; max-height: calc(100svh - 110px); border-radius: clamp(16px, 2.4vw, 30px); overflow: hidden; background: #E8E2D8; box-shadow: 0 44px 80px -50px var(--shade); }
+.svc-film video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--fx, 50%) 50%; }
+.film-play { position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px; padding: 0; border: 0; border-radius: 50%; background: var(--olive); color: var(--cream); cursor: pointer; display: grid; place-items: center; box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .5); transition: transform .16s var(--ease-out); }
+.film-play[hidden] { display: none; }
+.film-play:active { transform: scale(.95); }
+.film-play svg { width: 26px; height: 26px; margin-inline-start: -4px; }
+.film-end { position: absolute; inset: 0; display: grid; align-content: center; justify-items: start; gap: clamp(12px, 2vw, 22px); padding-inline: clamp(20px, 6%, 80px); background: linear-gradient(to left, rgba(24, 26, 16, .62), rgba(24, 26, 16, .28) 42%, rgba(24, 26, 16, 0) 68%); opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility 0s linear .6s; }
+.svc-film.is-ended .film-end { opacity: 1; visibility: visible; transition: opacity .6s ease; }
+.film-end h2 { color: var(--cream); font-size: clamp(1.75rem, 5.2vw, 4.25rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.012em; }
+.film-end > * { transform: translateY(10px); transition: transform .7s var(--ease-out); }
+.svc-film.is-ended .film-end > * { transform: none; }
+.svc-film.is-ended .film-end > :nth-child(2) { transition-delay: .08s; }
+.film-end .btn { background: var(--cream); color: var(--ink); }
+@media (max-width: 760px) and (orientation: portrait) { .svc-film { aspect-ratio: 4 / 5; max-height: none; } }
+@media (orientation: landscape) and (max-height: 520px) { .svc-film { max-height: calc(100svh - 64px); } .film-end .btn { min-height: 44px; } }
 .svc-hero { display: grid; gap: clamp(14px, 2.4vw, 26px); padding-block: clamp(24px, 7vh, 80px) clamp(44px, 10vh, 112px); }
 .svc-hero > * { animation: rise .7s var(--ease-out) backwards; }
 .svc-hero > :nth-child(2) { animation-delay: 80ms; }
@@ -616,6 +632,16 @@ body.is-locked { overflow: hidden; }
 </main>
 
 <main id="services" hidden>
+  <div class="wrap">
+    <section class="svc-film" id="svc-film" aria-label="סרטון פתיחה">
+      <video id="svc-v" src="film/services.mp4" poster="film/poster.jpg" muted playsinline preload="metadata" aria-label="תומר עובד על הלפטופ, והמצלמה נכנסת לתוך המסך"></video>
+      <button class="film-play" id="svc-play" type="button" aria-label="הפעלת הסרטון" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6a.9.9 0 0 0 1.4.8l10.4-6.8a.9.9 0 0 0 0-1.6L9.4 4.4A.9.9 0 0 0 8 5.2Z" transform="scale(-1 1) translate(-24 0)"/></svg></button>
+      <div class="film-end">
+        <h2>מה נבנה יחד?</h2>
+        <button class="btn" id="svc-talk" type="button">בואו נדבר על הפרויקט</button>
+      </div>
+    </section>
+  </div>
   <div class="wrap svc-hero">
     <h1 lang="en" dir="ltr">Services</h1>
     <p>עיצוב ופיתוח במקום אחד: <b>אתרים, חנויות, אפליקציות ומערכות</b> לעסקים.</p>
@@ -1374,7 +1400,25 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (on) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
     var to = !on && h.length > 1 && h !== '#top' ? document.getElementById(h.slice(1)) : null;
     jump(to ? to.getBoundingClientRect().top + window.scrollY : 0);
+    filmFor(on);
   }
+  // the opening film: it plays when the Services page opens; where the browser will not start it, a play button waits
+  var filmBox = document.getElementById('svc-film'), film = document.getElementById('svc-v'), playBtn = document.getElementById('svc-play');
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // which part of the wide picture a narrow screen keeps: the laptop and its screen first, the room once the camera is inside
+  var FOCUS = [[0, 40], [2.6, 50]];
+  function focus() { var t = film.currentTime, x = FOCUS[0][1]; FOCUS.forEach(function (f) { if (t >= f[0]) x = f[1]; }); filmBox.style.setProperty('--fx', x + '%'); }
+  function playFilm() {
+    filmBox.classList.remove('is-ended'); playBtn.hidden = true;
+    try { film.currentTime = 0; } catch (e) {}
+    var go = film.play(); if (go && go.catch) go.catch(function () { playBtn.hidden = false; });
+  }
+  film.addEventListener('timeupdate', focus);
+  film.addEventListener('ended', function () { filmBox.classList.add('is-ended'); });
+  film.addEventListener('click', function () { if (film.paused) playFilm(); });
+  playBtn.addEventListener('click', playFilm);
+  document.getElementById('svc-talk').addEventListener('click', function () { document.getElementById('ask').click(); });
+  function filmFor(on) { if (!on) { film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
   window.addEventListener('hashchange', route); route();
   svc.addEventListener('click', function (e) {
     var b = e.target.closest('.svc-shot');
