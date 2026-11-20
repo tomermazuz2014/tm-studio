@@ -64,7 +64,8 @@ h1, h2, h3, p { margin: 0; }
 .ltr { direction: ltr; unicode-bidi: isolate; }
 
 /* ---------- Header ---------- */
-.header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+/* the logo sits at the far left, the sections at the far right */
+.header { display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
 .brand { display: inline-flex; align-items: center; min-height: 44px; }
 .brand img { height: clamp(48px, 7vw, 68px); width: auto; }
 .nav { display: flex; gap: 24px; }
