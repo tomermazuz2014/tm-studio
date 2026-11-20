@@ -77,6 +77,15 @@ h1, h2, h3, p { margin: 0; }
 /* ---------- Hero ---------- */
 main { flex: 1; }
 .hero { min-height: calc(100svh - 92px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: center; gap: clamp(16px, 4vw, 56px); padding-block: 8px 0; }
+/* On a wide screen the words stand in the middle of the page, with him to their left. */
+@media (min-width: 1500px) {
+  .hero { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .copy { grid-column: 2; grid-row: 1; text-align: center; }
+  .copy h1, .copy h1[dir="ltr"] { text-align: center; }
+  .copy .lead { margin-inline: auto; }
+  .copy .actions { justify-content: center; }
+  .stage { grid-column: 3; grid-row: 1; margin-inline: 0 auto; }
+}
 .copy > * { animation: rise .7s var(--ease-out) backwards; }
 .copy > :nth-child(2) { animation-delay: 70ms; }
 .copy > :nth-child(3) { animation-delay: 130ms; }
