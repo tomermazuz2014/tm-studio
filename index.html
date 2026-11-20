@@ -303,7 +303,7 @@ main { flex: 1; }
 }
 
 /* ---------- How I Work: a page of its own, reached at #how. Light stone, olive headings, a lot of air. ---------- */
-.how { background: #E8E2D8; min-height: calc(100svh - 92px); display: grid; align-items: center; padding-block: clamp(64px, 13vh, 168px) clamp(72px, 14vh, 176px); }
+.how { position: relative; overflow: hidden; background: #E8E2D8; min-height: calc(100svh - 92px); display: grid; align-items: center; padding-block: clamp(64px, 13vh, 168px) clamp(72px, 14vh, 176px); }
 .how-head h1 { font-family: var(--font-en); font-weight: 600; font-size: clamp(3.25rem, 9.5vw, 8rem); line-height: .98; letter-spacing: -.015em; color: var(--accent); text-align: right; }
 .how-head p { margin-top: clamp(12px, 2vh, 20px); font-size: clamp(1.0625rem, 1.7vw, 1.375rem); color: var(--ink); opacity: .78; }
 .how-steps { list-style: none; margin: clamp(48px, 10vh, 120px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 5vw, 88px); }
@@ -314,6 +314,15 @@ main { flex: 1; }
 .how-cta { margin-top: clamp(44px, 10vh, 120px); }
 .how-cta .btn { border: 0; cursor: pointer; }
 @media (max-width: 640px) { .how-steps { grid-template-columns: 1fr; } }
+/* He rides a dragon across the page: in from the left, once round in a loop in the open space beside the title, out to
+   the right. The flight passes behind the words. */
+.how > .wrap { position: relative; z-index: 1; }
+.how-fly { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.how-dragon { position: absolute; left: 0; top: 0; width: clamp(210px, 27vw, 520px); aspect-ratio: 1200 / 768; opacity: 0; will-change: transform;
+  -webkit-mask-image: linear-gradient(transparent 0, #000 7%, #000 92%, transparent 100%); mask-image: linear-gradient(transparent 0, #000 7%, #000 92%, transparent 100%); }
+.how-dragon img, .how-dragon canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.how-dragon canvas[hidden] { display: none; }
+.how-dragon.is-live img { opacity: 0; }
 
 /* ---------- Services: a page of its own, reached at #services ---------- */
 /* It opens with a short film; when the film ends, a title and a button appear over its last frame. */
@@ -926,6 +935,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 
 <main id="how" hidden>
 <section class="how" aria-labelledby="how-h">
+  <div class="how-fly" aria-hidden="true"><div class="how-dragon" id="how-dragon"><img src="dragon.webp" alt="" width="800" height="512" draggable="false"><canvas id="dragon-c" width="1200" height="768" hidden></canvas></div></div>
   <div class="wrap">
     <header class="how-head">
       <h1 id="how-h" lang="en" dir="ltr">How I Work</h1>
@@ -2024,6 +2034,51 @@ function tmFilm(cv, src, fh, off, th, o) {
   window.addEventListener('load', pressGo);
   function filmFor(on) { svcOn = on; moonGo(); pressGo(); if (!on) { clearTimeout(again); film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
   window.addEventListener('hashchange', route); route();
+
+  // ---- How I Work: the dragon flight ----
+  (function () {
+    var box = document.getElementById('how-dragon'), cv = document.getElementById('dragon-c');
+    if (!box) return;
+    var sec = how.querySelector('.how'), quiet = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var FLY = 7.2, WAIT = 4.5, t0 = -1, clipOn = null, seen = false;
+    function size() { return { w: sec.clientWidth, h: sec.clientHeight, d: box.clientWidth }; }
+    if (quiet) {                                       // no flight: he hovers in the open space beside the title
+      var q = size(); box.style.opacity = 1; box.style.transform = 'translate(' + (q.w * 0.2 - q.d / 2).toFixed(0) + 'px,' + (q.h * 0.2).toFixed(0) + 'px)';
+      return;
+    }
+    function clip() {
+      if (clipOn !== null) return;
+      clipOn = tmFilm(cv, 'dragon.mp4', 768, 768, 1536, {
+        loop: true, whole: true,
+        onLoaded: function () { var g = clipOn && clipOn.video ? clipOn.video.play() : null; if (g && g.catch) g.catch(function () {}); },
+        onPaint: function () { if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); } },
+        onDead: function () { cv.hidden = true; box.classList.remove('is-live'); }
+      }) || false;
+    }
+    // the path: a run in from the left, one loop (up on the right, over the top, down on the left), a run out to the right
+    function at(u, q) {
+      var R = Math.min(q.h * 0.25, q.w * 0.13), cx = Math.max(q.d * 0.5 + R * 0.4, q.w * 0.3), cy = Math.min(q.h * 0.44, q.d * 0.32 + R + q.h * 0.06);
+      var x0 = -q.d * 0.7, x1 = q.w + q.d * 0.7, yb = cy + R, yOut = cy - R * 0.55;   // he leaves climbing, past the title
+      var a = cx - x0, l = 2 * Math.PI * R, c = Math.hypot(x1 - cx, yOut - yb), s = u * (a + l + c), f;
+      if (s < a) return [x0 + s, yb, 0];
+      if (s < a + l) { f = (s - a) / R; return [cx + R * Math.sin(f), cy + R * Math.cos(f), -f * 180 / Math.PI]; }
+      f = (s - a - l) / c; var k = Math.min(1, f * 4);
+      return [cx + (x1 - cx) * f, yb + (yOut - yb) * f, -360 + Math.atan2(yOut - yb, x1 - cx) * 180 / Math.PI * k];
+    }
+    function frame(now) {
+      requestAnimationFrame(frame);
+      if (how.hidden || document.hidden) { t0 = -1; if (clipOn && clipOn.video && !clipOn.video.paused) clipOn.video.pause(); return; }
+      if (!seen) { seen = true; clip(); }
+      if (clipOn && clipOn.video && clipOn.loaded && clipOn.video.paused && !clipOn.dead) { var g = clipOn.video.play(); if (g && g.catch) g.catch(function () {}); }
+      if (t0 < 0) t0 = now + 500;
+      var t = ((now - t0) / 1000) % (FLY + WAIT);
+      if (now < t0 || t > FLY) { box.style.opacity = 0; return; }
+      var q = size(), u = t / FLY, p = at(u, q);
+      box.style.opacity = 1;
+      box.style.transform = 'translate3d(' + (p[0] - q.d / 2).toFixed(1) + 'px,' + (p[1] - q.d * 0.32).toFixed(1) + 'px,0) rotate(' + p[2].toFixed(1) + 'deg)';
+    }
+    requestAnimationFrame(frame);
+  })();
   svc.addEventListener('click', function (e) {
     var b = e.target.closest('.svc-shot');
     if (b) document.dispatchEvent(new CustomEvent('tm:open-work', { detail: { id: +b.getAttribute('data-w'), from: b } }));
