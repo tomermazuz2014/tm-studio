@@ -42,9 +42,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; scrollbar-color: var(--dim) var(--bg); background: var(--bg); }
 /* The page stops dead at its two ends: no rubber band, so no strip of bare page can be pulled into view.
-   Where a phone still stretches it, what shows behind the Works surface is the same stone. */
+   Where a phone still stretches it, what shows behind the Works surface is the same olive. */
 html, body { overscroll-behavior: none; }
-html.is-low { background: #E8E2D8; }
+html.is-low { background: #4B5519; }
 /* The page runs under the phone's notch and corners, edge to edge; only the content keeps clear of them. */
 body { padding-top: env(safe-area-inset-top); }
 body {
@@ -193,23 +193,19 @@ main { flex: 1; }
 .works {
   --sh: min(100vw * 1080 / 1916, 89svh);   /* height of the stage */
   position: relative; min-height: 100svh; display: grid; place-items: center; overflow: hidden; overflow: clip; padding: 3svh 0 7svh;
-  /* one unbroken surface of warm stone, a little lighter in the middle; the clip itself has no background */
-  background: #E8E2D8 radial-gradient(64% 66% at 50% 46%, #F2EEE7 0, #E8E2D8 100%);
+  /* one unbroken surface of olive, the colour of the accent type, a little lighter in the middle; the clip itself has no background */
+  background: #4B5519 radial-gradient(64% 66% at 50% 46%, #5F6C22 0, #4B5519 100%); color: var(--cream);
 }
 /* The title waits until he has walked out, then takes his place in the middle of the stage. */
 .works-head { position: absolute; left: 50%; top: 46%; z-index: 1; transform: translate(-50%, -50%); pointer-events: none; transition: opacity .7s ease .15s, transform 1s var(--ease-out) .15s; }
 .works-head h2 { font-family: var(--font-en); font-size: clamp(2.5rem, calc(var(--sw) * .062), 5.75rem); font-weight: 600; line-height: 1; letter-spacing: -.01em; white-space: nowrap; }
 .works.has-host .works-head { opacity: 0; transform: translate(-50%, -38%) scale(.94); transition: none; }
 /* a small footnote in the bottom left corner of the section */
-.works-hint { position: absolute; left: max(var(--gutter), env(safe-area-inset-left)); bottom: 80px; z-index: 3; max-width: 15rem; font-size: .8125rem; line-height: 1.45; color: var(--ink); opacity: .72; }
-.works-hint::before { content: "* "; color: var(--accent); font-weight: 700; opacity: 1; }
+.works-hint { position: absolute; left: max(var(--gutter), env(safe-area-inset-left)); bottom: 80px; z-index: 3; max-width: 15rem; font-size: .8125rem; line-height: 1.45; color: var(--cream); opacity: .82; }
+.works-hint::before { content: "* "; color: var(--cream); font-weight: 700; opacity: 1; }
 /* the stage has the proportions of the footage, and everything on it is placed as a share of it, so the spheres stay on his palms at any size */
 .wstage { --sw: min(100vw, calc(89svh * 1916 / 1080)); position: relative; width: var(--sw); aspect-ratio: 1916 / 1080; }
-/* He is shown from the thigh up, as wide as the stage and a little more: the picture has the shape of the footage (16:9)
-   and reaches down to the bottom edge of the section, where it ends. */
-.host { position: absolute; left: 50%; top: 0; height: calc(108.43% + 1px); aspect-ratio: 16 / 9; transform: translateX(-50%); pointer-events: none; display: none; }
-/* where the stage is held by the width of the screen and not by its height, the section goes on below him: there his picture thins out */
-@media (max-aspect-ratio: 1579 / 1000) { .host { -webkit-mask-image: linear-gradient(#000 80%, transparent 99%); mask-image: linear-gradient(#000 80%, transparent 99%); } }
+.host { position: absolute; left: 21.82%; top: 0; width: 78.18%; height: 107.41%; pointer-events: none; display: none; }
 .works.has-host .host { display: block; }
 .host.is-front { z-index: 3; }                                   /* on his way out he passes in front of the projects */                       /* he is only there while the opening plays */
 .works:not(.has-host) .work.palm .disc { animation: bob 6.5s ease-in-out infinite; animation-delay: calc(var(--i) * -1.3s); }
@@ -219,17 +215,17 @@ main { flex: 1; }
 .host.is-live img { opacity: 0; }
 @property --k { syntax: "<number>"; inherits: false; initial-value: 1; }
 .work {
-  --k: 1; position: absolute; z-index: 2; left: calc(50% + (var(--x) - 50%) * var(--k)); top: calc(52% + (var(--y) - 52%) * var(--k));   /* --k 0 = at his hands, 1 = in place */
+  --k: 1; position: absolute; z-index: 2; left: calc(50% + (var(--x) - 50%) * var(--k)); top: calc(27% + (var(--y) - 27%) * var(--k));   /* --k 0 = at his hands, 1 = in place */
   width: calc(var(--sw) * var(--dn)); aspect-ratio: 1; font-size: calc(var(--sw) * var(--dn)); margin: 0; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer;
   transform: translate(-50%, -50%); -webkit-tap-highlight-color: transparent;
 }
 .work:focus-visible { outline-offset: 6px; }
-.work::after { content: ""; position: absolute; left: 6%; right: 6%; top: 124%; height: 15%; border-radius: 50%; background: radial-gradient(closest-side, rgba(84, 70, 56, .26), rgba(84, 70, 56, 0)); pointer-events: none; }
+.work::after { content: ""; position: absolute; left: 6%; right: 6%; top: 124%; height: 15%; border-radius: 50%; background: radial-gradient(closest-side, rgba(22, 26, 8, .42), rgba(22, 26, 8, 0)); pointer-events: none; }
 .work.palm::after { display: none; }
 .disc {
   position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%; overflow: hidden;
   background: radial-gradient(circle at 34% 26%, #FFFFFF 0, #FCFBFA 28%, #F4F1EC 54%, #E6DFD7 78%, #D3CABF 100%);
-  box-shadow: inset -.05em -.08em .2em rgba(110, 94, 78, .26), inset .04em .05em .12em rgba(255, 255, 255, .95), 0 .09em .26em -.07em rgba(78, 64, 50, .34), 0 0 .3em rgba(255, 255, 255, .6);
+  box-shadow: inset -.05em -.08em .2em rgba(110, 94, 78, .26), inset .04em .05em .12em rgba(255, 255, 255, .95), 0 .09em .26em -.07em rgba(18, 22, 6, .5), 0 0 .3em rgba(255, 255, 255, .16);
   transition: transform .35s var(--ease-out);
   animation: bob 6.5s ease-in-out infinite; animation-delay: calc(var(--i) * -1.3s);
 }
@@ -294,7 +290,7 @@ main { flex: 1; }
   .wstage[data-page="0"] .work:not([data-g="0"]) .disc, .wstage[data-page="1"] .work:not([data-g="1"]) .disc, .wstage[data-page="2"] .work:not([data-g="2"]) .disc { transform: scale(.7); }
   .wpages { display: flex; gap: 2px; position: absolute; left: 50%; top: calc(100% + 6px); transform: translateX(-50%); z-index: 3; direction: ltr; }
   .wpages button { width: 32px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
-  .wpages button::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ink); opacity: .28; transition: opacity .2s ease, transform .2s var(--ease-out); }
+  .wpages button::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--cream); opacity: .28; transition: opacity .2s ease, transform .2s var(--ease-out); }
   .wpages button[aria-current="true"]::before { opacity: .85; transform: scale(1.25); }
   .works-hint { bottom: 80px; max-width: 12rem; }
 }
@@ -531,6 +527,8 @@ body.is-locked { overflow: hidden; }
   box-shadow: 0 16px 30px -18px var(--shade), 0 3px 8px -4px var(--shade);
   transition: width .19s cubic-bezier(.4, 0, .2, 1), transform .16s var(--ease-out), background-color .2s ease;
 }
+/* over the olive Works surface the button turns cream, so it stays in view */
+html.is-low .ask { background: var(--cream); color: var(--olive); }
 .ask-label { white-space: nowrap; padding: 0 20px 0 46px; transition: opacity .12s ease; }
 .ask-ico { position: absolute; left: 0; top: 0; width: 48px; height: 48px; }
 .ask-ico svg { position: absolute; inset: 0; margin: auto; width: 20px; height: 20px; transition: opacity .15s ease, transform .19s cubic-bezier(.4, 0, .2, 1); }
@@ -816,17 +814,17 @@ body.is-locked { overflow: hidden; }
   <p class="works-hint" id="works-hint">לחצו על עבודה כדי לפתוח אותה.</p>
   <div class="wstage" id="orbit" data-page="0">
     <div class="works-head"><h2 id="works-h" lang="en" dir="ltr">Works</h2></div>
-    <div class="host" id="host" aria-hidden="true"><img id="host-i" src="works-wide-stand.webp" alt="" width="1920" height="1080" draggable="false"><canvas id="host-c" width="1920" height="1080" hidden></canvas><canvas id="host-s" width="1138" height="640" hidden></canvas></div>
-    <button class="work palm up" type="button" style="--i:0;--o:0;--x:16.1%;--y:31.5%;--dn:0.112;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="0" data-g="0" aria-label="PING, פתיחת העבודה"><span class="disc"><img src="logos/ping.webp" alt="" width="520" height="292" style="--lw:62%;--lh:40%" draggable="false"></span></button>
-    <button class="work palm up" type="button" style="--i:1;--o:1;--x:81.7%;--y:31.5%;--dn:0.112;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="1" data-g="0" aria-label="Barkai Real Estate, פתיחת העבודה"><span class="disc"><img src="logos/barkai.webp" alt="" width="461" height="520" style="--lw:50%;--lh:56%" draggable="false"></span></button>
-    <button class="work" type="button" style="--i:2;--o:2;--x:30%;--y:12%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="2" data-g="0" aria-label="Studio Alma, פתיחת העבודה"><span class="disc"><img src="logos/alma.webp" alt="" width="410" height="499" style="--lw:46%;--lh:56%" draggable="false"></span></button>
-    <button class="work" type="button" style="--i:3;--o:3;--x:70%;--y:12%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="3" data-g="0" aria-label="LAYMR, פתיחת העבודה"><span class="disc"><img src="logos/laymr.webp" alt="" width="218" height="160" style="--lw:44%;--lh:36%" draggable="false"></span></button>
-    <button class="work up" type="button" style="--i:4;--o:4;--x:23%;--y:67%;--dn:0.104;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="4" data-g="1" aria-label="Limor Mazuz Art, פתיחת העבודה"><span class="disc"><img src="logos/limor.webp" alt="" width="520" height="174" style="--lw:64%;--lh:30%" draggable="false"></span></button>
-    <button class="work up" type="button" style="--i:5;--o:5;--x:77%;--y:67%;--dn:0.104;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="5" data-g="1" aria-label="ROOK, פתיחת העבודה"><span class="disc"><img src="logos/rook.webp" alt="" width="520" height="175" style="--lw:62%;--lh:30%" draggable="false"></span></button>
-    <button class="work" type="button" style="--i:6;--o:6;--x:12.5%;--y:78.5%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="6" data-g="1" aria-label="Tal Hayon, פתיחת העבודה"><span class="disc"><img src="logos/tal.webp" alt="" width="600" height="433" style="--lw:58%;--lh:46%" draggable="false"></span></button>
-    <button class="work" type="button" style="--i:7;--o:7;--x:87.5%;--y:78.5%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="7" data-g="1" aria-label="Rahitei HaShfela, פתיחת העבודה"><span class="disc"><img src="logos/rahitei.webp" alt="" width="364" height="142" style="--lw:68%;--lh:28%" draggable="false"></span></button>
-    <button class="work up" type="button" style="--i:8;--o:8;--x:93.5%;--y:60%;--dn:0.092;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="8" data-g="2" aria-label="Dor Sharabi, פתיחת העבודה"><span class="disc"><img src="logos/dor.webp" alt="" width="560" height="326" style="--lw:60%;--lh:36%" draggable="false"></span></button>
-    <button class="work up" type="button" style="--i:9;--o:9;--x:6.5%;--y:60%;--dn:0.092;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="9" data-g="2" aria-label="Eagle Forklifts, פתיחת העבודה"><span class="disc"><img src="logos/eagle.webp" alt="" width="560" height="427" style="--lw:64%;--lh:50%" draggable="false"></span></button>
+    <div class="host" id="host" aria-hidden="true"><img id="host-i" src="works-first-stand.webp" alt="" width="1198" height="928" draggable="false"><canvas id="host-c" width="1198" height="928" hidden></canvas><canvas id="host-s" width="719" height="557" hidden></canvas></div>
+    <button class="work palm up" type="button" style="--i:0;--o:0;--x:29.2%;--y:13.4%;--dn:0.112;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="0" data-g="0" aria-label="PING, פתיחת העבודה"><span class="disc"><img src="logos/ping.webp" alt="" width="520" height="292" style="--lw:62%;--lh:40%" draggable="false"></span></button>
+    <button class="work palm up" type="button" style="--i:1;--o:1;--x:70.4%;--y:13.4%;--dn:0.112;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="1" data-g="0" aria-label="Barkai Real Estate, פתיחת העבודה"><span class="disc"><img src="logos/barkai.webp" alt="" width="461" height="520" style="--lw:50%;--lh:56%" draggable="false"></span></button>
+    <button class="work" type="button" style="--i:2;--o:2;--x:13.5%;--y:30%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="2" data-g="0" aria-label="Studio Alma, פתיחת העבודה"><span class="disc"><img src="logos/alma.webp" alt="" width="410" height="499" style="--lw:46%;--lh:56%" draggable="false"></span></button>
+    <button class="work" type="button" style="--i:3;--o:3;--x:86.5%;--y:30%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="3" data-g="0" aria-label="LAYMR, פתיחת העבודה"><span class="disc"><img src="logos/laymr.webp" alt="" width="218" height="160" style="--lw:44%;--lh:36%" draggable="false"></span></button>
+    <button class="work up" type="button" style="--i:4;--o:4;--x:24.5%;--y:55%;--dn:0.104;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="4" data-g="1" aria-label="Limor Mazuz Art, פתיחת העבודה"><span class="disc"><img src="logos/limor.webp" alt="" width="520" height="174" style="--lw:64%;--lh:30%" draggable="false"></span></button>
+    <button class="work up" type="button" style="--i:5;--o:5;--x:75.5%;--y:55%;--dn:0.104;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="5" data-g="1" aria-label="ROOK, פתיחת העבודה"><span class="disc"><img src="logos/rook.webp" alt="" width="520" height="175" style="--lw:62%;--lh:30%" draggable="false"></span></button>
+    <button class="work" type="button" style="--i:6;--o:6;--x:12.5%;--y:77%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="6" data-g="1" aria-label="Tal Hayon, פתיחת העבודה"><span class="disc"><img src="logos/tal.webp" alt="" width="600" height="433" style="--lw:58%;--lh:46%" draggable="false"></span></button>
+    <button class="work" type="button" style="--i:7;--o:7;--x:87.5%;--y:77%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="7" data-g="1" aria-label="Rahitei HaShfela, פתיחת העבודה"><span class="disc"><img src="logos/rahitei.webp" alt="" width="364" height="142" style="--lw:68%;--lh:28%" draggable="false"></span></button>
+    <button class="work up" type="button" style="--i:8;--o:8;--x:94%;--y:54%;--dn:0.092;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="8" data-g="2" aria-label="Dor Sharabi, פתיחת העבודה"><span class="disc"><img src="logos/dor.webp" alt="" width="560" height="326" style="--lw:60%;--lh:36%" draggable="false"></span></button>
+    <button class="work up" type="button" style="--i:9;--o:9;--x:6%;--y:54%;--dn:0.092;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="9" data-g="2" aria-label="Eagle Forklifts, פתיחת העבודה"><span class="disc"><img src="logos/eagle.webp" alt="" width="560" height="427" style="--lw:64%;--lh:50%" draggable="false"></span></button>
     <div class="wpages" id="wpages" role="group" aria-label="קבוצות של עבודות"><button type="button" aria-label="קבוצה 1" aria-current="true"></button><button type="button" aria-label="קבוצה 2"></button><button type="button" aria-label="קבוצה 3"></button></div>
   </div>
 </section>
@@ -1107,7 +1105,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   // his arms under the top two, waves, and walks out of the picture; the title then takes his place in the middle.
   // Without motion, or if the clip cannot play, the page shows the finished section straight away.
   var works = document.getElementById('works'), host = document.getElementById('host'), hostC = document.getElementById('host-c');
-  var CLAP = 1.02, FRONT = 6.2, film = null, begun = false, popped = false, gone = false;
+  var CLAP = 0.8, FRONT = 4.4, film = null, begun = false, popped = false, gone = false;
   function pop() {
     if (popped) return; popped = true;
     orbit.classList.remove('is-wait'); orbit.classList.add('is-pop');
@@ -1214,7 +1212,7 @@ function tmFilm(cv, src, fh, off, th, o) {
 
   // Some phones will not start a silent clip by themselves (Low Power Mode, some in-app browsers). For them the same
   // sequence is kept as still frames in a few sheets and drawn on a plain canvas; it needs nothing from the video player.
-  var SEQ = {fps:12,w:1138,h:640,n:10,f:[[0,0,0,310,595,416,45],[0,312,0,310,595,416,45],[0,624,0,310,595,416,45],[0,936,0,310,595,416,45],[0,1248,0,312,595,414,45],[0,1562,0,358,595,392,45],[0,0,597,504,594,324,46],[0,506,597,634,594,258,46],[0,1142,597,681,594,236,46],[0,0,1193,647,594,254,46],[0,649,1193,550,594,301,46],[0,1201,1193,380,594,379,46],[0,1583,1193,282,594,427,46],[1,0,0,279,594,425,46],[1,281,0,313,594,409,46],[1,596,0,352,594,392,46],[1,950,0,405,594,358,46],[1,1357,0,569,594,278,46],[1,0,596,691,595,219,45],[1,693,596,755,595,186,45],[1,0,1193,779,595,172,45],[1,781,1193,783,595,169,45],[2,0,0,778,595,171,45],[2,780,0,774,595,172,45],[2,0,597,772,594,173,46],[2,774,597,770,593,174,47],[2,0,1193,770,591,175,49],[2,772,1193,769,591,176,49],[3,0,0,768,591,177,49],[3,770,0,767,591,177,49],[3,0,593,767,591,177,49],[3,769,593,767,592,177,48],[3,0,1187,767,592,177,48],[3,769,1187,767,593,177,47],[4,0,0,767,593,177,47],[4,769,0,765,593,177,47],[4,0,595,764,593,177,47],[4,766,595,764,593,176,47],[4,0,1190,764,593,176,47],[4,766,1190,764,593,176,47],[5,0,0,763,593,177,47],[5,765,0,762,594,177,46],[5,0,596,762,594,177,46],[5,764,596,763,594,177,46],[5,0,1192,763,594,177,46],[5,765,1192,763,594,177,46],[6,0,0,763,594,177,46],[6,765,0,762,594,177,46],[6,0,596,762,594,177,46],[6,764,596,762,595,177,45],[6,0,1193,750,595,183,45],[6,752,1193,713,595,202,45],[7,0,0,638,595,235,45],[7,640,0,502,595,308,45],[7,1144,0,362,595,381,45],[7,1508,0,288,594,420,46],[7,0,597,293,594,415,46],[7,295,597,323,595,398,45],[7,620,597,342,594,386,46],[7,964,597,352,594,373,46],[7,1318,597,414,594,305,46],[7,0,1194,493,593,218,47],[7,495,1194,499,593,200,47],[7,996,1194,446,592,240,48],[7,1444,1194,382,592,296,48],[8,0,0,384,591,293,49],[8,386,0,397,591,286,49],[8,785,0,380,591,308,49],[8,1167,0,382,591,313,49],[8,1551,0,373,590,330,50],[8,0,593,370,589,347,51],[8,372,593,368,588,368,52],[8,742,593,360,585,399,55],[8,1104,593,359,583,426,57],[8,1465,593,353,582,459,58],[8,0,1184,343,583,493,57],[8,345,1184,335,585,528,55],[8,682,1184,317,584,574,56],[8,1001,1184,299,579,621,61],[8,1302,1184,277,572,668,68],[8,1581,1184,256,566,708,74],[9,0,0,229,566,760,74],[9,231,0,207,577,824,63],[9,440,0,201,585,869,55],[9,643,0,229,593,902,47],[9,874,0,200,597,936,43],[9,1076,0,165,594,971,46],[9,1243,0,126,583,1010,57],[9,1371,0,87,564,1049,76],[9,1460,0,44,341,1092,240],[0,0,0,0,0,0,0]]};
+  var SEQ = { fps: 12, w: 719, h: 557, n: 4, f: [[0,0,0,275,536,114,7],[0,277,0,275,536,114,7],[0,554,0,275,535,114,8],[0,831,0,275,535,114,8],[0,1108,0,275,535,114,8],[0,1385,0,275,535,114,8],[0,1662,0,275,535,114,8],[0,0,538,275,535,114,8],[0,277,538,275,535,114,8],[0,554,538,275,535,114,8],[0,831,538,275,535,114,8],[0,1108,538,275,535,114,8],[0,1385,538,275,534,114,9],[0,1662,538,275,535,114,8],[0,0,1075,275,534,114,9],[0,277,1075,275,535,114,8],[0,554,1075,275,535,114,8],[0,831,1075,275,535,114,8],[0,1108,1075,275,535,114,8],[0,1385,1075,327,535,95,8],[0,0,1612,414,535,51,8],[0,416,1612,439,535,38,8],[0,857,1612,441,535,37,8],[0,1300,1612,439,535,38,8],[1,0,0,436,535,39,8],[1,438,0,435,535,40,8],[1,875,0,434,536,40,7],[1,1311,0,433,536,41,7],[1,0,538,432,535,41,8],[1,434,538,431,536,41,7],[1,867,538,431,536,41,7],[1,1300,538,430,536,42,7],[1,0,1076,428,536,43,7],[1,430,1076,428,536,43,7],[1,860,1076,428,536,43,7],[1,1290,1076,428,536,43,7],[1,0,1614,428,536,43,7],[1,430,1614,427,536,44,7],[1,859,1614,427,535,45,8],[1,1288,1614,426,535,46,8],[2,0,0,426,535,46,8],[2,428,0,424,535,47,8],[2,854,0,421,535,47,8],[2,1277,0,408,535,53,8],[2,0,537,381,536,67,7],[2,383,537,320,536,99,7],[2,705,537,275,535,114,8],[2,982,537,275,535,114,8],[2,1259,537,275,535,114,8],[2,1536,537,275,535,114,8],[2,0,1075,275,535,114,8],[2,277,1075,275,533,114,10],[2,554,1075,275,533,114,10],[2,831,1075,275,533,114,10],[2,1108,1075,275,533,114,10],[2,1385,1075,275,533,114,10],[2,1662,1075,275,534,114,9],[2,0,1612,275,535,114,8],[2,277,1612,278,535,114,8],[2,557,1612,301,535,115,8],[2,860,1612,334,534,116,9],[2,1196,1612,364,533,116,10],[2,1562,1612,377,530,118,13],[3,0,0,379,527,118,16],[3,381,0,381,527,118,16],[3,764,0,357,530,142,13],[3,1123,0,303,534,197,9],[3,1428,0,250,536,253,7],[3,1680,0,275,534,271,9],[3,0,538,333,530,272,13],[3,335,538,408,524,275,19],[3,745,538,407,524,282,19],[3,1154,538,366,528,324,15],[3,1522,538,201,527,451,10],[3,1725,538,217,538,474,5],[3,0,1078,204,536,482,3],[3,206,1078,241,538,474,5],[3,449,1078,244,532,474,11],[3,695,1078,241,527,477,16],[3,938,1078,204,268,512,272],[0,0,0,0,0,0,0]] };
   var hostS = document.getElementById('host-s'), still = null, alt = false, guard = 0, checked = false;
   function stills() {                                              // fetch the sheets
     if (still) return; still = { im: [], left: SEQ.n, bad: false, then: null };
@@ -1222,7 +1220,7 @@ function tmFilm(cv, src, fh, off, th, o) {
       var im = new Image(); im.decoding = 'async';
       im.onload = function () { if (--still.left === 0 && still.then) still.then(); };
       im.onerror = function () { still.bad = true; if (still.then) still.then(); };
-      im.src = 'works-wide-seq-' + k + '.webp'; still.im[k] = im;
+      im.src = 'works-first-seq-' + k + '.webp'; still.im[k] = im;
     })(k);
   }
   function playStills() {
@@ -1273,7 +1271,7 @@ function tmFilm(cv, src, fh, off, th, o) {
     };
     var prep = function () {                                         // fetch the clip early, so it is ready when the section arrives
       if (film) return;
-      film = tmFilm(hostC, 'works-wide.mp4', 1080, 1080, 2160, {
+      film = tmFilm(hostC, 'works-first.mp4', 928, 928, 1856, {
         whole: true,
         onLoaded: function () {
           ready = true;
@@ -1287,7 +1285,7 @@ function tmFilm(cv, src, fh, off, th, o) {
         },
         onPaint: function (t) {
           if (!running || alt) return;
-          if (!checked && t > 0.25) { checked = true; if (film.alphaAt(0.5, 0.5) < 40) { fail(); return; } }   // it plays, but no picture arrives
+          if (!checked && t > 0.25) { checked = true; if (film.alphaAt(0.36, 0.42) < 40) { fail(); return; } }   // it plays, but no picture arrives
           if (hostC.hidden) { hostC.hidden = false; host.classList.add('is-live'); }
           if (t >= CLAP) pop();
           if (t >= FRONT) host.classList.add('is-front');
