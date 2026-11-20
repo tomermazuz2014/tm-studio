@@ -338,12 +338,12 @@ main { flex: 1; }
   .film-cap img { width: 60px; height: 40px; border-radius: 8px; }
   .film-cap b { font-size: .8125rem; } .film-cap i { font-size: .75rem; }
 }
-.svc-hero { display: grid; gap: clamp(14px, 2.4vw, 26px); padding-block: clamp(24px, 7vh, 80px) clamp(44px, 10vh, 112px); }
+.svc-hero { display: grid; gap: clamp(14px, 2.4vw, 26px); --pt: clamp(92px, 19vh, 210px); --pb: clamp(44px, 10vh, 112px); padding-block: var(--pt) var(--pb); }
 .svc-hero > * { animation: rise .7s var(--ease-out) backwards; }
 /* In the empty side beside the title he sits on a crescent moon and swings: the clip gives him his own small
    movements, and the whole picture also hangs and sways slowly from a point above it. */
 .svc-hero { position: relative; }
-.svc-moon { position: absolute; left: clamp(12px, 9%, 220px); top: 50%; width: clamp(190px, 31vw, 500px); aspect-ratio: 1; translate: 0 -52%; pointer-events: none; animation: none; }
+.svc-moon { position: absolute; left: clamp(12px, 9%, 220px); top: calc(50% + (var(--pt) - var(--pb)) / 2); width: clamp(190px, 31vw, 500px); aspect-ratio: 1; translate: 0 -52%; pointer-events: none; animation: none; }
 .moon-in { position: relative; width: 100%; height: 100%; transform-origin: 46% -60%; animation: sway 5s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
 .moon-in img, .moon-in canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .moon-in canvas[hidden] { display: none; }
@@ -451,7 +451,7 @@ html.is-wide body > :not(.wide):not(script) { display: none !important; }      /
   .work.palm .work-name { top: -9px; }
   .works.is-ring .work.palm .work-name { top: auto; bottom: -9px; }
   .works-hint { left: max(16px, env(safe-area-inset-left)); bottom: 72px; max-width: 11rem; font-size: .75rem; }   /* above the call button */
-  .svc-hero { padding-block: 8px 36px; }
+  .svc-hero { --pt: 88px; --pb: 36px; }
   .svc-moon { width: clamp(170px, 30vw, 280px); left: 12%; }
   .svc-hero h1 { font-size: clamp(4.5rem, 34svh, 9rem); }
   .svc-side { top: 14px; }
@@ -1602,12 +1602,12 @@ function tmFilm(cv, src, fh, off, th, o) {
     var go = film.play(); if (go && go.catch) go.catch(function () { playBtn.hidden = false; });
   }
   film.addEventListener('timeupdate', focus);
-  // It runs in a loop: the closing title stays on the last picture for a few seconds, then the film starts again.
-  var again = 0;
-  film.addEventListener('ended', function () {
-    filmBox.classList.add('is-ended'); clearTimeout(again);
-    if (!still) again = setTimeout(function () { if (svcOn && film.ended) playFilm(); }, 4500);
-  });
+  // It runs in a loop and starts again the moment it ends. The closing title comes up over the last seconds, once he
+  // has stopped and looks at the camera, so it is still seen on every round.
+  var again = 0, CLOSE = 21.2;
+  film.loop = !still;
+  film.addEventListener('timeupdate', function () { if (film.loop) filmBox.classList.toggle('is-ended', film.currentTime >= CLOSE); });
+  film.addEventListener('ended', function () { filmBox.classList.add('is-ended'); });
   film.addEventListener('click', function () { if (film.ended || film.currentTime === 0) playFilm(); else if (film.paused) film.play(); });
   playBtn.addEventListener('click', playFilm);
   document.getElementById('svc-talk').addEventListener('click', function () { document.getElementById('ask').click(); });
