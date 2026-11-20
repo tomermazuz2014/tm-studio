@@ -208,9 +208,11 @@ main { flex: 1; }
 .works-hint::before { content: "* "; color: var(--cream); font-weight: 700; opacity: 1; }
 /* the stage has the proportions of the footage, and everything on it is placed as a share of it, so the spheres stay on his palms at any size */
 .wstage { --sw: min(100vw, calc(89svh * 1916 / 1080)); position: relative; width: var(--sw); aspect-ratio: 1916 / 1080; }
-/* He is shown large, from the thigh up: the picture is 1.8 times the stage's own framing, grown from the top of his head,
-   and the section cuts it at its bottom edge. */
-.host { position: absolute; left: -0.72%; top: -1.66%; width: 140.72%; height: 193.34%; pointer-events: none; display: none; }
+/* He is shown large, from the thigh up. The picture has the shape of the footage (16:9), is a little wider than the stage
+   and reaches down to the bottom edge of the section, where it ends. */
+.host { position: absolute; left: 50%; top: 0; height: calc(108.43% + 1px); aspect-ratio: 16 / 9; transform: translateX(-50%); pointer-events: none; display: none; }
+/* where the stage is held by the width of the screen and not by its height, the section goes on below him: there his picture thins out */
+@media (max-aspect-ratio: 1579 / 1000) { .host { -webkit-mask-image: linear-gradient(#000 80%, transparent 99%); mask-image: linear-gradient(#000 80%, transparent 99%); } }
 .works.has-host .host { display: block; }
 .host.is-front { z-index: 3; }                                   /* on his way out he passes in front of the projects */                       /* he is only there while the opening plays */
 .works:not(.has-host) .work.palm .disc { animation: bob 6.5s ease-in-out infinite; animation-delay: calc(var(--i) * -1.3s); }
@@ -220,7 +222,7 @@ main { flex: 1; }
 .host.is-live img { opacity: 0; }
 @property --k { syntax: "<number>"; inherits: false; initial-value: 1; }
 .work {
-  --k: 1; position: absolute; z-index: 2; left: calc(50% + (var(--x) - 50%) * var(--k)); top: calc(47% + (var(--y) - 47%) * var(--k));   /* --k 0 = at his hands, 1 = in place */
+  --k: 1; position: absolute; z-index: 2; left: calc(50% + (var(--x) - 50%) * var(--k)); top: calc(51% + (var(--y) - 51%) * var(--k));   /* --k 0 = at his hands, 1 = in place */
   width: calc(var(--sw) * var(--dn)); aspect-ratio: 1; font-size: calc(var(--sw) * var(--dn)); margin: 0; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer;
   transform: translate(-50%, -50%); -webkit-tap-highlight-color: transparent;
 }
@@ -299,6 +301,19 @@ main { flex: 1; }
   .wpages button[aria-current="true"]::before { opacity: .85; transform: scale(1.25); }
   .works-hint { bottom: 80px; max-width: 12rem; }
 }
+
+/* ---------- How I Work: a page of its own, reached at #how. Light stone, olive headings, a lot of air. ---------- */
+.how { background: #E8E2D8; min-height: calc(100svh - 92px); display: grid; align-items: center; padding-block: clamp(64px, 13vh, 168px) clamp(72px, 14vh, 176px); }
+.how-head h1 { font-family: var(--font-en); font-weight: 600; font-size: clamp(3.25rem, 9.5vw, 8rem); line-height: .98; letter-spacing: -.015em; color: var(--accent); text-align: right; }
+.how-head p { margin-top: clamp(12px, 2vh, 20px); font-size: clamp(1.0625rem, 1.7vw, 1.375rem); color: var(--ink); opacity: .78; }
+.how-steps { list-style: none; margin: clamp(48px, 10vh, 120px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 5vw, 88px); }
+.how-steps li { border-top: 1px solid rgba(81, 92, 27, .34); padding-top: clamp(18px, 3vh, 32px); }
+.how-n { display: block; font-family: var(--font-en); font-weight: 500; font-size: clamp(1rem, 1.3vw, 1.25rem); letter-spacing: .1em; color: var(--accent); }
+.how-steps h2 { margin-top: clamp(12px, 2.4vh, 28px); font-size: clamp(1.5rem, 2.6vw, 2.5rem); font-weight: 900; line-height: 1.12; color: var(--accent); text-wrap: balance; }
+.how-steps p { margin-top: clamp(10px, 1.6vh, 16px); font-size: clamp(1rem, 1.3vw, 1.1875rem); line-height: 1.65; color: var(--ink); opacity: .84; max-width: 34ch; }
+.how-cta { margin-top: clamp(44px, 10vh, 120px); }
+.how-cta .btn { border: 0; cursor: pointer; }
+@media (max-width: 640px) { .how-steps { grid-template-columns: 1fr; } }
 
 /* ---------- Services: a page of its own, reached at #services ---------- */
 /* It opens with a short film; when the film ends, a title and a button appear over its last frame. */
@@ -765,7 +780,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 
 <header class="wrap header">
   <a class="brand" href="#top"><img src="logo.webp" alt="Tomer Mazuz, AI Digital Creator" width="900" height="295"></a>
-  <nav class="nav" aria-label="ניווט"><a class="nav-link" href="#works" lang="en">Works</a><a class="nav-link" href="#services" id="nav-svc" lang="en">Services</a><button class="nav-link nav-book" id="nav-book" type="button" lang="en">Book a call</button><a class="nav-link out" href="https://www.instagram.com/tmstudio.tlv/" target="_blank" rel="noopener" lang="en">Instagram</a></nav>
+  <nav class="nav" aria-label="ניווט"><a class="nav-link" href="#works" lang="en">Works</a><a class="nav-link" href="#services" id="nav-svc" lang="en">Services</a><a class="nav-link" href="#how" id="nav-how" lang="en">How I Work</a><button class="nav-link nav-book" id="nav-book" type="button" lang="en">Book a call</button><a class="nav-link out" href="https://www.instagram.com/tmstudio.tlv/" target="_blank" rel="noopener" lang="en">Instagram</a></nav>
 </header>
 
 <main id="top">
@@ -819,9 +834,9 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   <p class="works-hint" id="works-hint">לחצו על עבודה כדי לפתוח אותה.</p>
   <div class="wstage" id="orbit" data-page="0">
     <div class="works-head"><h2 id="works-h" lang="en" dir="ltr">Works</h2></div>
-    <div class="host" id="host" aria-hidden="true"><img id="host-i" src="works-first-stand.webp" alt="" width="1198" height="928" draggable="false"><canvas id="host-c" width="1198" height="928" hidden></canvas><canvas id="host-s" width="719" height="557" hidden></canvas></div>
-    <button class="work palm up" type="button" style="--i:0;--o:0;--x:12.3%;--y:30.4%;--dn:0.112;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="0" data-g="0" aria-label="PING, פתיחת העבודה"><span class="disc"><img src="logos/ping.webp" alt="" width="520" height="292" style="--lw:62%;--lh:40%" draggable="false"></span></button>
-    <button class="work palm up" type="button" style="--i:1;--o:1;--x:86.4%;--y:30.4%;--dn:0.112;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="1" data-g="0" aria-label="Barkai Real Estate, פתיחת העבודה"><span class="disc"><img src="logos/barkai.webp" alt="" width="461" height="520" style="--lw:50%;--lh:56%" draggable="false"></span></button>
+    <div class="host" id="host" aria-hidden="true"><img id="host-i" src="works-hd-stand.webp" alt="" width="1920" height="1080" draggable="false"><canvas id="host-c" width="1920" height="1080" hidden></canvas><canvas id="host-s" width="1138" height="640" hidden></canvas></div>
+    <button class="work palm up" type="button" style="--i:0;--o:0;--x:13.4%;--y:31.4%;--dn:0.112;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="0" data-g="0" aria-label="PING, פתיחת העבודה"><span class="disc"><img src="logos/ping.webp" alt="" width="520" height="292" style="--lw:62%;--lh:40%" draggable="false"></span></button>
+    <button class="work palm up" type="button" style="--i:1;--o:1;--x:85.5%;--y:31.4%;--dn:0.112;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="1" data-g="0" aria-label="Barkai Real Estate, פתיחת העבודה"><span class="disc"><img src="logos/barkai.webp" alt="" width="461" height="520" style="--lw:50%;--lh:56%" draggable="false"></span></button>
     <button class="work" type="button" style="--i:2;--o:2;--x:30%;--y:12%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="2" data-g="0" aria-label="Studio Alma, פתיחת העבודה"><span class="disc"><img src="logos/alma.webp" alt="" width="410" height="499" style="--lw:46%;--lh:56%" draggable="false"></span></button>
     <button class="work" type="button" style="--i:3;--o:3;--x:70%;--y:12%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="3" data-g="0" aria-label="LAYMR, פתיחת העבודה"><span class="disc"><img src="logos/laymr.webp" alt="" width="218" height="160" style="--lw:44%;--lh:36%" draggable="false"></span></button>
     <button class="work up" type="button" style="--i:4;--o:4;--x:23%;--y:67%;--dn:0.104;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="4" data-g="1" aria-label="Limor Mazuz Art, פתיחת העבודה"><span class="disc"><img src="logos/limor.webp" alt="" width="520" height="174" style="--lw:64%;--lh:30%" draggable="false"></span></button>
@@ -907,6 +922,35 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
       <button class="handle" type="button" id="svc-ask">או שאלו את העוזר הדיגיטלי</button>
     </div>
   </section>
+</main>
+
+<main id="how" hidden>
+<section class="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <header class="how-head">
+      <h1 id="how-h" lang="en" dir="ltr">How I Work</h1>
+      <p>מהפנייה הראשונה ועד ההשקה, בשלושה שלבים.</p>
+    </header>
+    <ol class="how-steps">
+      <li>
+        <span class="how-n" aria-hidden="true">01</span>
+        <h2>מדברים על הרעיון</h2>
+        <p>אני שומע מה אתם רוצים לבנות, למי זה מיועד ומה הכי חשוב בגרסה הראשונה.</p>
+      </li>
+      <li>
+        <span class="how-n" aria-hidden="true">02</span>
+        <h2>רואים כיוון עיצובי</h2>
+        <p>אני מכין מסכים ראשונים כדי שתוכלו לראות איך המוצר ייראה וירגיש ולתת לי פידבק.</p>
+      </li>
+      <li>
+        <span class="how-n" aria-hidden="true">03</span>
+        <h2>בונים ומעלים לאוויר</h2>
+        <p>אני מפתח את המוצר, נותן לכם גרסה להתנסות בה ומשפר אותה לפי הפידבק לפני ההשקה.</p>
+      </li>
+    </ol>
+    <div class="how-cta"><button class="btn" id="how-book" type="button">קבעו שיחת היכרות</button></div>
+  </div>
+</section>
 </main>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-h" hidden>
@@ -1110,11 +1154,25 @@ function tmFilm(cv, src, fh, off, th, o) {
   // his arms under the top two, waves, and walks out of the picture; the title then takes his place in the middle.
   // Without motion, or if the clip cannot play, the page shows the finished section straight away.
   var works = document.getElementById('works'), host = document.getElementById('host'), hostC = document.getElementById('host-c');
-  var CLAP = 0.8, FRONT = 4.4, film = null, begun = false, popped = false, gone = false;
+  var CLAP = 1.02, FRONT = 6.2, WALK = 6.35, film = null, begun = false, popped = false, gone = false;
   function pop() {
     if (popped) return; popped = true;
     orbit.classList.remove('is-wait'); orbit.classList.add('is-pop');
     setTimeout(function () { orbit.classList.remove('is-pop'); }, 1900);
+  }
+  // His footage ends at the side of its frame. Where the screen is wider than that, the picture itself is carried on to
+  // the right while he walks, so he leaves by the edge of the screen and not somewhere before it.
+  var carryFar = -1, carryEnd = 8;
+  function carry(t) {
+    if (t < WALK) return;
+    if (carryFar < 0) {
+      var r = host.getBoundingClientRect();
+      carryFar = Math.max(0, (document.documentElement.clientWidth - r.right) + r.width * 0.07);
+      carryEnd = (film && film.video && film.video.duration) || SEQ.f.length / SEQ.fps;
+    }
+    if (!carryFar) return;
+    var k = Math.min(1, (t - WALK) / Math.max(0.4, carryEnd - 0.4 - WALK));
+    host.style.transform = 'translateX(calc(-50% + ' + (carryFar * k * k).toFixed(1) + 'px))';
   }
   function leave() {                                               // he is out of the picture
     if (gone) return; gone = true; pop();
@@ -1217,7 +1275,7 @@ function tmFilm(cv, src, fh, off, th, o) {
 
   // Some phones will not start a silent clip by themselves (Low Power Mode, some in-app browsers). For them the same
   // sequence is kept as still frames in a few sheets and drawn on a plain canvas; it needs nothing from the video player.
-  var SEQ = { fps: 12, w: 719, h: 557, n: 4, f: [[0,0,0,275,536,114,7],[0,277,0,275,536,114,7],[0,554,0,275,535,114,8],[0,831,0,275,535,114,8],[0,1108,0,275,535,114,8],[0,1385,0,275,535,114,8],[0,1662,0,275,535,114,8],[0,0,538,275,535,114,8],[0,277,538,275,535,114,8],[0,554,538,275,535,114,8],[0,831,538,275,535,114,8],[0,1108,538,275,535,114,8],[0,1385,538,275,534,114,9],[0,1662,538,275,535,114,8],[0,0,1075,275,534,114,9],[0,277,1075,275,535,114,8],[0,554,1075,275,535,114,8],[0,831,1075,275,535,114,8],[0,1108,1075,275,535,114,8],[0,1385,1075,327,535,95,8],[0,0,1612,414,535,51,8],[0,416,1612,439,535,38,8],[0,857,1612,441,535,37,8],[0,1300,1612,439,535,38,8],[1,0,0,436,535,39,8],[1,438,0,435,535,40,8],[1,875,0,434,536,40,7],[1,1311,0,433,536,41,7],[1,0,538,432,535,41,8],[1,434,538,431,536,41,7],[1,867,538,431,536,41,7],[1,1300,538,430,536,42,7],[1,0,1076,428,536,43,7],[1,430,1076,428,536,43,7],[1,860,1076,428,536,43,7],[1,1290,1076,428,536,43,7],[1,0,1614,428,536,43,7],[1,430,1614,427,536,44,7],[1,859,1614,427,535,45,8],[1,1288,1614,426,535,46,8],[2,0,0,426,535,46,8],[2,428,0,424,535,47,8],[2,854,0,421,535,47,8],[2,1277,0,408,535,53,8],[2,0,537,381,536,67,7],[2,383,537,320,536,99,7],[2,705,537,275,535,114,8],[2,982,537,275,535,114,8],[2,1259,537,275,535,114,8],[2,1536,537,275,535,114,8],[2,0,1075,275,535,114,8],[2,277,1075,275,533,114,10],[2,554,1075,275,533,114,10],[2,831,1075,275,533,114,10],[2,1108,1075,275,533,114,10],[2,1385,1075,275,533,114,10],[2,1662,1075,275,534,114,9],[2,0,1612,275,535,114,8],[2,277,1612,278,535,114,8],[2,557,1612,301,535,115,8],[2,860,1612,334,534,116,9],[2,1196,1612,364,533,116,10],[2,1562,1612,377,530,118,13],[3,0,0,379,527,118,16],[3,381,0,381,527,118,16],[3,764,0,357,530,142,13],[3,1123,0,303,534,197,9],[3,1428,0,250,536,253,7],[3,1680,0,275,534,271,9],[3,0,538,333,530,272,13],[3,335,538,408,524,275,19],[3,745,538,407,524,282,19],[3,1154,538,366,528,324,15],[3,1522,538,201,527,451,10],[3,1725,538,217,538,474,5],[3,0,1078,204,536,482,3],[3,206,1078,241,538,474,5],[3,449,1078,244,532,474,11],[3,695,1078,241,527,477,16],[3,938,1078,204,268,512,272],[0,0,0,0,0,0,0]] };
+  var SEQ = {fps:12,w:1138,h:640,n:10,f:[[0,0,0,334,625,406,15],[0,336,0,334,625,406,15],[0,672,0,334,625,406,15],[0,1008,0,334,625,406,15],[0,1344,0,334,625,406,15],[0,1680,0,335,625,405,15],[0,0,627,340,625,403,15],[0,342,627,352,624,396,16],[0,696,627,358,624,394,16],[0,1056,627,359,624,394,16],[0,1417,627,347,624,401,16],[0,0,1254,334,624,407,16],[0,336,1254,318,624,414,16],[0,656,1254,311,624,416,16],[0,969,1254,331,624,406,16],[0,1302,1254,351,624,396,16],[1,0,0,386,625,380,15],[1,388,0,572,624,295,16],[1,962,0,745,624,204,16],[1,0,627,830,624,157,16],[1,832,627,855,623,143,17],[1,0,1253,857,623,141,17],[1,859,1253,853,623,142,17],[2,0,0,849,623,144,17],[2,851,0,846,623,146,17],[2,0,625,844,624,147,16],[2,846,625,842,625,147,15],[2,0,1252,839,625,147,15],[2,841,1252,837,624,146,16],[3,0,0,835,624,145,16],[3,837,0,834,624,145,16],[3,0,626,834,624,145,16],[3,836,626,832,624,146,16],[3,0,1252,832,624,146,16],[3,834,1252,831,624,146,16],[4,0,0,830,624,146,16],[4,832,0,830,624,146,16],[4,0,626,829,624,146,16],[4,831,626,826,624,148,16],[4,0,1252,826,624,149,16],[4,828,1252,825,624,151,16],[5,0,0,826,624,151,16],[5,828,0,825,624,152,16],[5,0,626,824,624,152,16],[5,826,626,825,624,151,16],[5,0,1252,824,624,151,16],[5,826,1252,823,624,152,16],[6,0,0,823,624,152,16],[6,825,0,821,624,153,16],[6,0,626,818,624,155,16],[6,820,626,796,624,167,16],[6,0,1252,750,624,194,16],[6,752,1252,654,624,248,16],[6,1408,1252,504,623,321,17],[7,0,0,370,623,383,17],[7,372,0,311,623,414,17],[7,685,0,311,624,415,16],[7,998,0,335,624,405,16],[7,1335,0,348,624,397,16],[7,0,626,362,624,382,16],[7,364,626,383,624,359,16],[7,749,626,400,624,340,16],[7,1151,626,402,624,335,16],[7,1555,626,402,624,331,16],[7,0,1252,386,624,345,16],[7,388,1252,390,624,339,16],[7,780,1252,385,624,342,16],[7,1167,1252,388,624,336,16],[7,1557,1252,392,624,329,16],[8,0,0,384,624,331,16],[8,386,0,377,625,332,15],[8,765,0,367,625,335,15],[8,1134,0,348,624,347,16],[8,1484,0,324,624,366,16],[8,0,627,311,623,382,17],[8,313,627,315,624,390,16],[8,630,627,322,623,395,17],[8,954,627,322,622,407,18],[8,1278,627,311,619,434,21],[8,1591,627,299,616,472,24],[8,0,1253,285,614,517,26],[8,287,1253,270,615,564,25],[8,559,1253,263,617,606,23],[8,824,1253,253,619,650,21],[8,1079,1253,248,618,689,22],[8,1329,1253,242,614,722,26],[8,1573,1253,227,607,753,33],[8,1802,1253,210,600,793,40],[9,0,0,218,599,842,41],[9,220,0,207,607,898,33],[9,429,0,203,613,933,27],[9,634,0,174,619,962,21],[9,810,0,144,621,992,19],[9,956,0,106,612,1030,28],[9,1064,0,69,491,1067,91],[9,1135,0,33,206,1103,227],[0,0,0,0,0,0,0]]};
   var hostS = document.getElementById('host-s'), still = null, alt = false, guard = 0, checked = false;
   function stills() {                                              // fetch the sheets
     if (still) return; still = { im: [], left: SEQ.n, bad: false, then: null };
@@ -1225,7 +1283,7 @@ function tmFilm(cv, src, fh, off, th, o) {
       var im = new Image(); im.decoding = 'async';
       im.onload = function () { if (--still.left === 0 && still.then) still.then(); };
       im.onerror = function () { still.bad = true; if (still.then) still.then(); };
-      im.src = 'works-first-seq-' + k + '.webp'; still.im[k] = im;
+      im.src = 'works-hd-seq-' + k + '.webp'; still.im[k] = im;
     })(k);
   }
   function playStills() {
@@ -1239,6 +1297,7 @@ function tmFilm(cv, src, fh, off, th, o) {
       }
       if (t >= CLAP) pop();
       if (t >= FRONT) host.classList.add('is-front');
+      carry(t);
       if (k >= SEQ.f.length - 1) { leave(); return; }
       requestAnimationFrame(frame);
     }
@@ -1276,7 +1335,7 @@ function tmFilm(cv, src, fh, off, th, o) {
     };
     var prep = function () {                                         // fetch the clip early, so it is ready when the section arrives
       if (film) return;
-      film = tmFilm(hostC, 'works-first.mp4', 928, 928, 1856, {
+      film = tmFilm(hostC, 'works-hd.mp4', 1080, 1080, 2160, {
         whole: true,
         onLoaded: function () {
           ready = true;
@@ -1290,10 +1349,11 @@ function tmFilm(cv, src, fh, off, th, o) {
         },
         onPaint: function (t) {
           if (!running || alt) return;
-          if (!checked && t > 0.25) { checked = true; if (film.alphaAt(0.36, 0.42) < 40) { fail(); return; } }   // it plays, but no picture arrives
+          if (!checked && t > 0.25) { checked = true; if (film.alphaAt(0.5, 0.5) < 40) { fail(); return; } }   // it plays, but no picture arrives
           if (hostC.hidden) { hostC.hidden = false; host.classList.add('is-live'); }
           if (t >= CLAP) pop();
           if (t >= FRONT) host.classList.add('is-front');
+          carry(t);
         },
         onDead: function () { if (!alt) fail(); }
       }) || { video: null, dead: true };
@@ -1634,6 +1694,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   tabChat.addEventListener('click', function () { book(false); });
   tabBook.addEventListener('click', function () { book(true); });
   $('nav-book').addEventListener('click', function () { book(true); openChat(); });
+  $('how-book').addEventListener('click', function () { book(true); openChat(); });
   form.addEventListener('submit', function (e) { e.preventDefault(); var t = input.value; input.value = ''; input.style.height = ''; send(t); });
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true })); } });
   input.addEventListener('input', function () { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight + 2, 120) + 'px'; });
@@ -1850,16 +1911,18 @@ function tmFilm(cv, src, fh, off, th, o) {
 
 })();
 (function () {
-  // ---- pages: the home page, and Services at #services ----
+  // ---- pages: the home page, Services at #services and How I Work at #how ----
   var home = document.getElementById('top'), svc = document.getElementById('services'), link = document.getElementById('nav-svc'), name = document.title;
+  var how = document.getElementById('how'), linkHow = document.getElementById('nav-how');
   function jump(y) { try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); } }
   function route() {
-    var h = location.hash, on = h === '#services';
-    if (on !== svc.hidden) return;                               // already on the right page
-    svc.hidden = !on; home.hidden = on;
-    document.title = on ? 'Services · ' + name : name;
+    var h = location.hash, on = h === '#services', onHow = h === '#how';
+    if (on !== svc.hidden && onHow !== how.hidden) return;        // already on the right page
+    svc.hidden = !on; how.hidden = !onHow; home.hidden = on || onHow;
+    document.title = on ? 'Services · ' + name : (onHow ? 'How I Work · ' + name : name);
     if (on) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
-    var to = !on && h.length > 1 && h !== '#top' ? document.getElementById(h.slice(1)) : null;
+    if (onHow) linkHow.setAttribute('aria-current', 'page'); else linkHow.removeAttribute('aria-current');
+    var to = !on && !onHow && h.length > 1 && h !== '#top' ? document.getElementById(h.slice(1)) : null;
     jump(to ? to.getBoundingClientRect().top + window.scrollY : 0);
     filmFor(on);
   }
