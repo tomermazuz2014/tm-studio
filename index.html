@@ -10,16 +10,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="preload" href="fonts/ploni-900.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/dynalight-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/oswald-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ploni-400.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 @font-face { font-family: "Ploni"; src: url("fonts/ploni-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Ploni"; src: url("fonts/ploni-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
 @font-face { font-family: "Ploni"; src: url("fonts/ploni-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 @font-face { font-family: "Ploni"; src: url("fonts/ploni-900.woff2") format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Dynalight"; src: url("fonts/dynalight-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-/* the same face for English words inside running text: Latin letters only, enlarged to sit well beside the Hebrew, at every weight */
-@font-face { font-family: "Dynalight Inline"; src: url("fonts/dynalight-400.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0041-005A, U+0061-007A; size-adjust: 145%; }
+@font-face { font-family: "Oswald"; src: url("fonts/oswald-var.woff2") format("woff2"); font-weight: 200 700; font-style: normal; font-display: swap; }
+/* the same face for English words inside running text: Latin letters only, at every weight */
+@font-face { font-family: "Oswald Inline"; src: url("fonts/oswald-var.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0041-005A, U+0061-007A; }
 :root {
   /* Layout idea: a video call with the founder. He walks into a glass window, says hi, points at the
      visitor, and the work around the window gets built. One sequence carries the whole hero. */
@@ -33,8 +33,8 @@
   color-scheme: light;
 
   --font-he: "Ploni", "Arial Hebrew", Arial, sans-serif;
-  --font-sans: "Dynalight Inline", "Ploni", "Arial Hebrew", Arial, sans-serif;   /* every English word on the site is set in Dynalight */
-  --font-en: "Dynalight", "Ploni", cursive;   /* English display text */
+  --font-sans: "Oswald Inline", "Ploni", "Arial Hebrew", Arial, sans-serif;   /* every English word on the site is set in Oswald */
+  --font-en: "Oswald", "Ploni", sans-serif;   /* English display text */
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --gutter: clamp(20px, 5vw, 56px);
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -67,7 +67,7 @@ h1, h2, h3, p { margin: 0; }
 .brand { display: inline-flex; align-items: center; min-height: 44px; }
 .brand img { height: clamp(48px, 7vw, 68px); width: auto; }
 .nav { display: flex; gap: 24px; }
-.nav-link[lang="en"] { font-family: var(--font-en); font-size: 1.5rem; }
+.nav-link[lang="en"] { font-family: var(--font-en); font-size: .9375rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
 .nav-link[aria-current] { color: var(--ink); }
 @media (max-width: 520px) { .nav { gap: 18px; } .nav-link.out { display: none; } }
 .nav-book { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; }
@@ -90,7 +90,7 @@ main { flex: 1; }
 .copy > :nth-child(3) { animation-delay: 130ms; }
 .copy h1 { font-size: clamp(2.875rem, 7.2vw, 5.5rem); font-weight: 900; line-height: 1.02; letter-spacing: -0.012em; text-wrap: balance; }
 .copy h1 span { color: var(--accent); }
-.copy h1[dir="ltr"] { text-align: right; font-family: var(--font-en); font-weight: 400; font-size: clamp(4.25rem, 10.5vw, 8.25rem); line-height: .96; letter-spacing: 0; }
+.copy h1[dir="ltr"] { text-align: right; font-family: var(--font-en); font-weight: 600; font-size: clamp(3rem, 7.2vw, 7rem); line-height: 1.04; letter-spacing: -.012em; }
 .lead { margin-top: 22px; font-size: clamp(1.0625rem, 1.7vw, 1.25rem); color: var(--muted); max-width: 31ch; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 26px; margin-top: 30px; }
 .btn {
@@ -198,14 +198,18 @@ main { flex: 1; }
 }
 /* The title waits until he has walked out, then takes his place in the middle of the stage. */
 .works-head { position: absolute; left: 50%; top: 46%; z-index: 1; transform: translate(-50%, -50%); pointer-events: none; transition: opacity .7s ease .15s, transform 1s var(--ease-out) .15s; }
-.works-head h2 { font-family: var(--font-en); font-size: clamp(3.5rem, calc(var(--sw) * .09), 8rem); font-weight: 400; line-height: .95; letter-spacing: 0; white-space: nowrap; }
+.works-head h2 { font-family: var(--font-en); font-size: clamp(2.5rem, calc(var(--sw) * .062), 5.75rem); font-weight: 600; line-height: 1; letter-spacing: -.01em; white-space: nowrap; }
 .works.has-host .works-head { opacity: 0; transform: translate(-50%, -38%) scale(.94); transition: none; }
 /* a small footnote in the bottom left corner of the section */
 .works-hint { position: absolute; left: max(var(--gutter), env(safe-area-inset-left)); bottom: 80px; z-index: 3; max-width: 15rem; font-size: .8125rem; line-height: 1.45; color: var(--ink); opacity: .72; }
 .works-hint::before { content: "* "; color: var(--accent); font-weight: 700; opacity: 1; }
 /* the stage has the proportions of the footage, and everything on it is placed as a share of it, so the spheres stay on his palms at any size */
 .wstage { --sw: min(100vw, calc(89svh * 1916 / 1080)); position: relative; width: var(--sw); aspect-ratio: 1916 / 1080; }
-.host { position: absolute; left: 21.82%; top: 0; width: 78.18%; height: 107.41%; pointer-events: none; display: none; }
+/* He is shown from the thigh up, as wide as the stage and a little more: the picture has the shape of the footage (16:9)
+   and reaches down to the bottom edge of the section, where it ends. */
+.host { position: absolute; left: 50%; top: 0; height: calc(108.43% + 1px); aspect-ratio: 16 / 9; transform: translateX(-50%); pointer-events: none; display: none; }
+/* where the stage is held by the width of the screen and not by its height, the section goes on below him: there his picture thins out */
+@media (max-aspect-ratio: 1579 / 1000) { .host { -webkit-mask-image: linear-gradient(#000 80%, transparent 99%); mask-image: linear-gradient(#000 80%, transparent 99%); } }
 .works.has-host .host { display: block; }
 .host.is-front { z-index: 3; }                                   /* on his way out he passes in front of the projects */                       /* he is only there while the opening plays */
 .works:not(.has-host) .work.palm .disc { animation: bob 6.5s ease-in-out infinite; animation-delay: calc(var(--i) * -1.3s); }
@@ -215,7 +219,7 @@ main { flex: 1; }
 .host.is-live img { opacity: 0; }
 @property --k { syntax: "<number>"; inherits: false; initial-value: 1; }
 .work {
-  --k: 1; position: absolute; z-index: 2; left: calc(50% + (var(--x) - 50%) * var(--k)); top: calc(27% + (var(--y) - 27%) * var(--k));   /* --k 0 = at his hands, 1 = in place */
+  --k: 1; position: absolute; z-index: 2; left: calc(50% + (var(--x) - 50%) * var(--k)); top: calc(52% + (var(--y) - 52%) * var(--k));   /* --k 0 = at his hands, 1 = in place */
   width: calc(var(--sw) * var(--dn)); aspect-ratio: 1; font-size: calc(var(--sw) * var(--dn)); margin: 0; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer;
   transform: translate(-50%, -50%); -webkit-tap-highlight-color: transparent;
 }
@@ -364,7 +368,7 @@ main { flex: 1; }
 /* upright and narrow there is no free side: he swings above the title, on the left */
 @media (max-width: 760px) and (orientation: portrait) { .svc-moon { position: relative; left: auto; top: auto; width: 58vw; translate: none; justify-self: end; } }
 .svc-hero > p { animation-delay: 80ms; }
-.svc-hero h1 { font-family: var(--font-en); font-weight: 400; font-size: clamp(5.25rem, 18vw, 13.5rem); line-height: .86; letter-spacing: 0; text-align: right; }
+.svc-hero h1 { font-family: var(--font-en); font-weight: 600; font-size: clamp(3.5rem, 12.5vw, 10rem); line-height: .98; letter-spacing: -.015em; text-align: right; }
 .svc-hero p { font-size: clamp(1.375rem, 3vw, 2.25rem); font-weight: 500; line-height: 1.25; max-width: 23ch; text-wrap: balance; }
 .svc-hero p b { font-weight: 500; color: var(--accent); }
 .svc-group { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr); gap: 0 clamp(20px, 5vw, 72px); padding-block: clamp(36px, 7vh, 80px); border-top: 1px solid var(--line); }
@@ -378,7 +382,7 @@ main { flex: 1; }
   .svc-group { --ph: clamp(150px, 46svh, 300px); }
   .svc-press { display: block; }
 }
-.svc-side h2 { font-family: var(--font-en); font-weight: 400; font-size: clamp(3.5rem, 6.6vw, 5.75rem); line-height: .95; letter-spacing: 0; text-align: right; }
+.svc-side h2 { font-family: var(--font-en); font-weight: 600; font-size: clamp(2.125rem, 4vw, 3.5rem); line-height: 1.02; letter-spacing: -.01em; text-align: right; }
 .svc-side p { color: var(--muted); font-size: 1.0625rem; max-width: 22ch; }
 .svc-list { list-style: none; margin: 0; padding: 0; grid-column: 2; }
 .svc-list li { display: grid; grid-template-columns: 3rem minmax(0, 1fr); align-items: baseline; gap: 6px 12px; padding-block: clamp(18px, 2.6vw, 28px); border-bottom: 1px solid var(--line); }
@@ -394,7 +398,7 @@ main { flex: 1; }
 .svc-shot .cap i { font-style: normal; font-weight: 500; font-size: .875rem; color: var(--muted); transition: color .2s ease; }
 .svc-shot:active .ph { transform: scale(.985); }
 .svc-end { display: grid; justify-items: center; text-align: center; gap: 14px; padding-block: clamp(56px, 12vh, 128px) clamp(64px, 12vh, 128px); border-top: 1px solid var(--line); }
-.svc-end h2 { font-family: var(--font-en); font-weight: 400; font-size: clamp(4.25rem, 12vw, 9rem); line-height: .95; letter-spacing: 0; }
+.svc-end h2 { font-family: var(--font-en); font-weight: 600; font-size: clamp(2.75rem, 8vw, 6rem); line-height: 1; letter-spacing: -.012em; }
 .svc-end p { font-size: clamp(1.0625rem, 1.7vw, 1.25rem); color: var(--muted); }
 .svc-end .actions { justify-content: center; margin-top: 12px; }
 button.handle { margin: 0; padding: 0; border: 0; background: none; font-family: inherit; cursor: pointer; }
@@ -780,7 +784,7 @@ body.is-locked { overflow: hidden; }
       <div class="cam" id="cam">
         <canvas id="film" role="img" aria-label="מייסד TM Studio נכנס לפריים, מנופף לשלום ומצביע אל הצופה"></canvas>
         <canvas id="film-v" width="1080" height="1080" hidden aria-hidden="true"></canvas>
-        <img class="still" src="me.webp" alt="מייסד TM Studio מצביע אל הצופה" width="1080" height="1080" draggable="false">
+        <img class="still" src="hero-still.webp" alt="מייסד TM Studio מצביע אל הצופה" width="1080" height="1080" draggable="false">
         <p class="say" id="say" aria-hidden="true"></p>
         <div class="tap" aria-hidden="true"><i></i><i></i></div>
       </div>
@@ -812,17 +816,17 @@ body.is-locked { overflow: hidden; }
   <p class="works-hint" id="works-hint">לחצו על עבודה כדי לפתוח אותה.</p>
   <div class="wstage" id="orbit" data-page="0">
     <div class="works-head"><h2 id="works-h" lang="en" dir="ltr">Works</h2></div>
-    <div class="host" id="host" aria-hidden="true"><img id="host-i" src="works-stand.webp" alt="" width="1548" height="1200" draggable="false"><canvas id="host-c" width="1548" height="1200" hidden></canvas><canvas id="host-s" width="719" height="557" hidden></canvas></div>
-    <button class="work palm up" type="button" style="--i:0;--o:0;--x:29.2%;--y:13.4%;--dn:0.112;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="0" data-g="0" aria-label="PING, פתיחת העבודה"><span class="disc"><img src="logos/ping.webp" alt="" width="520" height="292" style="--lw:62%;--lh:40%" draggable="false"></span></button>
-    <button class="work palm up" type="button" style="--i:1;--o:1;--x:70.4%;--y:13.4%;--dn:0.112;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="1" data-g="0" aria-label="Barkai Real Estate, פתיחת העבודה"><span class="disc"><img src="logos/barkai.webp" alt="" width="461" height="520" style="--lw:50%;--lh:56%" draggable="false"></span></button>
-    <button class="work" type="button" style="--i:2;--o:2;--x:13.5%;--y:30%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="2" data-g="0" aria-label="Studio Alma, פתיחת העבודה"><span class="disc"><img src="logos/alma.webp" alt="" width="410" height="499" style="--lw:46%;--lh:56%" draggable="false"></span></button>
-    <button class="work" type="button" style="--i:3;--o:3;--x:86.5%;--y:30%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="3" data-g="0" aria-label="LAYMR, פתיחת העבודה"><span class="disc"><img src="logos/laymr.webp" alt="" width="218" height="160" style="--lw:44%;--lh:36%" draggable="false"></span></button>
-    <button class="work up" type="button" style="--i:4;--o:4;--x:24.5%;--y:55%;--dn:0.104;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="4" data-g="1" aria-label="Limor Mazuz Art, פתיחת העבודה"><span class="disc"><img src="logos/limor.webp" alt="" width="520" height="174" style="--lw:64%;--lh:30%" draggable="false"></span></button>
-    <button class="work up" type="button" style="--i:5;--o:5;--x:75.5%;--y:55%;--dn:0.104;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="5" data-g="1" aria-label="ROOK, פתיחת העבודה"><span class="disc"><img src="logos/rook.webp" alt="" width="520" height="175" style="--lw:62%;--lh:30%" draggable="false"></span></button>
-    <button class="work" type="button" style="--i:6;--o:6;--x:12.5%;--y:77%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="6" data-g="1" aria-label="Tal Hayon, פתיחת העבודה"><span class="disc"><img src="logos/tal.webp" alt="" width="600" height="433" style="--lw:58%;--lh:46%" draggable="false"></span></button>
-    <button class="work" type="button" style="--i:7;--o:7;--x:87.5%;--y:77%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="7" data-g="1" aria-label="Rahitei HaShfela, פתיחת העבודה"><span class="disc"><img src="logos/rahitei.webp" alt="" width="364" height="142" style="--lw:68%;--lh:28%" draggable="false"></span></button>
-    <button class="work up" type="button" style="--i:8;--o:8;--x:94%;--y:54%;--dn:0.092;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="8" data-g="2" aria-label="Dor Sharabi, פתיחת העבודה"><span class="disc"><img src="logos/dor.webp" alt="" width="560" height="326" style="--lw:60%;--lh:36%" draggable="false"></span></button>
-    <button class="work up" type="button" style="--i:9;--o:9;--x:6%;--y:54%;--dn:0.092;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="9" data-g="2" aria-label="Eagle Forklifts, פתיחת העבודה"><span class="disc"><img src="logos/eagle.webp" alt="" width="560" height="427" style="--lw:64%;--lh:50%" draggable="false"></span></button>
+    <div class="host" id="host" aria-hidden="true"><img id="host-i" src="works-wide-stand.webp" alt="" width="1920" height="1080" draggable="false"><canvas id="host-c" width="1920" height="1080" hidden></canvas><canvas id="host-s" width="1138" height="640" hidden></canvas></div>
+    <button class="work palm up" type="button" style="--i:0;--o:0;--x:16.1%;--y:31.5%;--dn:0.112;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="0" data-g="0" aria-label="PING, פתיחת העבודה"><span class="disc"><img src="logos/ping.webp" alt="" width="520" height="292" style="--lw:62%;--lh:40%" draggable="false"></span></button>
+    <button class="work palm up" type="button" style="--i:1;--o:1;--x:81.7%;--y:31.5%;--dn:0.112;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="1" data-g="0" aria-label="Barkai Real Estate, פתיחת העבודה"><span class="disc"><img src="logos/barkai.webp" alt="" width="461" height="520" style="--lw:50%;--lh:56%" draggable="false"></span></button>
+    <button class="work" type="button" style="--i:2;--o:2;--x:30%;--y:12%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="2" data-g="0" aria-label="Studio Alma, פתיחת העבודה"><span class="disc"><img src="logos/alma.webp" alt="" width="410" height="499" style="--lw:46%;--lh:56%" draggable="false"></span></button>
+    <button class="work" type="button" style="--i:3;--o:3;--x:70%;--y:12%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="3" data-g="0" aria-label="LAYMR, פתיחת העבודה"><span class="disc"><img src="logos/laymr.webp" alt="" width="218" height="160" style="--lw:44%;--lh:36%" draggable="false"></span></button>
+    <button class="work up" type="button" style="--i:4;--o:4;--x:23%;--y:67%;--dn:0.104;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="4" data-g="1" aria-label="Limor Mazuz Art, פתיחת העבודה"><span class="disc"><img src="logos/limor.webp" alt="" width="520" height="174" style="--lw:64%;--lh:30%" draggable="false"></span></button>
+    <button class="work up" type="button" style="--i:5;--o:5;--x:77%;--y:67%;--dn:0.104;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="5" data-g="1" aria-label="ROOK, פתיחת העבודה"><span class="disc"><img src="logos/rook.webp" alt="" width="520" height="175" style="--lw:62%;--lh:30%" draggable="false"></span></button>
+    <button class="work" type="button" style="--i:6;--o:6;--x:12.5%;--y:78.5%;--dn:0.1;--xm:28.6%;--ym:56%;--dm:0.128" data-w="6" data-g="1" aria-label="Tal Hayon, פתיחת העבודה"><span class="disc"><img src="logos/tal.webp" alt="" width="600" height="433" style="--lw:58%;--lh:46%" draggable="false"></span></button>
+    <button class="work" type="button" style="--i:7;--o:7;--x:87.5%;--y:78.5%;--dn:0.1;--xm:71.4%;--ym:56%;--dm:0.128" data-w="7" data-g="1" aria-label="Rahitei HaShfela, פתיחת העבודה"><span class="disc"><img src="logos/rahitei.webp" alt="" width="364" height="142" style="--lw:68%;--lh:28%" draggable="false"></span></button>
+    <button class="work up" type="button" style="--i:8;--o:8;--x:93.5%;--y:60%;--dn:0.092;--xm:29.2%;--ym:12.4%;--dm:0.124" data-w="8" data-g="2" aria-label="Dor Sharabi, פתיחת העבודה"><span class="disc"><img src="logos/dor.webp" alt="" width="560" height="326" style="--lw:60%;--lh:36%" draggable="false"></span></button>
+    <button class="work up" type="button" style="--i:9;--o:9;--x:6.5%;--y:60%;--dn:0.092;--xm:70.4%;--ym:12.4%;--dm:0.124" data-w="9" data-g="2" aria-label="Eagle Forklifts, פתיחת העבודה"><span class="disc"><img src="logos/eagle.webp" alt="" width="560" height="427" style="--lw:64%;--lh:50%" draggable="false"></span></button>
     <div class="wpages" id="wpages" role="group" aria-label="קבוצות של עבודות"><button type="button" aria-label="קבוצה 1" aria-current="true"></button><button type="button" aria-label="קבוצה 2"></button><button type="button" aria-label="קבוצה 3"></button></div>
   </div>
 </section>
@@ -1046,7 +1050,14 @@ function tmFilm(cv, src, fh, off, th, o) {
   v.addEventListener('error', kill);
   v.addEventListener('loadeddata', api.paint);
   cv.addEventListener('webglcontextlost', function (e) { e.preventDefault(); kill(); });
-  v.src = src; cv.parentNode.appendChild(v);
+  cv.parentNode.appendChild(v);
+  // With o.whole the clip is fetched in full before it is handed to the player, so playback never waits for the network.
+  function give(u) { if (api.dead) return; v.src = u; api.loaded = true; if (o.onLoaded) o.onLoaded(); }
+  if (o.whole && window.fetch && window.URL && URL.createObjectURL) {
+    fetch(src).then(function (r) { if (!r.ok) throw new Error('http'); return r.blob(); })
+      .then(function (b) { give(URL.createObjectURL(b.type === 'video/mp4' ? b : new Blob([b], { type: 'video/mp4' }))); })
+      .catch(function () { give(src); });
+  } else give(src);
   if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(tick); else requestAnimationFrame(tick);
   return api;
 }
@@ -1096,7 +1107,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   // his arms under the top two, waves, and walks out of the picture; the title then takes his place in the middle.
   // Without motion, or if the clip cannot play, the page shows the finished section straight away.
   var works = document.getElementById('works'), host = document.getElementById('host'), hostC = document.getElementById('host-c');
-  var CLAP = 1.05, FRONT = 5.5, film = null, begun = false, popped = false, gone = false;
+  var CLAP = 1.02, FRONT = 6.2, film = null, begun = false, popped = false, gone = false;
   function pop() {
     if (popped) return; popped = true;
     orbit.classList.remove('is-wait'); orbit.classList.add('is-pop');
@@ -1203,7 +1214,7 @@ function tmFilm(cv, src, fh, off, th, o) {
 
   // Some phones will not start a silent clip by themselves (Low Power Mode, some in-app browsers). For them the same
   // sequence is kept as still frames in a few sheets and drawn on a plain canvas; it needs nothing from the video player.
-  var SEQ = { fps: 12, w: 719, h: 557, n: 4, f: [[0,0,0,276,531,124,8],[0,278,0,276,531,124,8],[0,556,0,276,531,124,8],[0,834,0,276,532,124,7],[0,1112,0,276,532,124,7],[0,1390,0,276,532,124,7],[0,1668,0,276,532,124,7],[0,0,534,276,531,124,8],[0,278,534,276,531,124,8],[0,556,534,276,532,124,7],[0,834,534,276,532,124,7],[0,1112,534,276,532,124,7],[0,1390,534,276,531,124,8],[0,1668,534,276,531,124,8],[0,0,1068,276,532,124,7],[0,278,1068,276,532,124,7],[0,556,1068,276,532,124,7],[0,834,1068,276,532,124,7],[0,1112,1068,276,532,124,7],[0,1390,1068,276,532,124,7],[0,1668,1068,327,532,96,7],[0,0,1602,375,531,71,8],[0,377,1602,392,531,62,8],[0,771,1602,395,531,61,8],[0,1168,1602,394,531,62,8],[0,1564,1602,391,531,64,8],[1,0,0,390,531,65,8],[1,392,0,389,531,65,8],[1,783,0,389,531,65,8],[1,1174,0,389,531,65,8],[1,1565,0,389,531,65,8],[1,0,533,388,531,65,8],[1,390,533,388,531,65,8],[1,780,533,388,531,65,8],[1,1170,533,388,532,65,7],[1,1560,533,388,532,64,7],[1,0,1067,387,532,64,7],[1,389,1067,387,532,63,7],[1,778,1067,387,532,63,7],[1,1167,1067,387,532,62,7],[1,1556,1067,387,532,62,7],[1,0,1601,386,532,62,7],[1,388,1601,386,532,62,7],[1,776,1601,386,532,62,7],[1,1164,1601,386,532,62,7],[1,1552,1601,384,532,63,7],[2,0,0,376,532,67,7],[2,378,0,367,532,69,7],[2,747,0,345,532,80,7],[2,1094,0,289,532,111,7],[2,1385,0,276,532,124,7],[2,1663,0,276,532,124,7],[2,0,534,276,532,124,7],[2,278,534,276,532,124,7],[2,556,534,276,532,124,7],[2,834,534,276,532,124,7],[2,1112,534,276,532,124,7],[2,1390,534,276,532,124,7],[2,1668,534,276,531,124,8],[2,0,1068,293,531,107,8],[2,295,1068,276,531,124,8],[2,573,1068,278,531,122,8],[2,853,1068,278,531,122,8],[2,1133,1068,280,531,120,8],[2,1415,1068,286,531,124,8],[2,1703,1068,217,528,125,8],[2,0,1601,334,530,124,9],[2,336,1601,345,527,124,12],[2,683,1601,346,525,124,14],[2,1031,1601,346,524,124,15],[2,1379,1601,249,527,223,12],[2,1630,1601,295,530,176,9],[3,0,0,240,532,232,7],[3,242,0,255,532,256,7],[3,499,0,338,527,258,12],[3,839,0,391,521,259,18],[3,1232,0,405,518,261,21],[3,1639,0,377,522,292,17],[3,0,534,338,526,332,13],[3,340,534,272,531,398,8],[3,614,534,220,534,451,5],[3,836,534,247,534,453,5],[3,1085,534,264,528,453,11],[3,1351,534,264,522,453,17],[3,1617,534,254,520,463,18],[3,0,1070,202,520,515,15],[3,204,1070,137,521,581,13],[0,0,0,0,0,0,0]] };
+  var SEQ = {fps:12,w:1138,h:640,n:10,f:[[0,0,0,310,595,416,45],[0,312,0,310,595,416,45],[0,624,0,310,595,416,45],[0,936,0,310,595,416,45],[0,1248,0,312,595,414,45],[0,1562,0,358,595,392,45],[0,0,597,504,594,324,46],[0,506,597,634,594,258,46],[0,1142,597,681,594,236,46],[0,0,1193,647,594,254,46],[0,649,1193,550,594,301,46],[0,1201,1193,380,594,379,46],[0,1583,1193,282,594,427,46],[1,0,0,279,594,425,46],[1,281,0,313,594,409,46],[1,596,0,352,594,392,46],[1,950,0,405,594,358,46],[1,1357,0,569,594,278,46],[1,0,596,691,595,219,45],[1,693,596,755,595,186,45],[1,0,1193,779,595,172,45],[1,781,1193,783,595,169,45],[2,0,0,778,595,171,45],[2,780,0,774,595,172,45],[2,0,597,772,594,173,46],[2,774,597,770,593,174,47],[2,0,1193,770,591,175,49],[2,772,1193,769,591,176,49],[3,0,0,768,591,177,49],[3,770,0,767,591,177,49],[3,0,593,767,591,177,49],[3,769,593,767,592,177,48],[3,0,1187,767,592,177,48],[3,769,1187,767,593,177,47],[4,0,0,767,593,177,47],[4,769,0,765,593,177,47],[4,0,595,764,593,177,47],[4,766,595,764,593,176,47],[4,0,1190,764,593,176,47],[4,766,1190,764,593,176,47],[5,0,0,763,593,177,47],[5,765,0,762,594,177,46],[5,0,596,762,594,177,46],[5,764,596,763,594,177,46],[5,0,1192,763,594,177,46],[5,765,1192,763,594,177,46],[6,0,0,763,594,177,46],[6,765,0,762,594,177,46],[6,0,596,762,594,177,46],[6,764,596,762,595,177,45],[6,0,1193,750,595,183,45],[6,752,1193,713,595,202,45],[7,0,0,638,595,235,45],[7,640,0,502,595,308,45],[7,1144,0,362,595,381,45],[7,1508,0,288,594,420,46],[7,0,597,293,594,415,46],[7,295,597,323,595,398,45],[7,620,597,342,594,386,46],[7,964,597,352,594,373,46],[7,1318,597,414,594,305,46],[7,0,1194,493,593,218,47],[7,495,1194,499,593,200,47],[7,996,1194,446,592,240,48],[7,1444,1194,382,592,296,48],[8,0,0,384,591,293,49],[8,386,0,397,591,286,49],[8,785,0,380,591,308,49],[8,1167,0,382,591,313,49],[8,1551,0,373,590,330,50],[8,0,593,370,589,347,51],[8,372,593,368,588,368,52],[8,742,593,360,585,399,55],[8,1104,593,359,583,426,57],[8,1465,593,353,582,459,58],[8,0,1184,343,583,493,57],[8,345,1184,335,585,528,55],[8,682,1184,317,584,574,56],[8,1001,1184,299,579,621,61],[8,1302,1184,277,572,668,68],[8,1581,1184,256,566,708,74],[9,0,0,229,566,760,74],[9,231,0,207,577,824,63],[9,440,0,201,585,869,55],[9,643,0,229,593,902,47],[9,874,0,200,597,936,43],[9,1076,0,165,594,971,46],[9,1243,0,126,583,1010,57],[9,1371,0,87,564,1049,76],[9,1460,0,44,341,1092,240],[0,0,0,0,0,0,0]]};
   var hostS = document.getElementById('host-s'), still = null, alt = false, guard = 0, checked = false;
   function stills() {                                              // fetch the sheets
     if (still) return; still = { im: [], left: SEQ.n, bad: false, then: null };
@@ -1211,7 +1222,7 @@ function tmFilm(cv, src, fh, off, th, o) {
       var im = new Image(); im.decoding = 'async';
       im.onload = function () { if (--still.left === 0 && still.then) still.then(); };
       im.onerror = function () { still.bad = true; if (still.then) still.then(); };
-      im.src = 'works-seq-' + k + '.webp'; still.im[k] = im;
+      im.src = 'works-wide-seq-' + k + '.webp'; still.im[k] = im;
     })(k);
   }
   function playStills() {
@@ -1248,15 +1259,35 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (film) { film.dead = true; if (film.video) { try { film.video.pause(); } catch (e) {} } }
     playStills();
   }
-  var blocked = false;
+  var blocked = false, ready = false, running = false, slow = 0;
   if (!calm && 'IntersectionObserver' in window) {
     works.classList.add('has-host'); orbit.classList.add('is-wait');
+    var run = function () {                                          // he is on screen and the whole clip has arrived
+      var v = film.video;
+      if (running || alt || film.dead || !v) return; running = true; clearTimeout(slow);
+      try { v.currentTime = 0; } catch (e) {}
+      var go = null; try { go = v.play(); } catch (e) { fail(); return; }
+      if (go && go.catch) go.catch(function (err) { if (!err || err.name !== 'AbortError') fail(); });
+      setTimeout(function () { if (!alt && !film.dead && v.currentTime < 0.1) fail(); }, 2500);     // playback never started
+      guard = setTimeout(leave, ((v.duration || 8) + 3) * 1000);
+    };
     var prep = function () {                                         // fetch the clip early, so it is ready when the section arrives
       if (film) return;
-      film = tmFilm(hostC, 'tomer-works.mp4', 1200, 1200, 2400, {
+      film = tmFilm(hostC, 'works-wide.mp4', 1080, 1080, 2160, {
+        whole: true,
+        onLoaded: function () {
+          ready = true;
+          if (begun) { run(); return; }
+          // ask now whether this browser lets a silent clip start by itself; if it does not, the still frames are fetched as well
+          var v = film.video, ask = null; try { ask = v.play(); } catch (e) { stills(); }
+          if (ask && ask.then) ask.then(function () { if (!running) { v.pause(); try { v.currentTime = 0; } catch (e) {} } }, function (err) {
+            if (err && err.name === 'AbortError') return;
+            stills();
+          });
+        },
         onPaint: function (t) {
-          if (!begun || alt) return;
-          if (!checked && t > 0.25) { checked = true; if (film.alphaAt(0.36, 0.42) < 40) { fail(); return; } }   // it plays, but no picture arrives
+          if (!running || alt) return;
+          if (!checked && t > 0.25) { checked = true; if (film.alphaAt(0.5, 0.5) < 40) { fail(); return; } }   // it plays, but no picture arrives
           if (hostC.hidden) { hostC.hidden = false; host.classList.add('is-live'); }
           if (t >= CLAP) pop();
           if (t >= FRONT) host.classList.add('is-front');
@@ -1266,27 +1297,13 @@ function tmFilm(cv, src, fh, off, th, o) {
       var v = film.video;
       if (!v) { blocked = true; stills(); return; }
       v.addEventListener('ended', function () { if (!alt) leave(); });
-      // ask now whether this browser lets a silent clip start by itself; if it does not, the still frames are fetched instead
-      var ask = null; try { ask = v.play(); } catch (e) { blocked = true; }
-      if (ask && ask.then) ask.then(function () { if (!begun) { v.pause(); try { v.currentTime = 0; } catch (e) {} } }, function (err) {
-        if (err && err.name === 'AbortError') return;
-        blocked = true; if (begun) fail(); else stills();
-      });
-      if (blocked) stills();
     };
     if (document.readyState === 'complete') setTimeout(prep, 200); else window.addEventListener('load', function () { setTimeout(prep, 200); });
     var here = new IntersectionObserver(function (e) {
       if (!e[0].isIntersecting || begun) return; begun = true; here.disconnect(); prep();
-      var v = film.video, t0 = performance.now();
-      if (!v || film.dead || blocked) { fail(); return; }
-      (function wait() {                                             // give a slow connection a moment before going on without the clip
-        if (film.dead || alt) return;
-        if (v.readyState < 3) { if (performance.now() - t0 > 2500) fail(); else setTimeout(wait, 120); return; }
-        try { v.currentTime = 0; } catch (e) {}
-        var go = v.play(); if (go && go.catch) go.catch(function (err) { if (!err || err.name !== 'AbortError') fail(); });
-        setTimeout(function () { if (!alt && !film.dead && v.currentTime < 0.1) fail(); }, 1600);     // playback never started
-        guard = setTimeout(leave, ((v.duration || 7) + 3) * 1000);
-      })();
+      if (!film.video || film.dead || blocked) { fail(); return; }
+      if (ready) run();
+      else slow = setTimeout(function () { if (!running) fail(); }, 7000);   // the clip is still on its way: he waits as a still picture, then the still frames take over
     }, { threshold: 0.45 });
     here.observe(orbit);
   }
@@ -1629,9 +1646,10 @@ function tmFilm(cv, src, fh, off, th, o) {
 
   // ---- the film: his cut-out picture as a clip (picture above, matte below), 11 seconds at 24 frames a second:
   // walk in, wave, point (held a little longer), lower the hand, walk out. Where a browser will not start a silent clip
-  // by itself, the same sequence plays from still frames: three sheets of 10 x 5 cells of 400 x 400, 12 a second.
+  // by itself, the same sequence plays from still frames, 12 a second, each cut to his outline and packed into sheets.
   var DUR = 11.04, GAP = 1.05, MARKS = [['hi', 3.12], ['hiOff', 5.38], ['point', 6.46], ['build', 6.79], ['pointOff', 8.96]];
-  var C = 400, PER = 50, COLS = 10, SFPS = 12, CELLS = 133;
+  var HSEQ = {fps:12,w:600,h:600,n:6,f:[[0,0,0,0,0,0,0],[0,0,0,21,526,1,74],[0,23,0,58,544,1,56],[0,83,0,105,550,1,50],[0,190,0,140,553,1,47],[0,332,0,163,549,1,51],[0,497,0,172,544,1,56],[0,671,0,171,543,1,57],[0,844,0,176,547,16,53],[0,1022,0,182,551,44,49],[0,1206,0,186,552,66,48],[0,1394,0,198,554,81,46],[0,1594,0,214,555,90,45],[0,1810,0,223,555,99,45],[0,0,557,243,554,104,46],[0,245,557,263,554,109,46],[0,510,557,280,554,119,46],[0,792,557,301,555,126,45],[0,1095,557,322,557,130,43],[0,1419,557,341,557,136,43],[0,0,1116,346,557,148,43],[0,348,1116,337,556,165,44],[0,687,1116,322,556,178,44],[0,1011,1116,312,556,184,44],[0,1325,1116,309,556,181,44],[0,1636,1116,297,555,162,45],[0,0,1675,305,555,141,45],[0,307,1675,312,555,134,45],[0,621,1675,305,554,140,46],[0,928,1675,306,555,143,45],[0,1236,1675,309,554,143,46],[0,1547,1675,307,554,144,46],[1,0,0,304,554,145,46],[1,306,0,304,555,146,45],[1,612,0,302,555,147,45],[1,916,0,302,555,147,45],[1,1220,0,302,555,147,45],[1,1524,0,302,555,146,45],[1,0,557,312,555,137,45],[1,314,557,372,555,78,45],[1,688,557,450,555,2,45],[1,1140,557,453,554,1,46],[1,0,1114,449,554,5,46],[1,451,1114,373,554,80,46],[1,826,1114,377,554,75,46],[1,1205,1114,372,554,79,46],[1,1579,1114,382,554,69,46],[1,0,1670,373,555,78,45],[1,375,1670,377,554,75,46],[1,754,1670,375,554,79,46],[1,1131,1670,380,556,75,44],[1,1513,1670,378,554,77,46],[2,0,0,378,554,77,46],[2,380,0,374,556,81,44],[2,756,0,373,555,81,45],[2,1131,0,377,555,76,45],[2,1510,0,375,554,78,46],[2,0,558,372,556,81,44],[2,374,558,375,554,78,46],[2,751,558,379,554,75,46],[2,1132,558,377,554,77,46],[2,1511,558,387,554,66,46],[2,0,1116,403,555,49,45],[2,405,1116,390,555,60,45],[2,797,1116,357,555,92,45],[2,1156,1116,318,554,128,46],[2,1476,1116,299,554,146,46],[2,0,1673,287,554,158,46],[2,289,1673,292,555,154,45],[2,583,1673,296,555,151,45],[2,881,1673,299,555,149,45],[2,1182,1673,299,555,148,45],[2,1483,1673,298,555,148,45],[3,0,0,297,554,148,46],[3,299,0,296,552,150,48],[3,597,0,290,550,156,50],[3,889,0,283,549,163,51],[3,1174,0,276,549,168,51],[3,1452,0,271,548,171,52],[3,1725,0,269,548,172,52],[3,0,556,268,549,173,51],[3,270,556,268,549,173,51],[3,540,556,269,549,173,51],[3,811,556,270,549,173,51],[3,1083,556,270,549,173,51],[3,1355,556,270,549,173,51],[3,1627,556,269,549,173,51],[3,0,1107,269,549,173,51],[3,271,1107,269,549,173,51],[3,542,1107,270,549,173,51],[3,814,1107,270,549,173,51],[3,1086,1107,270,549,173,51],[3,1358,1107,269,549,173,51],[3,1629,1107,269,549,173,51],[3,0,1658,268,549,173,51],[3,270,1658,268,548,173,52],[3,540,1658,268,549,173,51],[3,810,1658,268,549,173,51],[3,1080,1658,269,549,173,51],[3,1351,1658,270,549,173,51],[3,1623,1658,270,549,173,51],[4,0,0,270,549,173,51],[4,272,0,269,549,173,51],[4,543,0,269,549,173,51],[4,814,0,270,549,172,51],[4,1086,0,271,549,171,51],[4,1359,0,273,549,169,51],[4,1634,0,277,549,163,51],[4,0,551,286,550,153,50],[4,288,551,293,551,143,49],[4,583,551,294,553,138,47],[4,879,551,290,554,138,46],[4,1171,551,289,555,135,45],[4,1462,551,294,555,126,45],[4,0,1108,300,555,116,45],[4,302,1108,305,554,109,46],[4,609,1108,304,554,110,46],[4,915,1108,302,553,118,47],[4,1219,1108,297,552,132,48],[4,1518,1108,294,548,154,52],[4,0,1665,287,545,184,55],[4,289,1665,280,546,218,54],[4,571,1665,266,549,257,51],[4,839,1665,258,550,293,50],[4,1099,1665,251,551,330,49],[4,1352,1665,231,549,368,51],[4,1585,1665,194,545,405,55],[4,1781,1665,162,540,437,60],[5,0,0,126,532,473,68],[5,128,0,82,530,517,70],[5,212,0,38,317,561,247],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]]};
+  var SFPS = HSEQ.fps, CELLS = HSEQ.f.length;
   var filmV = document.getElementById('film-v'), ctx = null, sheets = null;
   var flip = false, visible = true, mode = '', next = 0, player = null, vid = null, resting = false, due = false, watch = 0, seen = false, T = 0, shown = -1, last = 0;
 
@@ -1654,15 +1672,22 @@ function tmFilm(cv, src, fh, off, th, o) {
   function at(t) { while (next < MARKS.length && t >= MARKS[next][1]) fire(MARKS[next++][0]); }
 
   // ---- the clip ----
+  var asked = 0, barred = false, revive = false;
   function roll() {
-    if (mode !== 'video') return;
+    if (mode !== 'video' || !player.loaded) return;
     if (!visible) { due = true; return; }
-    due = false;
+    due = false; if (!asked) asked = performance.now();
     var go = null; try { go = vid.play(); } catch (e) { stills(0); return; }
-    if (go && go.catch) go.catch(function (err) { if (!err || err.name !== 'AbortError') stills(vid.currentTime || 0); });
+    if (go && go.catch) go.catch(function (err) {
+      if (err && err.name === 'AbortError') return;
+      if (err && err.name === 'NotAllowedError') { barred = true; stills(vid.currentTime || 0, true); }   // the phone holds silent clips back until a tap
+      else stills(vid.currentTime || 0);
+    });
   }
   function clip() {
     player = filmV ? tmFilm(filmV, 'hero.mp4', 1080, 1080, 2160, {
+      whole: true,
+      onLoaded: function () { roll(); },
       onPaint: function (t) {
         if (mode !== 'video') return;
         if (!seen && t > 2.6) {                         // it plays, but no picture arrives: go on with the still frames
@@ -1686,16 +1711,20 @@ function tmFilm(cv, src, fh, off, th, o) {
         roll();
       }, GAP * 1000);
     });
-    roll();
-    var t0 = performance.now();
-    (function check() {                                // it never starts: the still frames take over
-      if (mode !== 'video') return;
-      if (vid.currentTime > 0.1) return;
-      var waited = performance.now() - t0;
-      if (!visible) { t0 = performance.now(); watch = setTimeout(check, 500); return; }
-      if (waited > (vid.readyState >= 3 ? 2500 : 12000)) { stills(0); return; }
-      watch = setTimeout(check, 300);
+    (function check() {                                // it was asked to play and never starts: the still frames take over
+      if (mode !== 'video' || vid.currentTime > 0.1) return;
+      if (asked && visible && performance.now() - asked > 4000) { stills(0); return; }
+      if (!visible) asked = 0;
+      watch = setTimeout(check, 400);
     })();
+    // A phone in Low Power Mode starts a silent clip only after the screen has been tapped. From the first tap on,
+    // the clip is tried again, and the next round plays from it.
+    function tap() {
+      if (!barred || mode !== 'still' || revive || player.dead) return;
+      var go = null; try { go = vid.play(); } catch (e) { return; }
+      if (go && go.then) go.then(function () { try { vid.pause(); vid.currentTime = 0; } catch (e) {} revive = true; }, function () {});
+    }
+    document.addEventListener('pointerup', tap, { passive: true }); document.addEventListener('click', tap, { passive: true });
   }
 
   // ---- the same sequence from still frames ----
@@ -1709,36 +1738,44 @@ function tmFilm(cv, src, fh, off, th, o) {
     var k = Math.floor(T * SFPS);
     if (k === shown) return true;
     if (k >= CELLS) { ctx.clearRect(0, 0, film.width, film.height); shown = k; return true; }
-    var im = sheets[Math.floor(k / PER)];
-    if (!im.complete || !im.naturalWidth) return false;
-    var q = k % PER;
+    var f = HSEQ.f[k], im = sheets[f[0]], z = film.width / HSEQ.w;
+    if (f[3] && (!im.complete || !im.naturalWidth)) return false;
     ctx.clearRect(0, 0, film.width, film.height);
     ctx.imageSmoothingQuality = 'high';
-    // half a pixel in from the cell's edges, so nothing of the neighbouring frames is pulled in when it is scaled
-    ctx.drawImage(im, (q % COLS) * C + 0.5, Math.floor(q / COLS) * C + 0.5, C - 1, C - 1, 0, 0, film.width, film.height);
+    if (f[3]) ctx.drawImage(im, f[1], f[2], f[3], f[4], f[5] * z, f[6] * z, f[3] * z, f[4] * z);
     shown = k; return true;
   }
-  function stills(from) {
+  function stills(from, keep) {
     if (mode === 'still') return;
     mode = 'still'; clearTimeout(watch);
-    if (player) { player.dead = true; if (vid) { try { vid.pause(); } catch (e) {} } }
+    if (player) { if (!keep) player.dead = true; if (vid) { try { vid.pause(); } catch (e) {} } }
     if (filmV) filmV.hidden = true;
     ctx = film.getContext('2d');
     if (!ctx) return;                                  // nothing can be drawn here: the still photo stays
     if (!from || from >= DUR) { from = 0; begin(); }
     T = from;
-    sheets = [0, 1, 2].map(function (i) { var im = new Image(); im.decoding = 'async'; im.src = 'tm-' + i + '.webp'; return im; });
+    var fresh = !sheets;
+    if (fresh) { sheets = []; for (var i = 0; i < HSEQ.n; i++) { sheets[i] = new Image(); sheets[i].decoding = 'async'; sheets[i].src = 'hero-seq-' + i + '.webp'; } }
     function go() {
       stage.classList.add('is-live'); size();
+      if (!fresh) return;
       if ('ResizeObserver' in window) new ResizeObserver(size).observe(film); else window.addEventListener('resize', size);
     }
-    var first = sheets[Math.floor(Math.min(CELLS - 1, Math.floor(T * SFPS)) / PER)];
+    var first = sheets[HSEQ.f[Math.min(CELLS - 1, Math.floor(T * SFPS))][0]];
     if (first.complete && first.naturalWidth) go(); else first.addEventListener('load', go);
   }
   function step(dt) {
     if (mode !== 'still' || !ctx || !stage.classList.contains('is-live')) return;
     var was = T; T += dt / 1000;
-    if (T >= DUR + GAP) { T = 0; flip = !flip; begin(); }
+    if (T >= DUR + GAP) {
+      T = 0; flip = !flip; begin();
+      if (revive && !player.dead) {                    // the clip may play now: this round comes from it
+        revive = false; barred = false; mode = 'video'; shown = -1;
+        ctx.clearRect(0, 0, film.width, film.height);
+        try { vid.currentTime = 0; } catch (e) {}
+        asked = 0; roll(); return;
+      }
+    }
     if (!paint()) { T = was; return; }                 // wait for a sheet that is still loading
     at(T);
   }
