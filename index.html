@@ -285,8 +285,11 @@ main { flex: 1; }
 
 /* ---------- Services: a page of its own, reached at #services ---------- */
 /* It opens with a short film; when the film ends, a title and a button appear over its last frame. */
-.svc-film { position: relative; margin-top: 4px; aspect-ratio: 16 / 9; max-height: calc(100svh - 110px); border-radius: clamp(16px, 2.4vw, 30px); overflow: hidden; background: #E8E2D8; box-shadow: 0 44px 80px -50px var(--shade); }
-.svc-film video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--fx, 50%) 50%; transition: object-position 1s ease; }
+/* The film always runs the full width of the page. Where the screen is too short for the whole picture it is trimmed
+   a little at top and bottom (never more than about a quarter) and the part that matters at each moment is kept. */
+.svc-top { container-type: inline-size; }
+.svc-film { position: relative; margin-top: 4px; width: 100%; aspect-ratio: 16 / 9; max-height: calc(100svh - 110px); max-height: calc(100dvh - 110px); min-height: calc(100cqw * 9 / 16 * .74); border-radius: clamp(16px, 2.4vw, 30px); overflow: hidden; background: #E8E2D8; box-shadow: 0 44px 80px -50px var(--shade); }
+.svc-film video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--fx, 50%) var(--fy, 40%); transition: object-position 1s ease; }
 /* While he is inside each of the three worlds, a small card names the service and shows a real screen of that project. */
 .film-caps { position: absolute; inset-inline-start: clamp(10px, 2.2%, 28px); bottom: clamp(10px, 3.5%, 28px); display: grid; }
 .film-cap {
@@ -312,13 +315,24 @@ main { flex: 1; }
 .svc-film.is-ended .film-end > * { transform: none; }
 .svc-film.is-ended .film-end > :nth-child(2) { transition-delay: .08s; }
 .film-end .btn { background: var(--cream); color: var(--ink); }
+/* when the film is over, a small pill at its foot says there is more below and takes you there */
+.film-more {
+  position: absolute; left: 0; right: 0; bottom: clamp(8px, 3.5%, 22px); width: max-content; margin-inline: auto;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(243, 238, 221, .6); background: rgba(24, 26, 16, .34); color: var(--cream); font: 500 .8125rem/1 var(--font-sans);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.film-more::after { content: ""; position: absolute; inset: -6px -4px; }      /* a comfortable area to tap */
+.film-more svg { width: 14px; height: 14px; animation: nudge 1.6s cubic-bezier(.77, 0, .175, 1) infinite; }
+.film-more:active { background: rgba(24, 26, 16, .5); }
+@keyframes nudge { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
 @media (max-width: 760px) and (orientation: portrait) {
-  .svc-film { aspect-ratio: 4 / 5; max-height: none; }
+  .svc-film { aspect-ratio: 4 / 5; max-height: none; min-height: 0; }
   /* upright there is no free side: the closing title sits under him, at the foot of the picture */
-  .film-end { align-content: end; justify-items: center; text-align: center; padding-bottom: 7%; background: linear-gradient(to top, rgba(24, 26, 16, .72), rgba(24, 26, 16, .2) 46%, rgba(24, 26, 16, 0) 64%); }
+  .film-end { align-content: end; justify-items: center; text-align: center; padding-bottom: 68px; background: linear-gradient(to top, rgba(24, 26, 16, .72), rgba(24, 26, 16, .2) 46%, rgba(24, 26, 16, 0) 64%); }
 }
 @media (orientation: landscape) and (max-height: 520px) {
-  .svc-film { max-height: calc(100svh - 64px); } .film-end .btn { min-height: 44px; }
+  .svc-film { max-height: calc(100svh - 64px); max-height: calc(100dvh - 64px); } .film-end .btn { min-height: 44px; }
   .film-cap { gap: 9px; padding: 5px; padding-inline-end: 12px; border-radius: 13px; }
   .film-cap img { width: 60px; height: 40px; border-radius: 8px; }
   .film-cap b { font-size: .8125rem; } .film-cap i { font-size: .75rem; }
@@ -661,7 +675,7 @@ body.is-locked { overflow: hidden; }
 </main>
 
 <main id="services" hidden>
-  <div class="wrap">
+  <div class="wrap svc-top">
     <section class="svc-film" id="svc-film" aria-label="סרטון פתיחה">
       <video id="svc-v" src="film/services.mp4" poster="film/poster.jpg" muted playsinline preload="metadata" aria-label="תומר נכנס, מתיישב מול הלפטופ, והמצלמה נכנסת לתוך המסך: אתר, אפליקציה ומערכת שבנה"></video>
       <div class="film-caps" id="svc-caps">
@@ -673,6 +687,7 @@ body.is-locked { overflow: hidden; }
       <div class="film-end">
         <h2>מה נבנה יחד?</h2>
         <button class="btn" id="svc-talk" type="button">בואו נדבר על הפרויקט</button>
+        <button class="film-more" id="svc-more" type="button">גללו למטה<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v10.5M3.5 8.8 8 13.2l4.5-4.4"/></svg></button>
       </div>
     </section>
   </div>
@@ -1487,12 +1502,17 @@ function tmFilm(cv, src, fh, off, th, o) {
   // Which part of the wide picture a narrow screen keeps, by time: the laptop while he sits down and the camera goes
   // in, then him on his way to the door, then him and the tile he touches, then him in front of the board.
   var FOCUS = [[0, 46], [3.9, 42], [6.3, 50], [8.8, 58], [10.1, 78], [12.5, 58], [13.5, 52], [17, 50], [19.6, 38]];
+  // and which height a short, wide screen keeps: his head and the laptop, then him in the room, his face in the PING
+  // space, the tile as it fills the picture, and at the end him from the head down
+  var FOCUS_Y = [[0, 30], [4.2, 48], [8, 38], [12.6, 16], [16.6, 50], [20, 34], [21.4, 26]];
   // when each service's card shows: [from, to, card]
   var CAPS = [[7.9, 12.5, 0], [12.5, 18.3, 1], [18.9, 1e9, 2]], caps = [].slice.call(document.querySelectorAll('.film-cap'));
   function focus() {
     var t = film.currentTime, x = FOCUS[0][1], on = -1;
     FOCUS.forEach(function (f) { if (t >= f[0]) x = f[1]; });
     filmBox.style.setProperty('--fx', x + '%');
+    var y = FOCUS_Y[0][1]; FOCUS_Y.forEach(function (f) { if (t >= f[0]) y = f[1]; });
+    filmBox.style.setProperty('--fy', y + '%');
     CAPS.forEach(function (c) { if (t >= c[0] && t < c[1]) on = c[2]; });
     caps.forEach(function (c, k) { c.classList.toggle('is-on', k === on); });
   }
@@ -1510,6 +1530,10 @@ function tmFilm(cv, src, fh, off, th, o) {
   film.addEventListener('click', function () { if (film.ended || film.currentTime === 0) playFilm(); else if (film.paused) film.play(); });
   playBtn.addEventListener('click', playFilm);
   document.getElementById('svc-talk').addEventListener('click', function () { document.getElementById('ask').click(); });
+  document.getElementById('svc-more').addEventListener('click', function () {
+    var to = document.querySelector('.svc-hero'), y = to.getBoundingClientRect().top + window.scrollY - 8;
+    try { window.scrollTo({ top: y, behavior: still ? 'auto' : 'smooth' }); } catch (e) { window.scrollTo(0, y); }
+  });
   function filmFor(on) { if (!on) { film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
   window.addEventListener('hashchange', route); route();
   svc.addEventListener('click', function (e) {
