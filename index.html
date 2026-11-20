@@ -340,7 +340,19 @@ main { flex: 1; }
 }
 .svc-hero { display: grid; gap: clamp(14px, 2.4vw, 26px); padding-block: clamp(24px, 7vh, 80px) clamp(44px, 10vh, 112px); }
 .svc-hero > * { animation: rise .7s var(--ease-out) backwards; }
-.svc-hero > :nth-child(2) { animation-delay: 80ms; }
+/* In the empty side beside the title he sits on a crescent moon and swings: the clip gives him his own small
+   movements, and the whole picture also hangs and sways slowly from a point above it. */
+.svc-hero { position: relative; }
+.svc-moon { position: absolute; left: clamp(12px, 9%, 220px); top: 50%; width: clamp(190px, 31vw, 500px); aspect-ratio: 1; translate: 0 -52%; pointer-events: none; animation: none; }
+.moon-in { position: relative; width: 100%; height: 100%; transform-origin: 46% -60%; animation: sway 5s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
+.moon-in img, .moon-in canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.moon-in canvas[hidden] { display: none; }
+.moon-in video { position: absolute; left: 0; top: 0; width: 2px; height: 2px; opacity: 0; pointer-events: none; }
+.svc-moon.is-live img { opacity: 0; }
+@keyframes sway { from { transform: rotate(-3.2deg); } to { transform: rotate(3.2deg); } }
+/* upright and narrow there is no free side: he swings above the title, on the left */
+@media (max-width: 760px) and (orientation: portrait) { .svc-moon { position: relative; left: auto; top: auto; width: 58vw; translate: none; justify-self: end; } }
+.svc-hero > p { animation-delay: 80ms; }
 .svc-hero h1 { font-family: var(--font-en); font-weight: 400; font-size: clamp(5.25rem, 18vw, 13.5rem); line-height: .86; letter-spacing: 0; text-align: right; }
 .svc-hero p { font-size: clamp(1.375rem, 3vw, 2.25rem); font-weight: 500; line-height: 1.25; max-width: 23ch; text-wrap: balance; }
 .svc-hero p b { font-weight: 500; color: var(--accent); }
@@ -424,6 +436,7 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
   .works.is-ring .work.palm .work-name { top: auto; bottom: -9px; }
   .works-hint { left: max(16px, env(safe-area-inset-left)); bottom: 72px; max-width: 11rem; font-size: .75rem; }   /* above the call button */
   .svc-hero { padding-block: 8px 36px; }
+  .svc-moon { width: clamp(170px, 30vw, 280px); left: 12%; }
   .svc-hero h1 { font-size: clamp(4.5rem, 34svh, 9rem); }
   .svc-side { top: 14px; }
   .svc-end { padding-block: 40px 56px; }
@@ -708,6 +721,7 @@ body.is-locked { overflow: hidden; }
     </section>
   </div>
   <div class="wrap svc-hero">
+    <div class="svc-moon" id="svc-moon" aria-hidden="true"><div class="moon-in"><img src="moon.webp" alt="" width="720" height="720" loading="lazy" decoding="async"><canvas id="moon-c" width="720" height="720" hidden></canvas></div></div>
     <h1 lang="en" dir="ltr">Services</h1>
     <p>עיצוב ופיתוח במקום אחד: <b>אתרים, חנויות, אפליקציות ומערכות</b> לעסקים.</p>
   </div>
@@ -1550,7 +1564,24 @@ function tmFilm(cv, src, fh, off, th, o) {
     var to = document.querySelector('.svc-hero'), y = to.getBoundingClientRect().top + window.scrollY - 8;
     try { window.scrollTo({ top: y, behavior: still ? 'auto' : 'smooth' }); } catch (e) { window.scrollTo(0, y); }
   });
-  function filmFor(on) { if (!on) { film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
+  // the moon: a silent looping clip with its background cut away; where it cannot play, the still picture sways on its own
+  var moonBox = document.getElementById('svc-moon'), moonC = document.getElementById('moon-c'), moon = null, moonSeen = false, svcOn = false;
+  function moonGo() {
+    if (still) return;
+    if (!moon && svcOn && moonSeen) {
+      moon = tmFilm(moonC, 'moon.mp4', 720, 720, 1440, {
+        loop: true,
+        onPaint: function () { if (moonC.hidden) { moonC.hidden = false; moonBox.classList.add('is-live'); } },
+        onDead: function () { moonC.hidden = true; moonBox.classList.remove('is-live'); }
+      });
+      if (!moon) { moon = { dead: true }; return; }
+    }
+    if (!moon || moon.dead) return;
+    if (svcOn && moonSeen) { var g = moon.video.play(); if (g && g.catch) g.catch(function () {}); } else moon.video.pause();
+  }
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { moonSeen = e[0].isIntersecting; moonGo(); }, { rootMargin: '200px' }).observe(moonBox);
+  else moonSeen = true;
+  function filmFor(on) { svcOn = on; moonGo(); if (!on) { film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
   window.addEventListener('hashchange', route); route();
   svc.addEventListener('click', function (e) {
     var b = e.target.closest('.svc-shot');
