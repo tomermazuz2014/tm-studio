@@ -42,6 +42,10 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; scrollbar-color: var(--dim) var(--bg); background: var(--bg); }
+/* The page stops dead at its two ends: no rubber band, so no strip of bare page can be pulled into view.
+   Where a phone still stretches it, what shows behind the Works surface is the same stone. */
+html, body { overscroll-behavior-y: none; }
+html.is-low { background: #E8E2D8; }
 /* The page runs under the phone's notch and corners, edge to edge; only the content keeps clear of them. */
 body { padding-top: env(safe-area-inset-top); }
 body {
@@ -70,7 +74,7 @@ h1, h2, h3, p { margin: 0; }
 
 /* ---------- Hero ---------- */
 main { flex: 1; }
-.hero { min-height: calc(100svh - 92px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: center; gap: clamp(16px, 4vw, 56px); padding-block: 8px 40px; }
+.hero { min-height: calc(100svh - 92px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); align-items: center; gap: clamp(16px, 4vw, 56px); padding-block: 8px 0; }
 .copy > * { animation: rise .7s var(--ease-out) backwards; }
 .copy > :nth-child(2) { animation-delay: 70ms; }
 .copy > :nth-child(3) { animation-delay: 130ms; }
@@ -98,26 +102,20 @@ main { flex: 1; }
 }
 
 /* ---------- Stage: the window and the work around it share one 3D space ---------- */
+/* He stands on the page itself, no frame and no backdrop, and his picture ends exactly on the line where the next
+   area begins: the stage is tied to the bottom of the opening and the opening has no space under it. */
 .stage {
-  position: relative; direction: ltr; width: 100%; max-width: 660px; aspect-ratio: 1 / 1; margin-inline: auto;
+  position: relative; direction: ltr; align-self: end; width: min(100%, 660px, calc(100svh - 112px)); aspect-ratio: 1 / 1; margin-inline: auto;
   perspective: 1200px; perspective-origin: 50% 55%;
   animation: rise .9s var(--ease-out) 120ms backwards;
 }
-.world { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform; }
+.world { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform; pointer-events: none; }
 .z { position: absolute; transform-style: preserve-3d; }
-.glow { inset: 10% 0 -6%; transform: translateZ(-160px); background: radial-gradient(closest-side, var(--glow-a), var(--glow-b) 60%, transparent 75%); }
-
-.window {
-  inset: 3% 8% 7%; overflow: hidden; border-radius: 30px;
-  background: radial-gradient(70% 60% at 50% 104%, var(--win-glow), transparent 72%), linear-gradient(var(--win-a), var(--win-b));
-  border: 1px solid var(--win-line);
-  box-shadow: inset 0 1px 0 var(--sheen), 0 44px 80px -30px var(--shade);
-}
-.window::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(118deg, var(--sheen), transparent 30%); opacity: .5; pointer-events: none; }
+.window { position: absolute; inset: 0 0 -1px; }
 .cam { position: absolute; top: 0; bottom: 0; left: 50%; aspect-ratio: 1; transform: translateX(-50%); --tip: 44%; }
 .cam.is-flip { --tip: 56%; }
-.cam canvas { width: 100%; height: 100%; }
-.still { position: absolute; left: 50%; bottom: 0; height: 96%; width: auto; transform: translateX(-50%); }
+.cam canvas { display: block; width: 100%; height: 100%; }
+.still { position: absolute; left: 50%; bottom: 0; height: 100%; width: auto; transform: translateX(-50%); }
 .is-live .still { display: none; }
 
 .say {
@@ -136,7 +134,7 @@ main { flex: 1; }
 .is-press .tap i:nth-child(2) { animation-delay: .38s; }
 
 .pause {
-  position: absolute; left: 12px; bottom: 12px; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  position: absolute; right: 0; bottom: 16px; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
   display: none; place-items: center; cursor: pointer; color: var(--ink); background: var(--pause-bg);
   transition: transform .16s var(--ease-out), background-color .2s ease;
 }
@@ -156,20 +154,25 @@ main { flex: 1; }
 .blk { transition: opacity .35s ease calc(var(--i, 0) * 80ms), transform .35s var(--ease-out) calc(var(--i, 0) * 80ms); }
 .is-idle .blk { opacity: .16; transform: scale(.96); transition-duration: .2s; transition-delay: 0s; }
 
-.code { left: -2%; bottom: 3%; width: 42%; max-width: 236px; transform: translateZ(90px); }
+.code { left: 73%; top: 53%; width: 33%; max-width: 220px; transform: translateZ(90px); }
+/* each time he comes back he comes from the other side and stands mirrored; the floating pieces change sides with him */
+.code, .phone, .toast { transition: left .9s cubic-bezier(.77, 0, .175, 1); }
+.stage.is-flip .code { left: -6%; }
+.stage.is-flip .phone { left: 88%; }
+.stage.is-flip .toast { left: 2%; }
 .code pre { margin: 0; padding: 2px 14px 14px; font: 400 clamp(.625rem, 1.15vw, .75rem)/1.75 var(--font-mono); color: var(--code-ink); white-space: pre; overflow: hidden; }
 .code .ln { display: block; clip-path: inset(0 0 0 0); transition: clip-path .5s steps(14) calc(var(--i) * 430ms); }
 .is-idle .code .ln { clip-path: inset(0 100% 0 0); transition: clip-path .2s ease-out; }
 .code b { color: var(--accent); font-weight: 500; } .code u { color: var(--accent-soft); text-decoration: none; }
 
-.phone { right: -1%; bottom: 0; width: 23%; max-width: 132px; aspect-ratio: 9 / 16.5; border-radius: 22px; padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; transform: translateZ(150px); }
+.phone { left: -3%; top: 36%; width: 15%; max-width: 100px; aspect-ratio: 9 / 16.5; border-radius: 22px; padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; transform: translateZ(150px); }
 .phone .notch { width: 38%; height: 5px; border-radius: 3px; background: var(--dim); margin: 0 auto 3px; }
 .phone .pic { aspect-ratio: 1.45; border-radius: 9px; background: var(--accent); }
 .phone .l { height: 6px; border-radius: 3px; background: var(--dim); }
 .phone .l.s { width: 60%; }
 .phone .go { margin-top: auto; height: 22px; border-radius: 11px; background: var(--ink); }
 
-.toast { right: 0; top: 6%; padding: 10px 14px 10px 12px; border-radius: 999px; display: flex; align-items: center; gap: 9px; font: 500 .875rem/1 var(--font-sans); direction: rtl; white-space: nowrap; transform: translateZ(120px); }
+.toast { left: 71%; top: 41%; padding: 10px 14px 10px 12px; border-radius: 999px; display: flex; align-items: center; gap: 9px; font: 500 .875rem/1 var(--font-sans); direction: rtl; white-space: nowrap; transform: translateZ(120px); }
 .toast .in { display: flex; align-items: center; gap: 9px; transition: opacity .3s ease 2.3s, transform .4s var(--ease-out) 2.3s; }
 .is-idle .toast .in { opacity: .2; transform: scale(.96); transition-duration: .2s; transition-delay: 0s; }
 .toast svg { width: 18px; height: 18px; flex: none; color: var(--accent); }
@@ -236,7 +239,12 @@ main { flex: 1; }
 /* On a computer the section stays put for a stretch of scrolling: once he has gone, the projects close into a ring
    around the title and the wheel turns it. */
 .work::after { transition: opacity .5s ease; }
-.works.is-ring .work { will-change: translate; }
+.works.is-ring .work { will-change: translate; touch-action: none; -webkit-touch-callout: none; }
+/* The ring is a dial. Take hold of a project, or drag sideways anywhere, and it turns under the finger; an up-and-down
+   drag on the empty surface still scrolls the page. */
+.works.is-ring .wstage { touch-action: pan-y; cursor: grab; -webkit-user-select: none; user-select: none; }
+.works.is-ring .work img { -webkit-user-drag: none; }
+.works.is-grab .wstage, .works.is-grab .work { cursor: grabbing; }
 .works.is-ring .work::after { display: block; opacity: 0; }
 .works.is-ring .work.palm .work-name { top: auto; bottom: -11px; }
 @media (min-width: 761px) and (prefers-reduced-motion: no-preference), (orientation: landscape) and (prefers-reduced-motion: no-preference) {
@@ -250,6 +258,10 @@ main { flex: 1; }
   @media (min-width: 761px) and (prefers-reduced-motion: no-preference), (orientation: landscape) and (prefers-reduced-motion: no-preference) {
     .works-pin { height: calc(100dvh + max(95vh, 640px)); }
     .works-pin .works { height: 100dvh; }
+  }
+  /* a finger turns the ring itself, so on a touch screen the section holds the page for a much shorter stretch */
+  @media (pointer: coarse) and (orientation: landscape) and (prefers-reduced-motion: no-preference) {
+    .works-pin { height: calc(100dvh + 260px); }
   }
 }
 @media (max-width: 760px) and (orientation: portrait) {
@@ -274,7 +286,21 @@ main { flex: 1; }
 /* ---------- Services: a page of its own, reached at #services ---------- */
 /* It opens with a short film; when the film ends, a title and a button appear over its last frame. */
 .svc-film { position: relative; margin-top: 4px; aspect-ratio: 16 / 9; max-height: calc(100svh - 110px); border-radius: clamp(16px, 2.4vw, 30px); overflow: hidden; background: #E8E2D8; box-shadow: 0 44px 80px -50px var(--shade); }
-.svc-film video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--fx, 50%) 50%; }
+.svc-film video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--fx, 50%) 50%; transition: object-position 1s ease; }
+/* While he is inside each of the three worlds, a small card names the service and shows a real screen of that project. */
+.film-caps { position: absolute; inset-inline-start: clamp(10px, 2.2%, 28px); bottom: clamp(10px, 3.5%, 28px); display: grid; }
+.film-cap {
+  grid-area: 1 / 1; display: flex; align-items: center; gap: 12px; padding: 6px; padding-inline-end: 16px; border: 0; border-radius: 16px;
+  background: rgba(243, 238, 221, .94); color: var(--ink); font: inherit; text-align: start; cursor: pointer; box-shadow: 0 18px 36px -18px rgba(24, 26, 16, .55);
+  opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .3s ease, transform .4s var(--ease-out), visibility 0s .3s;
+}
+.film-cap.is-on { opacity: 1; visibility: visible; transform: none; transition: opacity .3s ease, transform .4s var(--ease-out); }
+.film-cap:active { transform: scale(.97); }
+.svc-film.is-ended .film-cap { opacity: 0; visibility: hidden; }
+.film-cap img { width: 84px; height: 56px; border-radius: 10px; object-fit: cover; }
+.film-cap span { display: grid; gap: 1px; }
+.film-cap b { font-size: .9375rem; font-weight: 700; line-height: 1.2; }
+.film-cap i { font-style: normal; font-size: .8125rem; line-height: 1.2; color: var(--muted); justify-self: start; }
 .film-play { position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px; padding: 0; border: 0; border-radius: 50%; background: var(--olive); color: var(--cream); cursor: pointer; display: grid; place-items: center; box-shadow: 0 18px 36px -16px rgba(0, 0, 0, .5); transition: transform .16s var(--ease-out); }
 .film-play[hidden] { display: none; }
 .film-play:active { transform: scale(.95); }
@@ -286,8 +312,17 @@ main { flex: 1; }
 .svc-film.is-ended .film-end > * { transform: none; }
 .svc-film.is-ended .film-end > :nth-child(2) { transition-delay: .08s; }
 .film-end .btn { background: var(--cream); color: var(--ink); }
-@media (max-width: 760px) and (orientation: portrait) { .svc-film { aspect-ratio: 4 / 5; max-height: none; } }
-@media (orientation: landscape) and (max-height: 520px) { .svc-film { max-height: calc(100svh - 64px); } .film-end .btn { min-height: 44px; } }
+@media (max-width: 760px) and (orientation: portrait) {
+  .svc-film { aspect-ratio: 4 / 5; max-height: none; }
+  /* upright there is no free side: the closing title sits under him, at the foot of the picture */
+  .film-end { align-content: end; justify-items: center; text-align: center; padding-bottom: 7%; background: linear-gradient(to top, rgba(24, 26, 16, .72), rgba(24, 26, 16, .2) 46%, rgba(24, 26, 16, 0) 64%); }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .svc-film { max-height: calc(100svh - 64px); } .film-end .btn { min-height: 44px; }
+  .film-cap { gap: 9px; padding: 5px; padding-inline-end: 12px; border-radius: 13px; }
+  .film-cap img { width: 60px; height: 40px; border-radius: 8px; }
+  .film-cap b { font-size: .8125rem; } .film-cap i { font-size: .75rem; }
+}
 .svc-hero { display: grid; gap: clamp(14px, 2.4vw, 26px); padding-block: clamp(24px, 7vh, 80px) clamp(44px, 10vh, 112px); }
 .svc-hero > * { animation: rise .7s var(--ease-out) backwards; }
 .svc-hero > :nth-child(2) { animation-delay: 80ms; }
@@ -347,27 +382,27 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 @media (orientation: landscape) and (max-height: 520px) {
   .header { padding-block: 6px; }
   .brand img { height: 44px; }
-  .hero { min-height: calc(100svh - 56px); padding-block: 0 16px; gap: clamp(16px, 3vw, 32px); }
+  .hero { min-height: calc(100svh - 56px); padding-block: 0; gap: clamp(16px, 3vw, 32px); }
   .copy h1[dir="ltr"] { font-size: clamp(3rem, 20svh, 5.5rem); }
   .lead { margin-top: 12px; font-size: 1rem; max-width: 34ch; }
   .actions { margin-top: 16px; }
   .btn { min-height: 48px; padding-block: 10px; }
-  .stage { width: auto; height: calc(100svh - 76px); max-width: 100%; justify-self: center; }
+  .stage { width: auto; height: calc(100svh - 64px); max-width: 100%; justify-self: center; }
   /* the stage is small here: the floating pieces shrink with it and keep clear of him and of his speech bubble */
-  .window { inset: 2% 10% 6%; border-radius: 22px; }
   .say { top: 5%; padding: 6px 10px; font-size: .8125rem; border-radius: 13px 13px 13px 4px; }
   .tap i { width: 96px; height: 96px; margin: -48px; }
-  .pause { left: 8px; bottom: 8px; width: 34px; height: 34px; }
+  .pause { right: -8%; bottom: 8px; width: 34px; height: 34px; }
   .card { border-radius: 12px; }
   .dots { gap: 4px; padding: 7px 9px 5px; }
   .dots i { width: 5px; height: 5px; }
-  .code { left: auto; right: -13%; bottom: 0; width: 37%; }       /* the code sits on the right, clear of the call button in the left corner */
+  .code { left: 76%; top: 56%; width: 36%; }
+  .stage.is-flip .code { left: 4%; top: 50%; }                    /* on the left it keeps clear of the call button in the corner */
   .code pre { padding: 0 8px 8px; font-size: .5rem; line-height: 1.6; }
-  .phone { right: auto; left: -6%; bottom: 24%; width: 17%; padding: 7px 6px; gap: 5px; border-radius: 14px; }
+  .phone { left: -9%; top: 34%; width: 15%; padding: 7px 6px; gap: 5px; border-radius: 14px; }
   .phone .notch { height: 4px; margin-bottom: 1px; }
   .phone .l { height: 4px; }
   .phone .go { height: 12px; }
-  .toast { top: auto; bottom: 37%; right: -10%; padding: 6px 10px 6px 8px; gap: 6px; font-size: .6875rem; }
+  .toast { left: 74%; top: 42%; padding: 6px 10px 6px 8px; gap: 6px; font-size: .6875rem; }
   .toast svg { width: 13px; height: 13px; }
   .work-name { font-size: .6875rem; padding: 3px 8px; bottom: -9px; }
   .work.palm .work-name { top: -9px; }
@@ -523,19 +558,18 @@ body.is-locked { overflow: hidden; }
 @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
 
 @media (max-width: 860px) and (orientation: portrait) {
-  .hero { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 4px 28px; align-content: start; }
+  .hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 28px; padding-block: 4px 0; }
   .copy h1 { font-size: clamp(2.75rem, 13vw, 4.25rem); }
   .copy h1[dir="ltr"] { font-size: clamp(4rem, 20vw, 6.25rem); }
   .lead { margin-top: 16px; }
   .actions { margin-top: 22px; }
   .actions .btn { flex: 1 1 100%; }
-  .stage { max-width: 520px; aspect-ratio: 1 / 1.08; }
-  .window { inset: 0 1% 13%; border-radius: 26px; }
-  .code { left: 0; bottom: 0; width: 41%; }
+  .stage { width: min(100%, 520px); }
+  .code { left: 70%; top: 56%; width: 34%; }
   .code pre { padding: 0 11px 10px; line-height: 1.6; }
-  .phone { width: 21%; right: 1%; padding: 9px 8px; gap: 6px; border-radius: 18px; }
+  .phone { width: 16%; left: -2%; padding: 9px 8px; gap: 6px; border-radius: 18px; }
   .phone .go { height: 16px; }
-  .toast { top: 3%; right: -1%; font-size: .8125rem; }
+  .toast { left: 66%; top: 42%; font-size: .8125rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
@@ -552,7 +586,6 @@ body.is-locked { overflow: hidden; }
   <div class="turn-ph" aria-hidden="true"></div>
   <h2 id="turn-h">סובבו את הטלפון</h2>
   <p>האתר מוצג לרוחב המסך.</p>
-  <button type="button" id="turn-skip">להמשיך בלי לסובב</button>
 </div>
 
 <header class="wrap header">
@@ -575,22 +608,20 @@ body.is-locked { overflow: hidden; }
   </div>
 
   <div class="stage" id="stage">
-    <div class="world" id="world">
-      <div class="z glow" aria-hidden="true"></div>
-
-      <div class="z window">
-        <div class="cam" id="cam">
-          <canvas id="film" role="img" aria-label="מייסד TM Studio נכנס לפריים, מנופף לשלום ומצביע אל הצופה"></canvas>
-          <img class="still" src="me.webp" alt="מייסד TM Studio מצביע אל הצופה" width="1235" height="1523" draggable="false">
-          <p class="say" id="say" aria-hidden="true"></p>
-          <div class="tap" aria-hidden="true"><i></i><i></i></div>
-        </div>
-        <button class="pause" id="pause" type="button" aria-pressed="false" aria-label="השהיית האנימציה">
-          <svg class="i-pause" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="3" y="2" width="3.6" height="12" rx="1"/><rect x="9.4" y="2" width="3.6" height="12" rx="1"/></svg>
-          <svg class="i-play" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.4v11.2a.8.8 0 0 0 1.2.7l9-5.6a.8.8 0 0 0 0-1.4l-9-5.6A.8.8 0 0 0 4 2.4Z"/></svg>
-        </button>
+    <div class="window">
+      <div class="cam" id="cam">
+        <canvas id="film" role="img" aria-label="מייסד TM Studio נכנס לפריים, מנופף לשלום ומצביע אל הצופה"></canvas>
+        <img class="still" src="me.webp" alt="מייסד TM Studio מצביע אל הצופה" width="1235" height="1523" draggable="false">
+        <p class="say" id="say" aria-hidden="true"></p>
+        <div class="tap" aria-hidden="true"><i></i><i></i></div>
       </div>
+      <button class="pause" id="pause" type="button" aria-pressed="false" aria-label="השהיית האנימציה">
+        <svg class="i-pause" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="3" y="2" width="3.6" height="12" rx="1"/><rect x="9.4" y="2" width="3.6" height="12" rx="1"/></svg>
+        <svg class="i-play" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M4 2.4v11.2a.8.8 0 0 0 1.2.7l9-5.6a.8.8 0 0 0 0-1.4l-9-5.6A.8.8 0 0 0 4 2.4Z"/></svg>
+      </button>
+    </div>
 
+    <div class="world" id="world">
       <div class="z card code bob" aria-hidden="true">
         <div class="dots"><i></i><i></i><i></i></div>
 <pre><span class="ln" style="--i:0"><b>const</b> site = <u>build</u>({</span><span class="ln" style="--i:1">  idea: <u>"yours"</u>,</span><span class="ln" style="--i:2">  design: <u>"sharp"</u>,</span><span class="ln" style="--i:3">  mobile: <b>true</b>,</span><span class="ln" style="--i:4">})</span></pre>
@@ -634,7 +665,12 @@ body.is-locked { overflow: hidden; }
 <main id="services" hidden>
   <div class="wrap">
     <section class="svc-film" id="svc-film" aria-label="סרטון פתיחה">
-      <video id="svc-v" src="film/services.mp4" poster="film/poster.jpg" muted playsinline preload="metadata" aria-label="תומר עובד על הלפטופ, והמצלמה נכנסת לתוך המסך"></video>
+      <video id="svc-v" src="film/services.mp4" poster="film/poster.jpg" muted playsinline preload="metadata" aria-label="תומר נכנס, מתיישב מול הלפטופ, והמצלמה נכנסת לתוך המסך: אתר, אפליקציה ומערכת שבנה"></video>
+      <div class="film-caps" id="svc-caps">
+        <button class="film-cap" type="button" data-w="4"><img src="film/cap-limi.webp" alt="" width="288" height="192" loading="lazy"><span><b>בניית אתרים</b><i lang="en" dir="ltr">limi</i></span></button>
+        <button class="film-cap" type="button" data-w="0"><img src="film/cap-ping.webp" alt="" width="288" height="192" loading="lazy"><span><b>בניית אפליקציות</b><i lang="en" dir="ltr">PING</i></span></button>
+        <button class="film-cap" type="button" data-w="5"><img src="film/cap-rook.webp" alt="" width="288" height="192" loading="lazy"><span><b>בניית מערכות</b><i lang="en" dir="ltr">ROOK</i></span></button>
+      </div>
       <button class="film-play" id="svc-play" type="button" aria-label="הפעלת הסרטון" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6a.9.9 0 0 0 1.4.8l10.4-6.8a.9.9 0 0 0 0-1.6L9.4 4.4A.9.9 0 0 0 8 5.2Z" transform="scale(-1 1) translate(-24 0)"/></svg></button>
       <div class="film-end">
         <h2>מה נבנה יחד?</h2>
@@ -808,13 +844,15 @@ function tmFilm(cv, src, fh, off, th, o) {
   var link = document.getElementById('sheet-a'), linkText = document.getElementById('sheet-a-t'), closeBtn = document.getElementById('sheet-x');
   var WORKS = [
     { n: 'PING', d: 'עיצבתי מחדש את אפליקציית הלקוחות ועבדתי על חוויית גילוי העסקים, קביעת התורים ורשימות ההמתנה.',
-      scenes: [['scenes/ping-p.webp', 1400, 1858, 'שני מסכים מאפליקציית PING על שני אייפונים: מסך הבית ובחירת מועד לתור']] },
+      scenes: [['scenes/ping-p.webp', 1400, 1858, 'שני מסכים מאפליקציית PING על שני אייפונים: מסך הבית ובחירת מועד לתור']],
+      url: 'https://www.pingitnow.co/', go: 'לאתר pingitnow.co' },
     { n: 'Barkai Real Estate', d: 'עיצבתי ופיתחתי אתר נדל״ן למשרד של סימה ברקאי, עם וידאו במסך מלא וקטלוג נכסים עם חיפוש וסינון.',
       scenes: [['scenes/barkai.webp', 2000, 1333, 'עמוד הבית של ברקאי נכסים על מחשב נייד'], ['scenes/barkai-p.webp', 1400, 1858, 'קטלוג הנכסים של ברקאי נכסים באייפון']],
       flat: [['works/barkai-2.webp', 2200, 1390, 'קטלוג הנכסים של ברקאי נכסים במסך מלא, עם שורת חיפוש וסינון']],
       url: 'https://barkai.vercel.app', go: 'לאתר barkai.vercel.app' },
     { n: 'Studio Alma', d: 'חידשתי את עיצוב אפליקציית הסטודיו והתאמתי את חוויית השימוש לעברית.',
-      scenes: [['scenes/alma-p.webp', 1400, 1858, 'שני מסכים מאפליקציית Studio Alma על שני אייפונים: קביעת תור ופרופיל אישי']] },
+      scenes: [['scenes/alma-p.webp', 1400, 1858, 'שני מסכים מאפליקציית Studio Alma על שני אייפונים: קביעת תור ופרופיל אישי']],
+      url: 'https://studioalma.app/', go: 'לאתר studioalma.app' },
     { n: 'LAYMR', d: 'עיצבתי מחדש את חנות האופנה ב־Shopify, עם דגש על חוויית הקנייה במובייל, וידאו וחיפוש מוצרים.',
       scenes: [['scenes/laymr.webp', 2000, 1333, 'עמוד מוצר בחנות LAYMR על מחשב נייד'], ['scenes/laymr-p.webp', 1400, 1858, 'עמוד מוצר ועמוד קולקציה של LAYMR על שני אייפונים']],
       url: 'https://laymr.com', go: 'לחנות laymr.com' },
@@ -822,7 +860,8 @@ function tmFilm(cv, src, fh, off, th, o) {
       scenes: [['scenes/limor.webp', 2000, 1333, 'גלריית הקרמיקה באתר של לימור מזוז על מחשב נייד'], ['scenes/limor-p.webp', 1400, 1858, 'גלריית הקרמיקה של לימור מזוז באייפון']],
       url: 'https://limibylimor.com', go: 'לאתר limibylimor.com' },
     { n: 'ROOK', d: 'פיתחתי ושיפרתי תהליכי עבודה במערכת, כולל חשבוניות, תשלומים ועדכונים ללקוחות.',
-      scenes: [['scenes/rook.webp', 2000, 1333, 'מסך הבית של מערכת ROOK על מחשב נייד, עם שלבי הייצור מקונספט ועד משלוח']] },
+      scenes: [['scenes/rook.webp', 2000, 1333, 'מסך הבית של מערכת ROOK על מחשב נייד, עם שלבי הייצור מקונספט ועד משלוח']],
+      url: 'https://rook-workspace.com/en', go: 'לאתר rook-workspace.com' },
     { n: 'Tal Hayon Tennis Club', d: 'בניתי את האפליקציה של מועדון הטניס של טל חיון: הזמנת אימונים לפי מאמן או לפי שעה, טורנירים ומעקב התקדמות אישי.',
       scenes: [['scenes/tal-p.webp', 1400, 1858, 'שני מסכים מאפליקציית מועדון הטניס של טל חיון על שני אייפונים: מסך הבית ותחילת הזמנת אימון']] },
     { n: 'Rahitei HaShfela', d: 'בניתי אתר קטלוג לרהיטי השפלה, מפעל לריהוט משרדי, עם חיפוש לפי שם ומספר מוצר.',
@@ -861,7 +900,8 @@ function tmFilm(cv, src, fh, off, th, o) {
     var out = []; at.forEach(function (a, k) { out[a[1]] = off + k * step; });
     return out;
   })();
-  var ring = { on: false, seen: false, hold: false, m: 0, rot: 0, to: 0, t: 0, raf: 0, y: window.scrollY, w: 0, h: 0 };
+  var ring = { on: false, seen: false, hold: false, m: 0, rot: 0, to: 0, t: 0, raf: 0, y: window.scrollY, w: 0, h: 0, vel: 0 };
+  var grab = null, touchy = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
   function ringSize() { ring.w = orbit.clientWidth; ring.h = orbit.clientHeight; }
   function ringPlace() {
     var m = ring.m, e = m < 0.5 ? 4 * m * m * m : 1 - Math.pow(-2 * m + 2, 3) / 2;
@@ -874,8 +914,12 @@ function tmFilm(cv, src, fh, off, th, o) {
     ring.raf = 0; if (!ring.on) return;
     var dt = Math.min(50, now - ring.t) / 1000; ring.t = now;
     if (ring.m < 1) ring.m = Math.min(1, ring.m + dt / 1.2);
-    if (!ring.hold && sheet.hidden) ring.to += dt * 3.5;
-    ring.rot += (ring.to - ring.rot) * Math.min(1, dt * 6);
+    if (grab && grab.live) ring.rot = ring.to;                    // held: it sits exactly under the finger
+    else {
+      if (Math.abs(ring.vel) > 1) { ring.to += ring.vel * dt; ring.vel *= Math.exp(-dt * 2.4); }   // let go: it keeps turning and slows
+      else if (!ring.hold && sheet.hidden) ring.to += dt * 3.5;
+      ring.rot += (ring.to - ring.rot) * Math.min(1, dt * 9);
+    }
     ringPlace();
     if (ring.seen) ring.raf = requestAnimationFrame(ringFrame);
   }
@@ -883,11 +927,11 @@ function tmFilm(cv, src, fh, off, th, o) {
   function ringStart(done) {
     if (ring.on || calm || !gone || !wide.matches) return;
     ring.on = true; ring.m = done ? 1 : 0; ringSize(); works.classList.add('is-ring');
-    hint.textContent = 'גללו כדי לסובב, לחצו על עבודה כדי לפתוח.';
+    hint.textContent = touchy ? 'סובבו את המעגל עם האצבע, לחצו על עבודה כדי לפתוח.' : 'גררו או גללו כדי לסובב, לחצו על עבודה כדי לפתוח.';
     ringPlace(); ringRun();
   }
   function ringStop() {
-    if (!ring.on) return; ring.on = false; works.classList.remove('is-ring'); hint.textContent = HINT;
+    if (!ring.on) return; ring.on = false; ring.vel = 0; grab = null; works.classList.remove('is-ring', 'is-grab'); hint.textContent = HINT;
     items.forEach(function (b) { b.style.translate = ''; });
   }
   if (!calm && 'IntersectionObserver' in window) {
@@ -898,6 +942,40 @@ function tmFilm(cv, src, fh, off, th, o) {
     orbit.addEventListener('pointerleave', function () { ring.hold = false; });
     orbit.addEventListener('focusin', function () { ring.hold = true; });
     orbit.addEventListener('focusout', function () { ring.hold = false; });
+    // Where the finger is on the dial, measured from its middle in the ring's own proportions.
+    var spot = function (e) { var r = orbit.getBoundingClientRect(); return [(e.clientX - r.left - 0.5 * r.width) / (RX * r.width), (e.clientY - r.top - CY * r.height) / (RY * r.height)]; };
+    orbit.addEventListener('pointerdown', function (e) {
+      if (!ring.on || grab || !sheet.hidden || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      moved = 0; ring.vel = 0;
+      grab = { id: e.pointerId, x: e.clientX, y: e.clientY, p: spot(e), t: e.timeStamp, v: 0, live: false };
+    });
+    orbit.addEventListener('pointermove', function (e) {
+      if (!grab || e.pointerId !== grab.id) return;
+      var p = spot(e);
+      if (!grab.live) {
+        if (Math.abs(e.clientX - grab.x) + Math.abs(e.clientY - grab.y) < 8) return;
+        grab.live = true; grab.p = p; grab.t = e.timeStamp; works.classList.add('is-grab');
+        try { orbit.setPointerCapture(e.pointerId); } catch (err) {}
+        return;
+      }
+      // the turn between the last spot and this one; close to the middle it is kept from running away
+      var q = grab.p, d = (q[0] * p[1] - q[1] * p[0]) / Math.max(q[0] * q[0] + q[1] * q[1], 0.16) * 180 / Math.PI;
+      d = Math.max(-40, Math.min(40, d));
+      var dt = Math.max(4, e.timeStamp - grab.t);
+      grab.v = grab.v * 0.55 + d / dt * 450; grab.p = p; grab.t = e.timeStamp;
+      ring.to += d; ring.rot = ring.to; ringPlace();
+    });
+    var drop = function (e) {
+      if (!grab || e.pointerId !== grab.id) return;
+      if (grab.live) {
+        moved = 99;                                                  // a turn is not a press
+        ring.vel = e.type === 'pointerup' && e.timeStamp - grab.t < 90 ? Math.max(-540, Math.min(540, grab.v)) : 0;
+        works.classList.remove('is-grab');
+      }
+      grab = null;
+    };
+    orbit.addEventListener('pointerup', drop);
+    orbit.addEventListener('pointercancel', drop);
     var flip = function () { if (wide.matches) ringStart(true); else ringStop(); };
     if (wide.addEventListener) wide.addEventListener('change', flip); else if (wide.addListener) wide.addListener(flip);
   }
@@ -1064,7 +1142,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   dots.forEach(function (d, k) { d.addEventListener('click', function () { setPage(k); }); });
   orbit.addEventListener('touchstart', function (e) { var t = e.touches[0]; sx = t.clientX; sy = t.clientY; moved = 0; }, { passive: true });
   orbit.addEventListener('touchend', function (e) {
-    var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; moved = Math.abs(dx) + Math.abs(dy);
+    var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; moved = Math.max(moved, Math.abs(dx) + Math.abs(dy));
     if (tall.matches && Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy) * 1.5) setPage(page + (dx < 0 ? 1 : -1));
   }, { passive: true });
   if (tall.addEventListener) tall.addEventListener('change', groups); else if (tall.addListener) tall.addListener(groups);
@@ -1296,7 +1374,8 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (!im.complete || !im.naturalWidth) return false;
     var q = f % PER, k = film.width / FRAME;
     ctx.globalAlpha = alpha;
-    ctx.drawImage(im, (q % COLS) * CW, Math.floor(q / COLS) * CH, CW, CH, offset(f) * k, 0, CW * k, CH * k);
+    // half a pixel in from the cell's edges, so nothing of the neighbouring frames is pulled in when it is scaled
+    ctx.drawImage(im, (q % COLS) * CW + 0.5, Math.floor(q / COLS) * CH + 1, CW - 1, CH - 1.5, offset(f) * k, 0, CW * k, film.height);
     return true;
   }
   function paint() {
@@ -1308,12 +1387,23 @@ function tmFilm(cv, src, fh, off, th, o) {
     ctx.imageSmoothingQuality = 'high';
     var ok = cell(s[0], 1);
     if (ok && s.length > 1) cell(s[1], s[2]);
+    if (ok) {
+      // The footage ends at its two sides. Where he reaches a side (stepping in, stepping out, leaning in to point)
+      // his picture thins out softly over a short stretch instead of stopping on a straight cut.
+      var k = film.width / FRAME, x0 = offset(s[0]) * k, w = CW * k, fw = w * 0.085, g;
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'destination-out';
+      g = ctx.createLinearGradient(x0, 0, x0 + fw, 0); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(x0 - 2, 0, fw + 2, film.height);
+      g = ctx.createLinearGradient(x0 + w, 0, x0 + w - fw, 0); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(x0 + w - fw, 0, fw + 2, film.height);
+      ctx.globalCompositeOperation = 'source-over';
+    }
     return ok;
   }
 
   function talk(text) { say.textContent = text; say.classList.add('is-on'); }
   function cue() {
-    if (pos === 0) { stage.classList.add('is-idle'); cam.classList.toggle('is-flip', flip); }
+    if (pos === 0) { stage.classList.add('is-idle'); cam.classList.toggle('is-flip', flip); stage.classList.toggle('is-flip', flip); }
     if (pos === marks.hi) talk('היי!');
     if (pos === marks.hiOff || pos === marks.pointOff) say.classList.remove('is-on');
     if (pos === marks.point) {
@@ -1380,15 +1470,6 @@ function tmFilm(cv, src, fh, off, th, o) {
 
 })();
 (function () {
-  // ---- the request to turn the phone can be passed over; that choice is kept for the visit ----
-  var root = document.documentElement;
-  try { if (sessionStorage.getItem('tm-upright')) root.classList.add('no-turn'); } catch (e) {}
-  document.getElementById('turn-skip').addEventListener('click', function () {
-    root.classList.add('no-turn');
-    try { sessionStorage.setItem('tm-upright', '1'); } catch (e) {}
-  });
-})();
-(function () {
   // ---- pages: the home page, and Services at #services ----
   var home = document.getElementById('top'), svc = document.getElementById('services'), link = document.getElementById('nav-svc'), name = document.title;
   function jump(y) { try { window.scrollTo({ top: y, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); } }
@@ -1405,9 +1486,22 @@ function tmFilm(cv, src, fh, off, th, o) {
   // the opening film: it plays when the Services page opens; where the browser will not start it, a play button waits
   var filmBox = document.getElementById('svc-film'), film = document.getElementById('svc-v'), playBtn = document.getElementById('svc-play');
   var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // which part of the wide picture a narrow screen keeps: the laptop and its screen first, the room once the camera is inside
-  var FOCUS = [[0, 40], [2.6, 50]];
-  function focus() { var t = film.currentTime, x = FOCUS[0][1]; FOCUS.forEach(function (f) { if (t >= f[0]) x = f[1]; }); filmBox.style.setProperty('--fx', x + '%'); }
+  // Which part of the wide picture a narrow screen keeps, by time: the laptop while he sits down and the camera goes
+  // in, then him on his way to the door, then him and the tile he touches, then him in front of the board.
+  var FOCUS = [[0, 46], [3.9, 42], [6.3, 50], [8.8, 58], [10.1, 78], [12.5, 58], [13.5, 52], [17, 50], [19.6, 38]];
+  // when each service's card shows: [from, to, card]
+  var CAPS = [[7.9, 12.5, 0], [12.5, 18.3, 1], [18.9, 1e9, 2]], caps = [].slice.call(document.querySelectorAll('.film-cap'));
+  function focus() {
+    var t = film.currentTime, x = FOCUS[0][1], on = -1;
+    FOCUS.forEach(function (f) { if (t >= f[0]) x = f[1]; });
+    filmBox.style.setProperty('--fx', x + '%');
+    CAPS.forEach(function (c) { if (t >= c[0] && t < c[1]) on = c[2]; });
+    caps.forEach(function (c, k) { c.classList.toggle('is-on', k === on); });
+  }
+  document.getElementById('svc-caps').addEventListener('click', function (e) {
+    var b = e.target.closest('.film-cap');
+    if (b) { film.pause(); document.dispatchEvent(new CustomEvent('tm:open-work', { detail: { id: +b.getAttribute('data-w'), from: b } })); }
+  });
   function playFilm() {
     filmBox.classList.remove('is-ended'); playBtn.hidden = true;
     try { film.currentTime = 0; } catch (e) {}
@@ -1415,7 +1509,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   }
   film.addEventListener('timeupdate', focus);
   film.addEventListener('ended', function () { filmBox.classList.add('is-ended'); });
-  film.addEventListener('click', function () { if (film.paused) playFilm(); });
+  film.addEventListener('click', function () { if (film.ended || film.currentTime === 0) playFilm(); else if (film.paused) film.play(); });
   playBtn.addEventListener('click', playFilm);
   document.getElementById('svc-talk').addEventListener('click', function () { document.getElementById('ask').click(); });
   function filmFor(on) { if (!on) { film.pause(); return; } if (still) playBtn.hidden = false; else playFilm(); }
@@ -1425,6 +1519,15 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (b) document.dispatchEvent(new CustomEvent('tm:open-work', { detail: { id: +b.getAttribute('data-w'), from: b } }));
   });
   document.getElementById('svc-ask').addEventListener('click', function () { document.getElementById('ask').click(); });
+})();
+(function () {
+  // The colour behind the page follows what is on screen: white up at the hero, stone once Works has taken over.
+  var root = document.documentElement, home = document.getElementById('top'), pin = document.querySelector('.works-pin');
+  function tone() { root.classList.toggle('is-low', !home.hidden && pin.getBoundingClientRect().top < innerHeight * 0.5); }
+  window.addEventListener('scroll', tone, { passive: true });
+  window.addEventListener('resize', tone);
+  window.addEventListener('hashchange', function () { requestAnimationFrame(tone); });
+  tone();
 })();
 </script>
 </body>
