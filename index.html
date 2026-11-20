@@ -563,6 +563,25 @@ body.is-locked { overflow: hidden; }
   .chat.is-open { clip-path: inset(0 0 0 0 round 24px); }
   .msg { font-size: .9375rem; }
 }
+/* A phone on its side is wide but very low. There the window opens in two parts side by side: his portrait, full
+   height and always in view, on the left; the conversation and the message box beside it, with room for the text. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .chat { display: grid; grid-template-columns: minmax(0, 1fr) 148px; grid-template-rows: minmax(0, 1fr) auto; width: min(452px, calc(100vw - 24px)); }
+  .chat-cover { grid-area: 1 / 1 / -1 / -1; }
+  .chat-head, .is-talking .chat-head { grid-column: 2; grid-row: 1 / -1; height: auto; border-inline-start: 1px solid var(--line); background: var(--surface); transition: none; }
+  .chat-face, .is-talking .chat-face { top: 10px; left: 8px; width: calc(100% - 16px); height: calc(100% - 72px); transition: none; }
+  .chat-face img, .chat-face canvas, .is-talking .chat-face img, .is-talking .chat-face canvas { object-fit: contain; object-position: 50% 100%; }
+  .chat-id, .is-talking .chat-id { left: 8px; right: 8px; bottom: 10px; text-align: center; transition: none; }
+  .chat-id strong { font-size: .8125rem; line-height: 1.25; }
+  .chat-id span { font-size: .6875rem; }
+  .chat-x, .is-talking .chat-x { top: 8px; left: 8px; width: 36px; height: 36px; box-shadow: none; }
+  .chat-log { grid-column: 1; grid-row: 1; border-top: 0; padding: 12px 12px 10px; }
+  .chat-form { grid-column: 1; grid-row: 2; padding: 8px 10px max(10px, env(safe-area-inset-bottom)); }
+  .chat-form textarea { padding: 9px 14px; }
+  .chat-form button { width: 44px; height: 44px; }
+  .msg { max-width: 94%; padding: 8px 12px; font-size: .875rem; line-height: 1.45; }
+  .chat-quick button, .chat-card { min-height: 40px; padding: 6px 12px; font-size: .8125rem; }
+}
 @keyframes blink { 50% { opacity: .2; } }
 
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
