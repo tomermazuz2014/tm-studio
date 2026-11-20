@@ -617,7 +617,18 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 .book-days button:active { transform: scale(.95); }
 .book-days button[aria-pressed="true"] { background: var(--cream); color: #171A10; }
 .book-back { display: none; align-items: center; gap: 6px; min-height: 32px; padding: 0; border: 0; background: none; color: var(--muted); font: 500 .8125rem/1 var(--font-he); cursor: pointer; justify-self: start; }
+/* once a day and an hour are chosen, the last step stands alone (with a way back), so it all fits without scrolling */
+.chat-book[data-step="3"] #book-days-box, .chat-book[data-step="3"] #book-times-box { display: none; }
+.chat-book[data-step="3"] .book-back:not([hidden]) { display: inline-flex; }
 .book-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+/* the subject of the call: one choice from a segmented row */
+.book-topic { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; gap: 6px; }
+.book-topic legend { padding: 0; margin-bottom: 6px; font-size: .8125rem; color: var(--muted); }
+.book-seg { display: flex; gap: 3px; padding: 4px; border-radius: 14px; background: rgba(243, 238, 221, .08); }
+.book-seg button { flex: 1 1 auto; min-width: 0; min-height: 36px; padding: 0 6px; border: 0; border-radius: 10px; background: none; color: var(--ink); font: 500 .8125rem/1 var(--font-he); white-space: nowrap; cursor: pointer; transition: background-color .15s ease, color .15s ease, transform .12s var(--ease-out); }
+.book-seg button:active { transform: scale(.96); }
+.book-seg button[aria-pressed="true"] { background: var(--cream); color: #171A10; }
+.book-seg button:focus-visible { outline: 2px solid var(--cream); outline-offset: 1px; }
 .book-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .book-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
 .book-nav b { font-size: 1rem; font-weight: 700; }
@@ -1007,6 +1018,9 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
     <div class="book-step" id="book-times-box" hidden><b id="book-day"></b><div class="book-times" id="book-times"></div></div>
     <form class="book-step book-form" id="book-form" hidden>
       <b id="book-when"></b>
+      <fieldset class="book-topic" id="book-topic"><legend>נושא הפנייה</legend>
+        <div class="book-seg"><button type="button" aria-pressed="false" data-v="אתר">אתר</button><button type="button" aria-pressed="false" data-v="אפליקציה">אפליקציה</button><button type="button" aria-pressed="false" data-v="מערכת לעסק">מערכת</button><button type="button" aria-pressed="false" data-v="עיצוב מחדש למוצר קיים">עיצוב מחדש</button><button type="button" aria-pressed="false" data-v="אחר">אחר</button></div>
+      </fieldset>
       <div class="book-row"><label class="sr" for="book-name">שם</label><input id="book-name" type="text" autocomplete="name" placeholder="שם" required>
       <label class="sr" for="book-phone">טלפון</label><input id="book-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="טלפון" dir="ltr" required></div>
       <a class="btn" id="book-send" target="_blank" rel="noopener">שלחו בקשה בוואטסאפ</a>
@@ -1649,7 +1663,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   var DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'], SHORT = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
   var HOURS = ['10:00', '10:30', '11:00', '11:30', '12:00', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'];
   var today = new Date(); today.setHours(0, 0, 0, 0);
-  var pick = { day: null, time: '' };
+  var pick = { day: null, time: '', topic: '' };
   function step(n) { bookBox.setAttribute('data-step', n); backB.hidden = n < 2; }
   function book(on) {
     chat.classList.toggle('is-booking', on); bookBox.hidden = !on;
@@ -1687,14 +1701,19 @@ function tmFilm(cv, src, fh, off, th, o) {
       timesEl.appendChild(b);
     });
   }
-  function note() { return 'היי תומר, אשמח לקבוע שיחת היכרות ב' + label() + ' בשעה ' + pick.time + '.\nשם: ' + nameIn.value.trim() + '\nטלפון: ' + phoneIn.value.trim(); }
+  function note() { return 'היי תומר, אשמח לקבוע שיחת היכרות ב' + label() + ' בשעה ' + pick.time + '.\nנושא: ' + pick.topic + '\nשם: ' + nameIn.value.trim() + '\nטלפון: ' + phoneIn.value.trim(); }
   function ready() {
-    var ok = !!pick.day && !!pick.time && nameIn.value.trim().length > 1 && phoneIn.value.replace(/\D/g, '').length >= 9;
+    var ok = !!pick.day && !!pick.time && !!pick.topic && nameIn.value.trim().length > 1 && phoneIn.value.replace(/\D/g, '').length >= 9;
     sendA.setAttribute('aria-disabled', String(!ok));
     if (ok) sendA.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(note()); else sendA.removeAttribute('href');
     return ok;
   }
   nameIn.addEventListener('input', ready); phoneIn.addEventListener('input', ready);
+  $('book-topic').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    [].forEach.call(this.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    pick.topic = b.getAttribute('data-v') || b.textContent; ready();
+  });
   bookForm.addEventListener('submit', function (e) { e.preventDefault(); if (ready()) sendA.click(); });
   copyB.addEventListener('click', function () {
     if (!ready()) { (nameIn.value.trim().length > 1 ? phoneIn : nameIn).focus(); return; }
