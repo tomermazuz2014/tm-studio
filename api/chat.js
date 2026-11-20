@@ -28,7 +28,12 @@ export default async function handler(req, res) {
       body: JSON.stringify({ model: process.env.CLAUDE_MODEL || 'claude-haiku-5-5', max_tokens: 600, system: SYSTEM, messages }),
     });
     if (r.status === 429) return res.status(429).json({ error: 'rate_limited' });
-    if (!r.ok) return res.status(502).json({ error: 'upstream_' + r.status });
+    if (!r.ok) {
+      // pass on only the kind of error and its short message (never the key), so a failure can be understood
+      let detail = '';
+      try { const e = await r.json(); detail = ((e.error && e.error.type) || '') + ': ' + ((e.error && e.error.message) || '').slice(0, 160); } catch (x) {}
+      return res.status(502).json({ error: 'upstream_' + r.status, detail });
+    }
     const data = await r.json();
     const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
     return res.status(200).json({ text });
