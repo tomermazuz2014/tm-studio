@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<!-- Google Ads: measures contact clicks (WhatsApp, Instagram DM) as the "איש קשר" conversion -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18587349498"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-18587349498');
+document.addEventListener('click', function (e) {
+  var a = e.target.closest && e.target.closest('a[href]');
+  if (!a || !/(^|\/\/)(wa\.me|api\.whatsapp\.com|ig\.me)\//.test(a.href)) return;
+  gtag('event', 'conversion', { send_to: 'AW-18587349498/jHNYCMbWw7wdEPrjkZ9F', value: 1.0, currency: 'ILS', transport_type: 'beacon' });
+}, true);
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Website and app design, UX/UI and redesigns | TM Studio TLV</title>
+<meta name="description" content="Design for websites, landing pages and apps: UX/UI design, redesigns of existing products, and layouts that work on mobile and in English or Hebrew.">
+<link rel="canonical" href="https://www.tomermazuz.com/en/design/">
+<link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/design/">
+<link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/design/">
+<link rel="alternate" hreflang="x-default" href="https://www.tomermazuz.com/design/">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TM Studio TLV">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Website and app design, UX/UI and redesigns | TM Studio TLV">
+<meta property="og:description" content="Design for websites, landing pages and apps: UX/UI design, redesigns of existing products, and layouts that work on mobile and in English or Hebrew.">
+<meta property="og:url" content="https://www.tomermazuz.com/en/design/">
+<meta property="og:image" content="https://www.tomermazuz.com/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Service", "name": "Website and app design", "serviceType": "UX/UI design", "description": "Design for websites, landing pages and apps: UX/UI design, redesigns of existing products, and layouts that work on mobile and in English or Hebrew.", "url": "https://www.tomermazuz.com/en/design/", "areaServed": "Worldwide", "availableLanguage": ["en", "he"], "provider": {"@type": "ProfessionalService", "@id": "https://www.tomermazuz.com/#studio", "name": "TM Studio TLV", "url": "https://www.tomermazuz.com/en"}}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do you only design, or build too?", "acceptedAnswer": {"@type": "Answer", "text": "Both. Design and development happen in one place, so what is designed is what goes live."}}, {"@type": "Question", "name": "Can you redesign a product that already works?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. I redesigned LAYMR, PING and Studio Alma."}}, {"@type": "Question", "name": "How do we start?", "acceptedAnswer": {"@type": "Answer", "text": "Send a message on WhatsApp or Instagram with your idea, and we book a short intro call."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "TM Studio TLV", "item": "https://www.tomermazuz.com/en"}, {"@type": "ListItem", "position": 2, "name": "UX/UI design", "item": "https://www.tomermazuz.com/en/design/"}]}</script>
+<style>
+@font-face{font-family:"Ploni";src:url("/fonts/ploni-400.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Ploni";src:url("/fonts/ploni-700.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Ploni";src:url("/fonts/ploni-900.woff2") format("woff2");font-weight:900;font-display:swap}
+@font-face{font-family:"Oswald";src:url("/fonts/oswald-var.woff2") format("woff2");font-weight:200 700;font-display:swap;unicode-range:U+0041-005A,U+0061-007A,U+0030-0039}
+:root{--bg:#fff;--ink:#1D2014;--muted:#585C48;--olive:#434C17;--accent:#515C1B;--accent-hi:#606D22;--cream:#F3EEDD;--line:#E3E4D8;--wrap:min(1120px,100% - 48px);--ease:cubic-bezier(.23,1,.32,1)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.65 "Oswald","Ploni",Arial,sans-serif}
+a{color:inherit}
+img{display:block;max-width:100%;height:auto}
+.wrap{width:var(--wrap);margin-inline:auto}
+.skip{position:absolute;inset-inline-start:-999px}.skip:focus{inset-inline-start:12px;top:12px;background:#fff;padding:8px 12px;z-index:9}
+header.top{border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:72px;flex-wrap:wrap;padding-block:10px}
+.brand img{width:150px}
+nav.svc{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:.92rem}
+nav.svc a{text-decoration:none;color:var(--muted);padding:4px 0;background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .25s var(--ease),color .2s}
+nav.svc a:hover,nav.svc a[aria-current]{color:var(--ink);background-size:100% 1px}
+.hero{padding-block:clamp(56px,10vw,120px) clamp(40px,6vw,72px)}
+.crumb{font-size:.85rem;color:var(--muted);margin:0 0 18px}
+.crumb a{text-decoration:none}.crumb a:hover{text-decoration:underline}
+h1{font-weight:900;font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 22px;max-width:16ch}
+.lead{font-size:clamp(1.08rem,1.6vw,1.28rem);color:var(--muted);max-width:52ch;margin:0 0 32px}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;transition:background .2s,transform .16s var(--ease)}
+.btn:hover{background:var(--accent-hi)}.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.ghost:hover{background:var(--cream)}
+section{padding-block:clamp(48px,7vw,88px)}
+section.band{background:var(--cream)}
+h2{font-weight:900;font-size:clamp(1.7rem,3.4vw,2.6rem);line-height:1.1;margin:0 0 32px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:28px 36px;list-style:none;margin:0;padding:0}
+.grid h3{font-size:1.15rem;margin:0 0 6px;font-weight:700}
+.grid p{margin:0;color:var(--muted)}
+.grid li{border-top:2px solid var(--ink);padding-top:16px}
+.works{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:36px}
+.work{margin:0}
+.work .ph{overflow:hidden;border-radius:14px;background:#EBEDDD;aspect-ratio:3/2}
+.work .ph img{width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.work.tall .ph img{object-position:50% 30%}
+.work:hover .ph img{transform:scale(1.03)}
+.work h3{font:700 1.3rem/1.2 "Oswald","Ploni",sans-serif;margin:16px 0 6px}
+.work p{margin:0 0 8px;color:var(--muted)}
+.work a.go{font-weight:700;text-decoration:none;color:var(--accent)}
+.work a.go:hover{text-decoration:underline}
+ol.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:28px;counter-reset:s}
+ol.steps li{counter-increment:s}
+ol.steps li::before{content:"0" counter(s);display:block;font:600 2.4rem/1 "Oswald",sans-serif;color:var(--accent);margin-bottom:10px}
+ol.steps h3{margin:0 0 6px;font-size:1.15rem}
+ol.steps p{margin:0;color:var(--muted)}
+.faq details{border-top:1px solid #CFD2BC;padding:18px 0}
+.faq details:last-child{border-bottom:1px solid #CFD2BC}
+.faq summary{cursor:pointer;font-weight:700;font-size:1.08rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 1.5rem/1 "Oswald",sans-serif;transition:transform .2s var(--ease)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{margin:10px 0 0;color:var(--muted);max-width:64ch}
+.cta{text-align:center}
+.cta h2{margin-bottom:14px}.cta p{color:var(--muted);margin:0 0 28px}.cta .actions{justify-content:center}
+.more{display:flex;flex-wrap:wrap;gap:10px;list-style:none;padding:0;margin:0}
+.more a{display:inline-block;padding:10px 18px;border-radius:999px;box-shadow:inset 0 0 0 1px #CFD2BC;text-decoration:none;transition:background .2s}
+.more a:hover{background:var(--cream)}
+footer{border-top:1px solid var(--line);padding-block:32px;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+footer a{text-decoration:none}footer a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+@media (max-width:640px){body{font-size:16px}.brand img{width:120px}header.top .wrap{flex-wrap:nowrap;flex-direction:column;align-items:flex-start;gap:6px}nav.svc{font-size:.88rem;gap:16px;flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px;scrollbar-width:none;white-space:nowrap}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="/en" aria-label="TM Studio TLV, home"><img src="/logo.svg" alt="Tomer Mazuz · TM Studio TLV" width="900" height="225"></a>
+  <nav class="svc" aria-label="Services"><a href="/en/websites/">Websites</a><a href="/en/apps/">App development</a><a href="/en/crm/">CRM systems</a><a href="/en/shopify/">Shopify stores</a><a href="/en/design/" aria-current="page">UX/UI design</a><a href="/en/ai-assistant/">AI assistant</a><a href="/design/" hreflang="he" lang="he">עב</a></nav>
+</div></header>
+<main id="main">
+<div class="hero"><div class="wrap">
+  <p class="crumb"><a href="/en">TM Studio TLV</a> / UX/UI design</p>
+  <h1>Website and app design</h1>
+  <p class="lead">Design that looks good and is easy to use, on any screen: websites, landing pages, apps and redesigns of existing products.</p>
+  <div class="actions">
+    <a class="btn" href="https://wa.me/972503232367" target="_blank" rel="noopener">Message me on WhatsApp <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="btn ghost" href="https://ig.me/m/tmstudio.tlv" target="_blank" rel="noopener">or on Instagram</a>
+  </div>
+</div></div>
+<section class="band" aria-labelledby="what-h"><div class="wrap">
+  <h2 id="what-h">What we can build</h2>
+  <ul class="grid"><li><h3>Websites and landing pages</h3><p>Design made for your business, from the first screen to the contact button.</p></li><li><h3>App design</h3><p>Screens, flows and user experience for mobile apps.</p></li><li><h3>Redesign of an existing product</h3><p>A refresh for a site, store or app that already works, without starting from scratch.</p></li><li><h3>Mobile and right-to-left ready</h3><p>Interfaces that work in English, Hebrew and on the phone.</p></li></ul>
+</div></section>
+<section aria-labelledby="w-h"><div class="wrap"><h2 id="w-h">Selected work</h2><div class="works"><figure class="work"><div class="ph"><img src="/scenes/laymr.webp" alt="A LAYMR product page on a laptop" width="2000" height="1333" loading="lazy" decoding="async"></div><figcaption><h3>LAYMR</h3><p>I redesigned the fashion store on Shopify, focusing on mobile shopping, video and product search.</p><a class="go" href="https://laymr.com" target="_blank" rel="noopener">Visit laymr.com</a></figcaption></figure><figure class="work tall"><div class="ph"><img src="/scenes/ping-p.webp" alt="Two screens of the PING app on two iPhones: the home screen and picking an appointment time" width="1400" height="1858" loading="lazy" decoding="async"></div><figcaption><h3>PING</h3><p>I redesigned the customer app and worked on discovering businesses, booking appointments and waiting lists.</p><a class="go" href="https://www.pingitnow.co/" target="_blank" rel="noopener">Visit pingitnow.co</a></figcaption></figure><figure class="work tall"><div class="ph"><img src="/scenes/alma-p.webp" alt="Two screens of the Studio Alma app on two iPhones: booking and a personal profile" width="1400" height="1858" loading="lazy" decoding="async"></div><figcaption><h3>Studio Alma</h3><p>I refreshed the studio app’s design and adapted the experience for Hebrew.</p><a class="go" href="https://studioalma.app/" target="_blank" rel="noopener">Visit studioalma.app</a></figcaption></figure></div></div></section>
+<section class="band" aria-labelledby="how-h"><div class="wrap">
+  <h2 id="how-h">How it works</h2>
+  <ol class="steps"><li><h3>We talk about the idea</h3><p>I hear what you want to build, who it is for and what matters most in the first version.</p></li><li><h3>You see a design direction</h3><p>I make the first screens so you can see how the product will look and feel, and give me feedback.</p></li><li><h3>We build it and go live</h3><p>I develop the product, give you a version to try, and improve it from your feedback before launch.</p></li></ol>
+</div></section>
+<section class="faq" aria-labelledby="faq-h"><div class="wrap">
+  <h2 id="faq-h">Questions</h2>
+  <details><summary>Do you only design, or build too?</summary><p>Both. Design and development happen in one place, so what is designed is what goes live.</p></details><details><summary>Can you redesign a product that already works?</summary><p>Yes. I redesigned LAYMR, PING and Studio Alma.</p></details><details><summary>How do we start?</summary><p>Send a message on WhatsApp or Instagram with your idea, and we book a short intro call.</p></details>
+</div></section>
+<section class="cta band" aria-labelledby="cta-h"><div class="wrap">
+  <h2 id="cta-h">Got an idea? Tell me about it.</h2>
+  <p>Design and development in one place, from the first idea to a product that works.</p>
+  <div class="actions">
+    <a class="btn" href="https://wa.me/972503232367" target="_blank" rel="noopener">Message me on WhatsApp <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <a class="btn ghost" href="/en">See all the work</a>
+  </div>
+</div></section>
+<section aria-labelledby="more-h"><div class="wrap">
+  <h2 id="more-h">More services</h2>
+  <ul class="more"><li><a href="/en/websites/">Websites</a></li><li><a href="/en/apps/">App development</a></li><li><a href="/en/crm/">CRM systems</a></li><li><a href="/en/shopify/">Shopify stores</a></li><li><a href="/en/ai-assistant/">AI assistant</a></li></ul>
+</div></section>
+</main>
+<footer><div class="wrap">
+  <span>Tomer Mazuz · TM Studio TLV · Tel Aviv</span>
+  <span><a href="https://wa.me/972503232367" target="_blank" rel="noopener">WhatsApp</a> · <a href="https://www.instagram.com/tmstudio.tlv/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.linkedin.com/in/tomermazuz1/" target="_blank" rel="noopener">LinkedIn</a> · <a href="/en">Home</a></span>
+</div></footer>
+</body>
+</html>

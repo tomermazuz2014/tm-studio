@@ -2,10 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url><loc>https://www.tomermazuz.com/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en"/></url>
   <url><loc>https://www.tomermazuz.com/en</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en"/></url>
-  <url><loc>https://www.tomermazuz.com/websites/</loc><lastmod>2026-11-21</lastmod></url>
-  <url><loc>https://www.tomermazuz.com/apps/</loc><lastmod>2026-11-21</lastmod></url>
-  <url><loc>https://www.tomermazuz.com/crm/</loc><lastmod>2026-11-21</lastmod></url>
-  <url><loc>https://www.tomermazuz.com/shopify/</loc><lastmod>2026-11-21</lastmod></url>
-  <url><loc>https://www.tomermazuz.com/design/</loc><lastmod>2026-11-21</lastmod></url>
-  <url><loc>https://www.tomermazuz.com/ai-assistant/</loc><lastmod>2026-11-21</lastmod></url>
+  <url><loc>https://www.tomermazuz.com/websites/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/websites/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/websites/"/></url>
+  <url><loc>https://www.tomermazuz.com/en/websites/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/websites/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/websites/"/></url>
+  <url><loc>https://www.tomermazuz.com/apps/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/apps/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/apps/"/></url>
+  <url><loc>https://www.tomermazuz.com/en/apps/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/apps/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/apps/"/></url>
+  <url><loc>https://www.tomermazuz.com/crm/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/crm/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/crm/"/></url>
+  <url><loc>https://www.tomermazuz.com/en/crm/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/crm/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/crm/"/></url>
+  <url><loc>https://www.tomermazuz.com/shopify/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/shopify/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/shopify/"/></url>
+  <url><loc>https://www.tomermazuz.com/en/shopify/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/shopify/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/shopify/"/></url>
+  <url><loc>https://www.tomermazuz.com/design/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/design/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/design/"/></url>
+  <url><loc>https://www.tomermazuz.com/en/design/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/design/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/design/"/></url>
+  <url><loc>https://www.tomermazuz.com/ai-assistant/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/ai-assistant/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/ai-assistant/"/></url>
+  <url><loc>https://www.tomermazuz.com/en/ai-assistant/</loc><lastmod>2026-11-21</lastmod><xhtml:link rel="alternate" hreflang="he" href="https://www.tomermazuz.com/ai-assistant/"/><xhtml:link rel="alternate" hreflang="en" href="https://www.tomermazuz.com/en/ai-assistant/"/></url>
 </urlset>

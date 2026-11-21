@@ -190,7 +190,7 @@ s = s.replace('<link rel="canonical" href="https://www.tomermazuz.com/">',
 s = s.replace('<meta property="og:url" content="https://www.tomermazuz.com/">', '<meta property="og:url" content="https://www.tomermazuz.com/en">', 1)
 s = s.replace('<meta property="og:locale" content="he_IL">', '<meta property="og:locale" content="en_US">', 1)
 # service page links are Hebrew pages: in English they stay on this page
-s = re.sub(r'href="/(websites|apps|crm|shopify|design|ai-assistant)/"', 'href="#services"', s)
+s = re.sub(r'href="/(websites|apps|crm|shopify|design|ai-assistant)/"', r'href="/en/\1/"', s)
 # English reads left to right inside the same layout
 css = '''
 /* ---------- English: the layout stays, the words read left to right ---------- */
