@@ -1629,11 +1629,6 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (small.matches) xBtn.focus({ preventScroll: true }); else input.focus({ preventScroll: true });
   }
   function openChat() {
-    // in the copy shown turned on its side (a phone held upright with its rotation locked) the keyboard would come up
-    // sideways: the page around it opens the chat upright instead, over the turned site
-    if (document.documentElement.classList.contains('is-framed') && window.parent !== window) {
-      try { window.parent.postMessage({ tm: 'chat', book: chat.classList.contains('is-booking') }, location.origin); return; } catch (e) {}
-    }
     if (askBtn.getAttribute('aria-expanded') === 'true') return;
     clearTimeout(hideTimer); clearTimeout(morph);
     askBtn.setAttribute('aria-expanded', 'true');
