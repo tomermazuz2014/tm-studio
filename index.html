@@ -103,8 +103,8 @@ h1, h2, h3, p { margin: 0; }
 .sun { display: none; }
 @media (min-width: 1024px) and (pointer: fine) and (min-height: 600px) {
   .header { position: relative; z-index: 6; }
-  .sun { display: block; position: absolute; left: calc(max(var(--gutter), env(safe-area-inset-left)) + 3.2vw); top: calc(100% + 3.2vh); width: clamp(120px, min(11.6vw, 21vh), 190px); aspect-ratio: 1; pointer-events: none;
-    animation: sun-in 1.2s var(--ease-out) .4s both; }
+  .sun { display: block; position: absolute; left: calc(max(var(--gutter), env(safe-area-inset-left)) + 3.2vw); top: calc(100% + 1.4vh); width: clamp(150px, min(15vw, 22vh), 250px); aspect-ratio: 1; pointer-events: none;
+    animation: sun-in .7s var(--ease-out) both; }
   .sun img, .sun canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .sun.is-live img { opacity: 0; }
   @keyframes sun-in { from { opacity: 0; transform: translateY(-14px) scale(.85) rotate(-20deg); } }
@@ -1266,13 +1266,13 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   function go() {
     if (typeof tmFilm !== 'function') return;
     var f = tmFilm(cv, 'sun.mp4', 400, 400, 800, {
-      loop: true, whole: true,
+      loop: true,
       onPaint: function () { if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); } },
       onDead: function () { cv.hidden = true; box.classList.remove('is-live'); }
     });
     if (f) { var g = f.video.play(); if (g && g.catch) g.catch(function () {}); }
   }
-  if (document.readyState === 'complete') setTimeout(go, 800); else window.addEventListener('load', function () { setTimeout(go, 800); });
+  if (typeof tmFilm === 'function') go(); else document.addEventListener('DOMContentLoaded', go);   // straight away, no waiting for the rest of the page
 })();
 </script>
 <script>window.FOOT_ME = { src: 'foot-me.mp4', w: 900, h: 1086, ar: 900 / 1086, seat: 0.5752, point: 4.6, loopFrom: 0 };</script>
