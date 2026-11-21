@@ -1918,7 +1918,10 @@ function tmFilm(cv, src, fh, off, th, o) {
   function clip() {
     player = filmV ? tmFilm(filmV, 'hero-walk.mp4', 1080, 1080, 2160, {
       whole: true,
-      onLoaded: function () { try { vid.currentTime = T0; } catch (e) {} roll(); },
+      onLoaded: function () {
+        if (mode === 'still') { revive = true; return; }  // the still frames already run: the next round comes from the clip
+        try { vid.currentTime = T0; } catch (e) {} roll();
+      },
       onPaint: function (t) {
         if (mode !== 'video') return;
         if (!seen && t > 5.2) {                         // it plays, but no picture arrives: go on with the still frames
@@ -1933,6 +1936,8 @@ function tmFilm(cv, src, fh, off, th, o) {
     }) : null;
     if (!player) { stills(0); return; }
     mode = 'video'; vid = player.video; begin();
+    // the page is never empty while the clip is still on its way: after a moment the still frames start, and the clip takes over at the next round
+    setTimeout(function () { if (mode === 'video' && filmV.hidden && !resting) stills(0, true); }, 1200);
     vid.addEventListener('ended', rest);
     (function check() {                                // it was asked to play and never starts: the still frames take over
       if (mode !== 'video' || vid.currentTime > T0 + 0.1) return;
