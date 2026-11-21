@@ -342,8 +342,8 @@ main { flex: 1; }
 .how > .wrap { position: relative; z-index: 1; }
 /* the riders are always shown whole and on top of everything on the page, the menu bar included */
 .how-fly { position: absolute; inset: 0; z-index: 19; pointer-events: none; }
-.how-dragon { position: absolute; left: 0; top: 0; width: clamp(300px, 42vw, 820px); aspect-ratio: 1200 / 768; opacity: 0; will-change: transform;
-  -webkit-mask-image: linear-gradient(transparent 0, #000 2.5%, #000 96%, transparent 100%); mask-image: linear-gradient(transparent 0, #000 2.5%, #000 96%, transparent 100%); }   /* only the clip's own edge is softened */
+.how-dragon { position: absolute; left: 0; top: 0; width: clamp(300px, 42vw, 820px); aspect-ratio: 1200 / 1348; opacity: 0; will-change: transform;
+  }
 .how-dragon img, .how-dragon canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .how-dragon canvas[hidden] { display: none; }
 /* a second rider crosses the open space low on the page at the same moment, the other way: from the right, out to the left */
@@ -1011,7 +1011,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 
 <main id="how" hidden>
 <section class="how" aria-labelledby="how-h">
-  <div class="how-fly" aria-hidden="true"><div class="how-dragon" id="how-dragon"><img src="dragon.webp" alt="" width="800" height="512" draggable="false"><canvas id="dragon-c" width="1200" height="768" hidden></canvas></div><div class="how-dragon how-dragon-2" id="how-dragon-2"><img src="dragon.webp" alt="" width="800" height="512" draggable="false"><canvas id="dragon-c2" width="1200" height="768" hidden></canvas></div></div>
+  <div class="how-fly" aria-hidden="true"><div class="how-dragon" id="how-dragon"><img src="dragon3.webp" alt="" width="800" height="899" draggable="false"><canvas id="dragon-c" width="1200" height="1348" hidden></canvas></div><div class="how-dragon how-dragon-2" id="how-dragon-2"><img src="dragon3.webp" alt="" width="800" height="899" draggable="false"><canvas id="dragon-c2" width="1200" height="1348" hidden></canvas></div></div>
   <div class="wrap">
     <header class="how-head">
       <h1 id="how-h" lang="en" dir="ltr">How I Work</h1>
@@ -2156,7 +2156,7 @@ function tmFilm(cv, src, fh, off, th, o) {
     }
     function clip() {
       if (clipOn !== null) return;
-      clipOn = tmFilm(cv, 'dragon.mp4', 768, 768, 1536, {
+      clipOn = tmFilm(cv, 'dragon3.mp4', 1348, 1348, 2696, {
         loop: true, whole: true,
         onLoaded: function () { var g = clipOn && clipOn.video ? clipOn.video.play() : null; if (g && g.catch) g.catch(function () {}); },
         onPaint: function () {
@@ -2179,7 +2179,7 @@ function tmFilm(cv, src, fh, off, th, o) {
     function at2(u, q, d) {
       var o = sec.getBoundingClientRect(), r = low ? low.getBoundingClientRect() : null;
       var y = r ? r.top - o.top + r.height * 0.5 : q.h * 0.8;
-      y = Math.min(y, window.innerHeight - o.top - d * 0.3);                // on a short screen the button is below the fold: keep him in sight
+      y = Math.min(y, window.innerHeight - o.top - d * 0.42);               // on a short screen the button is below the fold: keep him in sight
       var x0 = q.w + d * 0.7, x1 = -d * 0.7, wave = Math.sin(u * Math.PI * 5 + 1.3);
       return [x0 + (x1 - x0) * u, y + wave * d * 0.022, -Math.cos(u * Math.PI * 5 + 1.3) * 2];
     }
@@ -2195,11 +2195,11 @@ function tmFilm(cv, src, fh, off, th, o) {
       if (now < t0 || t > FLY) { box.style.opacity = 0; return; }
       var q = size(), u = t / FLY, p = at(u, q);
       box.style.opacity = 1;
-      box.style.transform = 'translate3d(' + (p[0] - q.d / 2).toFixed(1) + 'px,' + (p[1] - q.d * 0.32).toFixed(1) + 'px,0) rotate(' + p[2].toFixed(1) + 'deg)';
+      box.style.transform = 'translate3d(' + (p[0] - q.d / 2).toFixed(1) + 'px,' + (p[1] - q.d * 0.405).toFixed(1) + 'px,0) rotate(' + p[2].toFixed(1) + 'deg)';
       if (box2) {
         var d2 = box2.clientWidth, p2 = at2(u, q, d2);
         box2.style.opacity = 1;
-        box2.style.transform = 'translate3d(' + (p2[0] - d2 / 2).toFixed(1) + 'px,' + (p2[1] - d2 * 0.32).toFixed(1) + 'px,0) rotate(' + p2[2].toFixed(1) + 'deg)';
+        box2.style.transform = 'translate3d(' + (p2[0] - d2 / 2).toFixed(1) + 'px,' + (p2[1] - d2 * 0.405).toFixed(1) + 'px,0) rotate(' + p2[2].toFixed(1) + 'deg)';
       }
     }
     requestAnimationFrame(frame);
