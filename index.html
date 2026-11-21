@@ -517,8 +517,22 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 /* inside the turned frame a sideways lock on scrolling would stop the page from being scrolled at all */
 html.is-framed, html.is-framed body { overflow-x: visible; }
 html.is-wide .turn { display: none !important; }
-html.is-wide body > :not(.wide):not(script) { display: none !important; }
+html.is-wide body > :not(.wide):not(script):not(.orient) { display: none !important; }
 html.is-wide.is-chat-up body > #chat:not([hidden]) { display: flex !important; z-index: 120; }   /* the chat opens upright over the turned site */      /* nothing keeps running underneath */
+/* A small switch on phones: upright view <-> wide view, always within reach */
+.orient { display: none; position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(max(16px, env(safe-area-inset-bottom)) + 60px); z-index: 130; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; place-items: center; cursor: pointer; background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 8px 20px -10px rgba(0,0,0,.35); transition: transform .16s cubic-bezier(.23, 1, .32, 1); -webkit-tap-highlight-color: transparent; }
+.orient:active { transform: scale(.94); }
+.orient svg { width: 22px; height: 22px; }
+.orient .o-wide { display: none; }
+html.no-turn .orient .o-tall { display: none; } html.no-turn .orient .o-wide { display: block; }
+html.is-wide .orient .o-tall { display: block; } html.is-wide .orient .o-wide { display: none; }
+/* over the turned frame the switch sits where the viewer sees it upright, just above the accessibility button */
+html.is-wide .orient { right: auto; left: calc(max(16px, env(safe-area-inset-left)) + 60px); bottom: max(16px, env(safe-area-inset-bottom)); transform: rotate(90deg); }
+html.is-wide .orient:active { transform: rotate(90deg) scale(.94); }
+@media (pointer: coarse) and (max-width: 760px), (pointer: coarse) and (max-height: 500px) { .orient { display: grid; } }
+@media (orientation: portrait) and (max-width: 760px) and (pointer: coarse) { html:not(.no-turn):not(.is-wide) .orient { display: none; } }
+html.is-framed .orient { display: none !important; }
+.orient-tip { position: fixed; left: 50%; bottom: calc(max(16px, env(safe-area-inset-bottom)) + 120px); z-index: 131; transform: translateX(-50%); padding: 10px 16px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: .9375rem; white-space: nowrap; pointer-events: none; }
 @keyframes turn { 0%, 18% { transform: rotate(0); } 48%, 82% { transform: rotate(-90deg); } 100% { transform: rotate(0); } }
 @media (orientation: portrait) and (max-width: 760px) and (pointer: coarse) {
   html:not(.no-turn) .turn { display: grid; }
@@ -1093,6 +1107,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   </div>
 </div>
 
+<button type="button" class="orient" id="orient" aria-label="החלפת תצוגה: לאורך או לרוחב"><svg class="o-tall" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><svg class="o-wide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="10" rx="2.5"/><path d="M18.5 11v2"/></svg></button>
 <button class="a11y-btn" id="a11y-btn" type="button" aria-haspopup="dialog" aria-controls="a11y" aria-expanded="false" aria-label="תפריט נגישות"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.2" r="2.2" fill="currentColor"/><path d="M4.5 8.2 12 9.6l7.5-1.4M12 9.6v4.6m0 0-3.2 6.4m3.2-6.4 3.2 6.4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 <div class="a11y" id="a11y" role="dialog" aria-modal="false" aria-labelledby="a11y-h" hidden>
   <div class="a11y-top"><h2 id="a11y-h">נגישות</h2><button type="button" class="a11y-x" id="a11y-x" aria-label="סגירת תפריט הנגישות">✕</button></div>
@@ -1176,11 +1191,28 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   var root = document.documentElement;
   if (/[?&]wide=1(&|$)/.test(location.search)) { root.classList.add('is-framed'); return; }   // this copy is the one inside the turned frame
   // A phone held upright is first asked to turn, for the full experience; one tap keeps the upright layout instead.
-  try { if (sessionStorage.getItem('tm-upright')) { root.classList.add('no-turn'); return; } } catch (e) {}
-  var stay = document.getElementById('turn-stay'), upright = false;
-  if (stay) stay.addEventListener('click', function () {
-    upright = true; clearTimeout(timer); timer = 0; drop();           // the visitor chose upright: never turn it for them
+  var upright = false;
+  try { if (sessionStorage.getItem('tm-upright')) { upright = true; root.classList.add('no-turn'); } } catch (e) {}
+  function keepUpright() {                                            // the visitor chose upright: never turn it for them
+    upright = true; clearTimeout(timer); timer = 0; drop();
     root.classList.add('no-turn'); try { sessionStorage.setItem('tm-upright', '1'); } catch (e) {}
+  }
+  var stay = document.getElementById('turn-stay');
+  if (stay) stay.addEventListener('click', keepUpright);
+  // the small switch: from the wide view back to upright, and from upright to the wide view
+  var orient = document.getElementById('orient'), tipT = 0;
+  function tip(text) {
+    var t = document.querySelector('.orient-tip') || document.body.appendChild(document.createElement('div'));
+    t.className = 'orient-tip'; t.setAttribute('role', 'status'); t.textContent = text;
+    clearTimeout(tipT); tipT = setTimeout(function () { t.remove(); }, 2600);
+  }
+  if (orient) orient.addEventListener('click', function () {
+    if (frame) { keepUpright(); return; }                               // turned frame -> upright
+    if (tall && tall.matches) {                                         // upright -> wide
+      upright = false; try { sessionStorage.removeItem('tm-upright'); } catch (e) {}
+      root.classList.remove('no-turn'); show(); return;
+    }
+    keepUpright(); tip('סובבו את הטלפון לאורך');                        // the phone itself is turned: ask to hold it upright
   });
   // Instagram's, Facebook's and TikTok's own browsers never turn the page: there the site is shown turned on its
   // side by itself after a moment, and the 'show it wide' button does the same anywhere the rotation is locked
