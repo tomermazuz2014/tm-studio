@@ -489,7 +489,8 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 /* inside the turned frame a sideways lock on scrolling would stop the page from being scrolled at all */
 html.is-framed, html.is-framed body { overflow-x: visible; }
 html.is-wide .turn { display: none !important; }
-html.is-wide body > :not(.wide):not(script) { display: none !important; }      /* nothing keeps running underneath */
+html.is-wide body > :not(.wide):not(script) { display: none !important; }
+html.is-wide.is-chat-up body > #chat:not([hidden]) { display: flex !important; z-index: 120; }   /* the chat opens upright over the turned site */      /* nothing keeps running underneath */
 @keyframes turn { 0%, 18% { transform: rotate(0); } 48%, 82% { transform: rotate(-90deg); } 100% { transform: rotate(0); } }
 @media (orientation: portrait) and (max-width: 760px) and (pointer: coarse) {
   html:not(.no-turn) .turn { display: grid; }
@@ -1628,6 +1629,11 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (small.matches) xBtn.focus({ preventScroll: true }); else input.focus({ preventScroll: true });
   }
   function openChat() {
+    // in the copy shown turned on its side (a phone held upright with its rotation locked) the keyboard would come up
+    // sideways: the page around it opens the chat upright instead, over the turned site
+    if (document.documentElement.classList.contains('is-framed') && window.parent !== window) {
+      try { window.parent.postMessage({ tm: 'chat', book: chat.classList.contains('is-booking') }, location.origin); return; } catch (e) {}
+    }
     if (askBtn.getAttribute('aria-expanded') === 'true') return;
     clearTimeout(hideTimer); clearTimeout(morph);
     askBtn.setAttribute('aria-expanded', 'true');
@@ -1646,7 +1652,7 @@ function tmFilm(cv, src, fh, off, th, o) {
     if (!calm) { chat.classList.remove('is-done'); corner(); void chat.offsetWidth; }
     chat.classList.remove('is-open'); chat.classList.remove('is-done');
     hideTimer = setTimeout(function () {
-      chat.hidden = true; askBtn.classList.remove('is-away');
+      chat.hidden = true; askBtn.classList.remove('is-away'); document.documentElement.classList.remove('is-chat-up');
       if (!calm) {
         void askBtn.offsetWidth; askBtn.classList.remove('is-shut'); askBtn.style.width = askW ? askW + 'px' : '';
         morph = setTimeout(function () { askBtn.style.width = ''; }, 230);
@@ -1665,12 +1671,8 @@ function tmFilm(cv, src, fh, off, th, o) {
       var cv = $('chat-c'), box = cv.parentNode;
       film = tmFilm(cv, 'tomer-live.mp4', 690, 704, 1408, {
         loop: true, when: function () { return !chat.hidden; },
-        onPaint: function () {
-          if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); }
-          if (cx2) { try { cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.drawImage(cv, 0, 0, cv2.width, cv2.height);       // the second rider is the same picture, copied
-            if (cv2.hidden) { cv2.hidden = false; box2.classList.add('is-live'); } } catch (e) {} }
-        },
-        onDead: function () { cv.hidden = true; box.classList.remove('is-live'); if (cv2) { cv2.hidden = true; box2.classList.remove('is-live'); } }
+        onPaint: function () { if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); } },
+        onDead: function () { cv.hidden = true; box.classList.remove('is-live'); }
       }) || { video: null };
     }
     if (film.video) { var go = film.video.play(); if (go && go.catch) go.catch(function () {}); }
@@ -1819,6 +1821,10 @@ function tmFilm(cv, src, fh, off, th, o) {
   tabBook.addEventListener('click', function () { book(true); });
   $('nav-book').addEventListener('click', function () { book(true); openChat(); });
   $('how-book').addEventListener('click', function () { book(true); openChat(); });
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.tm !== 'chat') return;
+    document.documentElement.classList.add('is-chat-up'); book(!!e.data.book); openChat();
+  });
   form.addEventListener('submit', function (e) { e.preventDefault(); var t = input.value; input.value = ''; input.style.height = ''; send(t); });
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true })); } });
   input.addEventListener('input', function () { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight + 2, 120) + 'px'; });
