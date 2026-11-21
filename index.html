@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<!-- Google Ads: measures contact clicks (WhatsApp, Instagram DM) as the "איש קשר" conversion -->
+<!-- Google Ads: measures contact clicks (WhatsApp, Instagram DM, Book a call) as the "איש קשר" conversion -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18587349498"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -10,8 +10,8 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'AW-18587349498');
 document.addEventListener('click', function (e) {
-  var a = e.target.closest && e.target.closest('a[href]');
-  if (!a || !/(^|\/\/)(wa\.me|api\.whatsapp\.com|ig\.me)\//.test(a.href)) return;
+  var t = e.target.closest && e.target.closest('a[href], #cta, #nav-book, #how-book');
+  if (!t || (t.tagName === 'A' && !/(^|\/\/)(wa\.me|api\.whatsapp\.com|ig\.me)\//.test(t.href))) return;
   gtag('event', 'conversion', { send_to: 'AW-18587349498/jHNYCMbWw7wdEPrjkZ9F', value: 1.0, currency: 'ILS', transport_type: 'beacon' });
 }, true);
 </script>
@@ -679,8 +679,6 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
   html:not(.no-night):not(.is-sub) .stage .code .ln { clip-path: none !important; }
   html:not(.no-night):not(.is-sub) .stage .code pre { color: #2A2E1A; }
   html:not(.no-night):not(.is-sub) .stage .code b { color: #5E6C14; } html:not(.no-night):not(.is-sub) .stage .code u { color: #8B5E1A; }
-  html:not(.no-night):not(.is-sub) .ask { top: 50%; bottom: auto; transform-origin: 0 0; transform: rotate(-90deg) translateX(-50%); }
-  html:not(.no-night):not(.is-sub) .ask:active { transform: rotate(-90deg) translateX(-50%) scale(.96); }
   html:not(.no-night):not(.is-sub) .nmoon img, html:not(.no-night):not(.is-sub) .nmoon canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   html:not(.no-night):not(.is-sub) .nmoon.is-live img { opacity: 0; }
 }
@@ -861,6 +859,9 @@ html.a11y-cursor, html.a11y-cursor * { cursor: url("data:image/svg+xml,%3Csvg xm
 }
 /* over the olive Works surface the button turns cream, so it stays in view */
 html.is-low .ask { background: var(--cream); color: var(--olive); }
+/* the opening has its own Book a call button: the chat button waits until the page moves on */
+html.at-hero .ask { opacity: 0; visibility: hidden; pointer-events: none; }
+.ask { transition-property: width, transform, background-color, opacity, visibility; transition-duration: .19s, .16s, .2s, .25s, .25s; }
 .svc-list h3 a.svc-a { color: inherit; text-decoration: none; background: linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat; transition: background-size .25s cubic-bezier(.23,1,.32,1); }
 .svc-list h3 a.svc-a:hover { background-size: 100% 1px; }
 .ask-label { white-space: nowrap; padding: 0 20px 0 46px; transition: opacity .12s ease; }
@@ -1386,6 +1387,21 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   function apply() { nav.classList.toggle('is-ticker', mq.matches && !root.classList.contains('is-sub')); }
   apply(); if (mq.addEventListener) mq.addEventListener('change', apply);
   if (window.MutationObserver) new MutationObserver(apply).observe(root, { attributes: true, attributeFilter: ['class'] });
+})();
+</script>
+<script>
+// The chat button stays out of the opening screen; on Works, the other pages and further down it is there
+(function () {
+  var hero = document.querySelector('#top > .hero'), root = document.documentElement;
+  if (!hero) return;
+  var on = null;
+  function check() {   // in the opening while it still fills more than half the screen
+    var r = hero.getBoundingClientRect(), now = !!hero.offsetParent && r.bottom > innerHeight * 0.5 && r.top < innerHeight * 0.5;
+    if (now !== on) { on = now; root.classList.toggle('at-hero', now); }
+  }
+  addEventListener('scroll', check, { passive: true }); addEventListener('resize', check); addEventListener('hashchange', function () { setTimeout(check, 60); });
+  if (window.MutationObserver) new MutationObserver(check).observe(document.getElementById('top'), { attributes: true, attributeFilter: ['hidden'] });
+  check();
 })();
 </script>
 <script>window.FOOT_ME = { src: 'foot-me.mp4', w: 900, h: 1086, ar: 900 / 1086, seat: 0.5752, point: 4.6, loopFrom: 0 };</script>
