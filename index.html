@@ -490,6 +490,7 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 .turn-ph::after { content: ""; width: 16px; height: 3px; border-radius: 2px; background: var(--ink); }
 .turn h2 { font-size: 1.75rem; font-weight: 900; line-height: 1.15; }
 .turn p { color: var(--muted); font-size: 1.0625rem; }
+.turn .turn-wide { margin-top: 18px; padding: 0 26px; min-height: 48px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-weight: 700; text-decoration: none; }
 .turn button { margin-top: 26px; min-height: 44px; padding: 0 8px; border: 0; background: none; color: var(--muted); font: 500 .9375rem/1 var(--font-sans); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 6px; cursor: pointer; }
 /* If the phone stays upright (its rotation may be locked), after a few seconds the site is shown turned on its side
    anyway: the same page, in a frame as wide as the screen is tall, rotated a quarter turn. */
@@ -875,6 +876,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   <div class="turn-ph" aria-hidden="true"></div>
   <h2 id="turn-h">סובבו את הטלפון</h2>
   <p>לחוויה המלאה, האתר מוצג לרוחב המסך.</p>
+  <button type="button" id="turn-wide" class="turn-wide">להציג לרוחב</button>
   <button type="button" id="turn-stay">להמשיך לאורך</button>
 </div>
 
@@ -1158,7 +1160,11 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   if (stay) stay.addEventListener('click', function () {
     root.classList.add('no-turn'); try { sessionStorage.setItem('tm-upright', '1'); } catch (e) {}
   });
-  return;
+  // Instagram's, Facebook's and TikTok's own browsers never turn the page: there the site is shown turned on its
+  // side by itself after a moment, and the 'show it wide' button does the same anywhere the rotation is locked
+  var inApp = /Instagram|FBAN|FBAV|FB_IAB|musical_ly|TikTok|BytedanceWebview/i.test(navigator.userAgent || '');
+  var wideBtn = document.getElementById('turn-wide');
+  if (wideBtn) wideBtn.addEventListener('click', function () { show(); });
   if (!window.matchMedia) return;
   var tall = window.matchMedia('(orientation: portrait) and (max-width: 760px) and (pointer: coarse)'), timer = 0, frame = null;
   function size() { if (frame) { frame.style.width = window.innerHeight + 'px'; frame.style.height = window.innerWidth + 'px'; } }
@@ -1174,7 +1180,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
     f.src = location.pathname + '?wide=1' + location.hash;
     document.body.appendChild(f); size();
   }
-  function check() { clearTimeout(timer); timer = 0; if (tall.matches) { if (!frame) timer = setTimeout(show, 5000); } else drop(); }
+  function check() { clearTimeout(timer); timer = 0; if (tall.matches) { if (!frame && inApp) timer = setTimeout(show, 2500); } else drop(); }
   if (tall.addEventListener) tall.addEventListener('change', check); else if (tall.addListener) tall.addListener(check);
   window.addEventListener('resize', size);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', check); else check();
