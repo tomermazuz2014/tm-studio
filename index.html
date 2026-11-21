@@ -101,9 +101,9 @@ h1, h2, h3, p { margin: 0; }
 .header { display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
 /* A painted sun with Tomer's face under the logo: computers, and beside it on upright phones */
 .sun { display: none; }
-@media (max-width: 760px) and (orientation: portrait) {                /* upright phones: the sun sits beside the logo */
+@media (max-width: 760px) and (orientation: portrait) {                /* upright phones: the sun sits beside the first line of the title */
   .header { position: relative; }
-  .sun { display: block; position: absolute; left: max(10px, env(safe-area-inset-left)); top: 2px; width: 66px; aspect-ratio: 1; pointer-events: none; animation: sun-in .7s var(--ease-out) both; }
+  .sun { display: block; position: absolute; left: max(8px, env(safe-area-inset-left)); top: calc(100% + 4px); width: min(24vw, 96px); aspect-ratio: 1; pointer-events: none; animation: sun-in .7s var(--ease-out) both; }
   .sun img, .sun canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .sun.is-live img { opacity: 0; }
 }
@@ -1022,7 +1022,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   .hero > .copy { grid-column: 1; grid-row: 1; }
   .hero > .stage { grid-column: 1; grid-row: 2; }
   .copy h1 { font-size: clamp(2.75rem, 13vw, 4.25rem); }
-  .copy h1[dir="ltr"] { font-size: clamp(4rem, 20vw, 6.25rem); }
+  .copy h1[dir="ltr"] { font-size: clamp(3.6rem, 18vw, 6.25rem); }
   .lead { margin-top: 16px; }
   .actions { margin-top: 22px; }
   .actions .btn { flex: 1 1 100%; }
