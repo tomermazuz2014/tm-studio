@@ -503,7 +503,7 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 }
 
 /* ---------- Footer: a giant line to close the site, with Tomer sitting on its letters ---------- */
-.foot { position: relative; background: #171A10; color: #F3EEDD; overflow: clip; overflow-clip-margin: 0; isolation: isolate; padding-top: clamp(40px, 5vw, 72px); }
+.foot { position: relative; z-index: 5; background: #171A10; color: #F3EEDD; overflow: visible; isolation: isolate; padding-top: clamp(40px, 5vw, 72px); }
 .foot > .wrap { max-width: 1180px; }
 .foot::before { content: ""; position: absolute; inset: 0 0 auto; height: 70%; z-index: -1; pointer-events: none;
   background: radial-gradient(60% 60% at 70% 30%, rgba(102, 115, 42, .38), transparent 70%), radial-gradient(40% 50% at 15% 10%, rgba(243, 238, 221, .07), transparent 70%); }
@@ -565,7 +565,6 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
   .foot-cols { gap: 14px; grid-template-columns: auto auto; justify-content: start; }
   .foot-cols > div:nth-child(2), .foot-cols > div:nth-child(3) { display: none; }
   .foot-me { --me-x: 11%; }
-  .foot.is-big { overflow: visible; }
   .foot.is-big .foot-stage { z-index: 3; }
   .foot-cols a, .foot-cols li > span { white-space: nowrap; }
   .foot-cols h3 { margin-bottom: 4px; font-size: .68rem; }
