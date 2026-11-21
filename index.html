@@ -92,6 +92,14 @@ h1, h2, h3, p { margin: 0; }
 .nav-link[lang="en"] { font-family: var(--font-en); font-size: .9375rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
 .nav-link[aria-current] { color: var(--ink); }
 @media (max-width: 520px) { .nav { gap: 18px; } .nav-link.out { display: none; } }
+/* a phone held upright: the logo on its own line, the menu in one row under it */
+@media (max-width: 760px) and (orientation: portrait) {
+  .header { flex-wrap: wrap; justify-content: center; gap: 4px; padding-block: 8px 4px; }
+  .header .brand { width: 100%; display: flex; justify-content: center; }
+  .brand img { height: 40px; }
+  .nav { width: 100%; justify-content: space-between; gap: 0; }
+  .nav-link { min-height: 40px; font-size: .78rem; letter-spacing: .04em; white-space: nowrap; }
+}
 .nav-book { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; }
 .nav-link { display: inline-flex; align-items: center; min-height: 44px; font-size: .9375rem; color: var(--muted); text-decoration: none; transition: color .2s ease; }
 
@@ -1143,6 +1151,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 (function () {
   var root = document.documentElement;
   if (/[?&]wide=1(&|$)/.test(location.search)) { root.classList.add('is-framed'); return; }   // this copy is the one inside the turned frame
+  root.classList.add('no-turn'); return;                              // a phone held upright gets the upright layout of the site
   if (!window.matchMedia) return;
   var tall = window.matchMedia('(orientation: portrait) and (max-width: 760px) and (pointer: coarse)'), timer = 0, frame = null;
   function size() { if (frame) { frame.style.width = window.innerHeight + 'px'; frame.style.height = window.innerWidth + 'px'; } }
