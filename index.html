@@ -327,7 +327,8 @@ main { flex: 1; }
 
 /* ---------- How I Work: a page of its own, reached at #how. Light stone, olive headings, a lot of air. ---------- */
 .how { position: relative; overflow-x: clip; background: #E8E2D8; min-height: calc(100svh - 92px); display: grid; align-items: center; padding-block: clamp(64px, 13vh, 168px) clamp(72px, 14vh, 176px); }
-.how-head h1 { font-family: var(--font-en); font-weight: 600; font-size: clamp(3.25rem, 9.5vw, 8rem); line-height: .98; letter-spacing: -.015em; color: var(--accent); text-align: right; }
+.how-head { text-align: left; }                                   /* the title stands on the left, the riders cross the open space */
+.how-head h1 { font-family: var(--font-en); font-weight: 600; font-size: clamp(3.25rem, 9.5vw, 8rem); line-height: .98; letter-spacing: -.015em; color: var(--accent); text-align: left; }
 .how-head p { margin-top: clamp(12px, 2vh, 20px); font-size: clamp(1.0625rem, 1.7vw, 1.375rem); color: var(--ink); opacity: .78; }
 .how-steps { list-style: none; margin: clamp(48px, 10vh, 120px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 5vw, 88px); }
 .how-steps li { border-top: 1px solid rgba(81, 92, 27, .34); padding-top: clamp(18px, 3vh, 32px); }
@@ -348,7 +349,7 @@ main { flex: 1; }
 .how-dragon canvas[hidden] { display: none; }
 /* a second rider crosses the open space low on the page at the same moment, the other way: from the right, out to the left */
 .how-dragon-2 { width: clamp(240px, 32vw, 620px); }
-.how-dragon-2 img, .how-dragon-2 canvas { transform: scaleX(-1); }
+#how-dragon img, #how-dragon canvas { transform: scaleX(-1); }      /* the top rider now flies from the right to the left, the low one the other way */
 .how-dragon.is-live img { opacity: 0; }
 
 /* ---------- Services: a page of its own, reached at #services ---------- */
@@ -2171,8 +2172,8 @@ function tmFilm(cv, src, fh, off, th, o) {
     var head = sec.querySelector('.how-head h1');
     function at(u, q) {
       var r = head.getBoundingClientRect(), o = sec.getBoundingClientRect(), y = r.top - o.top + r.height * 0.5;
-      var x0 = -q.d * 0.7, x1 = q.w + q.d * 0.7, wave = Math.sin(u * Math.PI * 5);
-      return [x0 + (x1 - x0) * u, y + wave * q.d * 0.022, Math.cos(u * Math.PI * 5) * 2];
+      var x0 = q.w + q.d * 0.7, x1 = -q.d * 0.7, wave = Math.sin(u * Math.PI * 5);
+      return [x0 + (x1 - x0) * u, y + wave * q.d * 0.022, -Math.cos(u * Math.PI * 5) * 2];
     }
     // the second one: from past the right edge out past the left one, low on the page beside the booking button
     var low = sec.querySelector('#how-book');
@@ -2180,8 +2181,8 @@ function tmFilm(cv, src, fh, off, th, o) {
       var o = sec.getBoundingClientRect(), r = low ? low.getBoundingClientRect() : null;
       var y = r ? r.top - o.top + r.height * 0.5 : q.h * 0.8;
       y = Math.min(y, window.innerHeight - o.top - d * 0.42);               // on a short screen the button is below the fold: keep him in sight
-      var x0 = q.w + d * 0.7, x1 = -d * 0.7, wave = Math.sin(u * Math.PI * 5 + 1.3);
-      return [x0 + (x1 - x0) * u, y + wave * d * 0.022, -Math.cos(u * Math.PI * 5 + 1.3) * 2];
+      var x0 = -d * 0.7, x1 = q.w + d * 0.7, wave = Math.sin(u * Math.PI * 5 + 1.3);
+      return [x0 + (x1 - x0) * u, y + wave * d * 0.022, Math.cos(u * Math.PI * 5 + 1.3) * 2];
     }
     function frame(now) {
       requestAnimationFrame(frame);
