@@ -535,7 +535,7 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 .foot-word span.dot { color: #A9B65E; }
 .foot.is-pre .foot-word span { transform: translateY(42%); opacity: 0; }
 .foot-word span:hover { transform: translateY(-6%); color: #A9B65E; transition-delay: 0s; transition-duration: .35s; }
-.foot-side { display: none; position: absolute; left: 0; bottom: 100%; z-index: 1; margin: 0 0 14px; padding: 0; list-style: none; direction: rtl; gap: 0; text-align: right; }
+.foot-side { display: none; position: absolute; left: 0; bottom: 100%; z-index: 1; margin: 0; padding: 0; list-style: none; direction: rtl; gap: 0; text-align: right; }
 .foot-side-r { left: auto; right: 0; }
 .foot-side a { display: inline-block; padding: 3px 0; font-size: .92rem; color: rgba(243, 238, 221, .86); white-space: nowrap; }
 .foot-me { position: absolute; z-index: 2; pointer-events: none; aspect-ratio: 900 / 1086; width: 22%; left: var(--me-x, 44%); }
@@ -581,13 +581,15 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
   .foot-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 24px; align-items: center; }
   .foot-call h2 { font-size: 1.45rem; margin-bottom: 10px; }
   .foot-call p { display: none; }
-  .foot-acts { gap: 8px; }
-  .foot-btn { min-height: 38px; padding: 0 14px; font-size: .86rem; gap: 7px; }
+  .foot-acts { gap: 6px; flex-direction: column; align-items: stretch; width: max-content; }
+  .foot-btn { min-height: 36px; padding: 0 14px; font-size: .86rem; gap: 7px; justify-content: center; }
   .foot-btn svg { width: 16px; height: 16px; }
   .foot-top { grid-template-columns: minmax(0, .9fr) minmax(0, 1.2fr); }
   .foot-cols { gap: 14px; grid-template-columns: auto auto; justify-content: start; }
-  .foot-cols > div:nth-child(2), .foot-cols > div:nth-child(3) { display: none; }
-  .foot-me { --me-x: 11%; }
+  .foot-cols { display: none; }                                    /* the services sit on both sides of Tomer instead */
+  .foot-side { display: grid !important; }
+  .foot-top { grid-template-columns: 1fr; justify-items: start; }
+  .foot-me { --me-x: 17%; }
   .foot.is-big .foot-stage { z-index: 3; }
   .foot-cols a, .foot-cols li > span { white-space: nowrap; }
   .foot-cols h3 { margin-bottom: 4px; font-size: .68rem; }
@@ -1277,6 +1279,13 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
     foot.classList.toggle('is-big', big > 1);                 // his feet end at the foot of the letters
     me.style.width = mw + 'px';
     me.style.top = (capTop - M.seat * mh) + 'px'; me.style.bottom = 'auto';
+    var sideL = foot.querySelector('.foot-side:not(.foot-side-r)'), sideR = foot.querySelector('.foot-side-r');
+    if (sideL && sideR) {                                              // the services stand close on both sides of him
+      var st = word.parentNode.clientWidth, x = me.offsetLeft, gap = Math.max(10, mw * 0.06);
+      sideL.style.left = 'auto'; sideL.style.right = Math.max(0, st - x + gap) + 'px';
+      sideR.style.right = 'auto'; sideR.style.left = Math.min(st - sideR.offsetWidth, x + mw + gap) + 'px';
+      sideL.style.bottom = sideR.style.bottom = (word.parentNode.clientHeight - capTop + 8) + 'px';
+    }
   }
   fit(); window.addEventListener('resize', fit); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   var a11y = document.getElementById('foot-a11y'), a11yBtn = document.getElementById('a11y-btn');
