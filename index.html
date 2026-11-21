@@ -1171,8 +1171,9 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   if (/[?&]wide=1(&|$)/.test(location.search)) { root.classList.add('is-framed'); return; }   // this copy is the one inside the turned frame
   // A phone held upright is first asked to turn, for the full experience; one tap keeps the upright layout instead.
   try { if (sessionStorage.getItem('tm-upright')) { root.classList.add('no-turn'); return; } } catch (e) {}
-  var stay = document.getElementById('turn-stay');
+  var stay = document.getElementById('turn-stay'), upright = false;
   if (stay) stay.addEventListener('click', function () {
+    upright = true; clearTimeout(timer); timer = 0; drop();           // the visitor chose upright: never turn it for them
     root.classList.add('no-turn'); try { sessionStorage.setItem('tm-upright', '1'); } catch (e) {}
   });
   // Instagram's, Facebook's and TikTok's own browsers never turn the page: there the site is shown turned on its
@@ -1185,7 +1186,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   function size() { if (frame) { frame.style.width = window.innerHeight + 'px'; frame.style.height = window.innerWidth + 'px'; } }
   function drop() { if (frame) { frame.remove(); frame = null; } root.classList.remove('is-wide'); }
   function show() {
-    timer = 0; if (!tall.matches || frame) return;
+    timer = 0; if (upright || !tall.matches || frame) return;
     var f = frame = document.createElement('iframe'); f.className = 'wide'; f.title = document.title; f.setAttribute('allow', 'autoplay');
     f.addEventListener('load', function () {
       var ok = false; try { ok = !!f.contentDocument.getElementById('top'); } catch (e) {}
@@ -1195,7 +1196,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
     f.src = location.pathname + '?wide=1' + location.hash;
     document.body.appendChild(f); size();
   }
-  function check() { clearTimeout(timer); timer = 0; if (tall.matches) { if (!frame && inApp) timer = setTimeout(show, 2500); } else drop(); }
+  function check() { clearTimeout(timer); timer = 0; if (upright) return; if (tall.matches) { if (!frame && inApp) timer = setTimeout(show, 2500); } else drop(); }
   if (tall.addEventListener) tall.addEventListener('change', check); else if (tall.addListener) tall.addListener(check);
   window.addEventListener('resize', size);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', check); else check();
