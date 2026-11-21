@@ -101,6 +101,7 @@ h1, h2, h3, p { margin: 0; }
 .header { display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
 /* A painted sun with Tomer's face under the logo: computers, and beside it on upright phones */
 .sun, .nmoon { display: none; }
+html.is-sub .sun, html.is-sub .nmoon { display: none !important; }
 @media (max-width: 760px) and (orientation: portrait) {                /* upright phones: the sun sits beside the first line of the title */
   .header { position: relative; }
   .sun { display: block; position: absolute; right: max(var(--gutter), env(safe-area-inset-right)); top: 4px; width: min(21vw, 92px); aspect-ratio: 1; pointer-events: none; animation: sun-in .7s var(--ease-out) both; }
@@ -129,8 +130,10 @@ h1, h2, h3, p { margin: 0; }
 /* a phone held upright: the logo on its own line, the menu in one row under it */
 @media (max-width: 760px) and (orientation: portrait) {
   .header { flex-wrap: wrap; justify-content: center; gap: 4px; padding-block: 8px 4px; }
-  .header .brand { width: 100%; display: flex; justify-content: left; min-height: min(21vw, 92px); }
-  .brand img { height: clamp(40px, 12.5vw, 54px); }
+  .header .brand { width: 100%; display: flex; justify-content: center; }
+  .brand img { height: 40px; }
+  html:not(.is-sub) .header .brand { justify-content: left; min-height: min(21vw, 92px); }   /* home: logo left, the sun on the right */
+  html:not(.is-sub) .header .brand img { height: clamp(40px, 12.5vw, 54px); }
   .nav { width: 100%; justify-content: space-between; gap: 0; }
   /* the menu glides past slowly, like a ticker; touching it holds it still */
   .nav.is-ticker { direction: ltr; display: block; overflow: hidden; margin-inline: calc(-1 * var(--gutter)); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
@@ -642,20 +645,20 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 /* ---------- Night: the sideways view on a phone. The sun turns into the moon and the colours swap —
    the opening is olive and Works is white. ---------- */
 @media (orientation: landscape) and (max-height: 500px) {
-  html:not(.no-night) body { background: #4B5519; }
-  html:not(.no-night) .header, html:not(.no-night) #top > .hero { --ink: #F3EEDD; --muted: rgba(243, 238, 221, .76); --line: rgba(243, 238, 221, .3); --accent: #C5D17A; --on-accent: #2A300C; --shade: rgba(0, 0, 0, .35); color: var(--ink); }
-  html:not(.no-night) .header { background: #4B5519; }
-  html:not(.no-night) #top > .hero { background: #4B5519 radial-gradient(70% 80% at 30% 40%, #5F6C22 0, #4B5519 100%); }
-  html:not(.no-night) .header .brand img { filter: brightness(0) invert(.94) sepia(.25); }
-  html:not(.no-night) .nav-link { color: rgba(243, 238, 221, .82); }
-  html:not(.no-night) .nav-link:hover, html:not(.no-night) .nav-link[aria-current] { color: #F3EEDD; }
-  html:not(.no-night) .works { background: #FFFFFF radial-gradient(64% 66% at 50% 46%, #FFFFFF 0, #F4F3EC 100%); color: #1D2014; }
-  html:not(.no-night) .works-hint, html:not(.no-night) .works-hint::before { color: #3A3F26; }
-  html:not(.no-night) .works .disc { box-shadow: inset -.04em -.07em .18em rgba(70, 72, 60, .15), 0 .12em .4em -.05em rgba(30, 36, 10, .35), 0 0 0 1px rgba(30, 36, 10, .06); }
-  html:not(.no-night) .header { position: relative; z-index: 6; }
-  html:not(.no-night) .nmoon { display: block; position: absolute; left: calc(50% - 34px); top: calc(100% + 2px); width: clamp(96px, 30vh, 140px); aspect-ratio: 1; pointer-events: none; z-index: 3; animation: sun-in .7s var(--ease-out) both; }
-  html:not(.no-night) .nmoon img, html:not(.no-night) .nmoon canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  html:not(.no-night) .nmoon.is-live img { opacity: 0; }
+  html:not(.no-night):not(.is-sub) body { background: #4B5519; }
+  html:not(.no-night):not(.is-sub) .header, html:not(.no-night):not(.is-sub) #top > .hero { --ink: #F3EEDD; --muted: rgba(243, 238, 221, .76); --line: rgba(243, 238, 221, .3); --accent: #C5D17A; --on-accent: #2A300C; --shade: rgba(0, 0, 0, .35); color: var(--ink); }
+  html:not(.no-night):not(.is-sub) .header { background: #4B5519; }
+  html:not(.no-night):not(.is-sub) #top > .hero { background: #4B5519 radial-gradient(70% 80% at 30% 40%, #5F6C22 0, #4B5519 100%); }
+  html:not(.no-night):not(.is-sub) .header .brand img { filter: brightness(0) invert(.94) sepia(.25); }
+  html:not(.no-night):not(.is-sub) .nav-link { color: rgba(243, 238, 221, .82); }
+  html:not(.no-night):not(.is-sub) .nav-link:hover, html:not(.no-night):not(.is-sub) .nav-link[aria-current] { color: #F3EEDD; }
+  html:not(.no-night):not(.is-sub) .works { background: #FFFFFF radial-gradient(64% 66% at 50% 46%, #FFFFFF 0, #F4F3EC 100%); color: #1D2014; }
+  html:not(.no-night):not(.is-sub) .works-hint, html:not(.no-night):not(.is-sub) .works-hint::before { color: #3A3F26; }
+  html:not(.no-night):not(.is-sub) .works .disc { box-shadow: inset -.04em -.07em .18em rgba(70, 72, 60, .15), 0 .12em .4em -.05em rgba(30, 36, 10, .35), 0 0 0 1px rgba(30, 36, 10, .06); }
+  html:not(.no-night):not(.is-sub) .header { position: relative; z-index: 6; }
+  html:not(.no-night):not(.is-sub) .nmoon { display: block; position: absolute; left: calc(50% - 34px); top: calc(100% + 2px); width: clamp(96px, 30vh, 140px); aspect-ratio: 1; pointer-events: none; z-index: 3; animation: sun-in .7s var(--ease-out) both; }
+  html:not(.no-night):not(.is-sub) .nmoon img, html:not(.no-night):not(.is-sub) .nmoon canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  html:not(.no-night):not(.is-sub) .nmoon.is-live img { opacity: 0; }
 }
 
 /* ---------- A phone held upright is asked to turn: the site is laid out for a wide screen ---------- */
@@ -1355,8 +1358,10 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
     if (el.tagName === 'BUTTON') el.addEventListener('click', function () { orig.click(); });
   });
   track.appendChild(set); track.appendChild(copy); nav.appendChild(track);
-  function apply() { nav.classList.toggle('is-ticker', mq.matches); }
+  var root = document.documentElement;
+  function apply() { nav.classList.toggle('is-ticker', mq.matches && !root.classList.contains('is-sub')); }
   apply(); if (mq.addEventListener) mq.addEventListener('change', apply);
+  if (window.MutationObserver) new MutationObserver(apply).observe(root, { attributes: true, attributeFilter: ['class'] });
 })();
 </script>
 <script>window.FOOT_ME = { src: 'foot-me.mp4', w: 900, h: 1086, ar: 900 / 1086, seat: 0.5752, point: 4.6, loopFrom: 0 };</script>
@@ -2489,6 +2494,7 @@ function tmFilm(cv, src, fh, off, th, o) {
     var h = location.hash, on = h === '#services', onHow = h === '#how';
     if (on !== svc.hidden && onHow !== how.hidden) return;        // already on the right page
     svc.hidden = !on; how.hidden = !onHow; home.hidden = on || onHow;
+    document.documentElement.classList.toggle('is-sub', on || onHow);   // sun, moon, night and the ticker belong to the home page only
     document.title = on ? 'Services · ' + name : (onHow ? 'How I Work · ' + name : name);
     if (on) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
     if (onHow) linkHow.setAttribute('aria-current', 'page'); else linkHow.removeAttribute('aria-current');
