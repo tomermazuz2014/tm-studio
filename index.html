@@ -616,6 +616,7 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 html.is-framed, html.is-framed body { overflow-x: visible; }
 html.is-wide .turn { display: none !important; }
 html.is-wide body > :not(.wide):not(script):not(.orient):not(.wide-wait) { display: none !important; }
+.wide.is-ready-wait { visibility: hidden; pointer-events: none; }
 .wide-wait { position: fixed; inset: 0; z-index: 101; display: grid; place-content: center; justify-items: center; gap: 16px; background: var(--bg); color: var(--muted); }
 .wide-wait > * { transform: rotate(90deg); }
 .wide-wait { grid-auto-flow: column; direction: rtl; }
@@ -1430,7 +1431,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
     clearTimeout(tipT); tipT = setTimeout(function () { t.remove(); }, 2600);
   }
   if (orient) orient.addEventListener('click', function () {
-    if (frame) { keepUpright(); return; }                               // turned frame -> upright
+    if (root.classList.contains('is-wide')) { keepUpright(); return; }  // turned view -> upright
     if (tall && tall.matches) {                                         // upright -> wide
       upright = false; try { sessionStorage.removeItem('tm-upright'); } catch (e) {}
       root.classList.remove('no-turn'); show(); return;
@@ -1445,23 +1446,33 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   if (!window.matchMedia) return;
   var tall = window.matchMedia('(orientation: portrait) and (max-width: 760px) and (pointer: coarse)'), timer = 0, frame = null;
   function size() { if (frame) { frame.style.width = window.innerHeight + 'px'; frame.style.height = window.innerWidth + 'px'; } }
-  function drop() { if (frame) { frame.remove(); frame = null; } root.classList.remove('is-wide', 'is-wide-wait'); var w = document.querySelector('.wide-wait'); if (w) w.remove(); }
-  function show() {
-    timer = 0; if (upright || !tall.matches || frame) return;
-    var f = frame = document.createElement('iframe'); f.className = 'wide'; f.title = document.title; f.setAttribute('allow', 'autoplay');
-    root.classList.add('is-wide', 'is-wide-wait');                   // the tap answers at once: the turned view opens, loading
-    var wait = document.createElement('div'); wait.className = 'wide-wait'; wait.setAttribute('role', 'status');
-    wait.innerHTML = '<img src="logo.webp" alt=""><i></i><span>מסובבים את האתר…</span>'; document.body.appendChild(wait);
+  function drop() { if (frame) { frame.remove(); frame = null; } root.classList.remove('is-wide'); }
+  // The turned copy is made ahead, out of sight, while the request to turn is on screen: a tap then shows it at once.
+  var frameOk = false, prep = 0;
+  function make() {
+    if (frame) return frame;
+    var f = frame = document.createElement('iframe'); f.className = 'wide is-ready-wait'; f.title = document.title; f.setAttribute('allow', 'autoplay'); frameOk = false;
     f.addEventListener('load', function () {
       var ok = false; try { ok = !!f.contentDocument.getElementById('top'); } catch (e) {}
       if (f !== frame) return;
-      wait.remove(); root.classList.remove('is-wide-wait');
+      frameOk = ok;
       if (!ok) drop();                                                 // where the page may not be framed, the request to turn stays
     });
     f.src = location.pathname + '?wide=1' + location.hash;
     document.body.appendChild(f); size();
+    return f;
   }
-  function check() { clearTimeout(timer); timer = 0; if (upright) return; if (tall.matches) { if (!frame && inApp) timer = setTimeout(show, 2500); } else drop(); }
+  function show() {
+    timer = 0; if (upright || !tall.matches) return;
+    var f = make(); f.classList.remove('is-ready-wait'); root.classList.add('is-wide');
+  }
+  function check() {
+    clearTimeout(timer); timer = 0; clearTimeout(prep); if (upright) return;
+    if (tall.matches) {
+      if (!frame) prep = setTimeout(make, document.readyState === 'complete' ? 600 : 1800);   // made quietly in the background
+      if (inApp && !root.classList.contains('is-wide')) timer = setTimeout(show, 2500);
+    } else drop();
+  }
   if (tall.addEventListener) tall.addEventListener('change', check); else if (tall.addListener) tall.addListener(check);
   window.addEventListener('resize', size);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', check); else check();
