@@ -289,7 +289,7 @@ main { flex: 1; }
 .works.is-grab .wstage, .works.is-grab .work { cursor: grabbing; }
 .works.is-ring .work::after { display: block; opacity: 0; }
 .works.is-ring .work.palm .work-name { top: auto; bottom: -11px; }
-@media (min-width: 761px) and (prefers-reduced-motion: no-preference), (orientation: landscape) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 761px), (orientation: landscape) {
   .works-pin { height: calc(100svh + max(95vh, 640px)); }
   .works-pin .works { position: sticky; top: 0; height: 100svh; min-height: 0; }
 }
@@ -297,12 +297,12 @@ main { flex: 1; }
 @supports (height: 100dvh) {
   .works { --sh: min(100vw * 1080 / 1916, 89dvh); min-height: 100dvh; padding: 3dvh 0 7dvh; }
   .wstage { --sw: min(100vw, calc(89dvh * 1916 / 1080)); }
-  @media (min-width: 761px) and (prefers-reduced-motion: no-preference), (orientation: landscape) and (prefers-reduced-motion: no-preference) {
+  @media (min-width: 761px), (orientation: landscape) {
     .works-pin { height: calc(100dvh + max(95vh, 640px)); }
     .works-pin .works { height: 100dvh; }
   }
   /* a finger turns the ring itself, so on a touch screen the section holds the page for a much shorter stretch */
-  @media (pointer: coarse) and (orientation: landscape) and (prefers-reduced-motion: no-preference) {
+  @media (pointer: coarse) and (orientation: landscape) {
     .works-pin { height: calc(100dvh + 260px); }
   }
 }
@@ -347,6 +347,11 @@ main { flex: 1; }
   }
 .how-dragon img, .how-dragon canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .how-dragon canvas[hidden] { display: none; }
+/* where the clip cannot play, the same flight runs from a sheet of its frames */
+.how-seq { position: absolute; inset: 0; display: none; background: url(dragon3-seq.webp) 0 0 / 600% 400% no-repeat; }
+.how-dragon.is-seq .how-seq { display: block; }
+.how-dragon.is-seq img, .how-dragon.is-seq canvas { display: none; }
+#how-dragon .how-seq { transform: scaleX(-1); }
 /* a second rider crosses the open space low on the page at the same moment, the other way: from the right, out to the left */
 .how-dragon-2 { width: clamp(240px, 32vw, 620px); }
 #how-dragon img, #how-dragon canvas { transform: scaleX(-1); }      /* the top rider now flies from the right to the left, the low one the other way */
@@ -431,7 +436,7 @@ main { flex: 1; }
    Scroll back and he pushes himself up again. */
 .svc-press { display: none; grid-column: 1; grid-row: 1 / span 2; align-self: end; justify-self: center; height: var(--ph); pointer-events: none; }
 .svc-press i { display: block; height: 100%; aspect-ratio: 340 / 718; background: url(press.webp) 0 0 / 800% 500% no-repeat; transform-origin: 50% 100%; will-change: transform; }
-@media (prefers-reduced-motion: no-preference) and (min-width: 761px), (prefers-reduced-motion: no-preference) and (orientation: landscape) {
+@media (min-width: 761px), (orientation: landscape) {
   .svc-group { --ph: clamp(150px, 46svh, 300px); }
   .svc-press { display: block; }
 }
@@ -848,7 +853,6 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   .toast { left: 66%; top: 42%; font-size: .8125rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
   .chat { clip-path: none; opacity: 0; transition: opacity .15s ease !important; }   /* a short fade, no turn */
   .chat.is-open { clip-path: none; opacity: 1; }
   .chat-cover { display: none; }
@@ -1012,7 +1016,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 
 <main id="how" hidden>
 <section class="how" aria-labelledby="how-h">
-  <div class="how-fly" aria-hidden="true"><div class="how-dragon" id="how-dragon"><img src="dragon3.webp" alt="" width="800" height="899" draggable="false"><canvas id="dragon-c" width="1200" height="1348" hidden></canvas></div><div class="how-dragon how-dragon-2" id="how-dragon-2"><img src="dragon3.webp" alt="" width="800" height="899" draggable="false"><canvas id="dragon-c2" width="1200" height="1348" hidden></canvas></div></div>
+  <div class="how-fly" aria-hidden="true"><div class="how-dragon" id="how-dragon"><img src="dragon3.webp" alt="" width="800" height="899" draggable="false"><canvas id="dragon-c" width="1200" height="1348" hidden></canvas><i class="how-seq"></i></div><div class="how-dragon how-dragon-2" id="how-dragon-2"><img src="dragon3.webp" alt="" width="800" height="899" draggable="false"><canvas id="dragon-c2" width="1200" height="1348" hidden></canvas><i class="how-seq"></i></div></div>
   <div class="wrap">
     <header class="how-head">
       <h1 id="how-h" lang="en" dir="ltr">How I Work</h1>
@@ -1258,7 +1262,7 @@ function tmFilm(cv, src, fh, off, th, o) {
       scenes: [['scenes/eagle.webp', 2000, 1342, 'לוח הבקרה של מערכת השירות של איגל מלגזות על מחשב נייד, עם נתוני דמו']],
       flat: [['works/eagle-1.webp', 2160, 1350, 'לוח הבקרה: מדדי היום, תור הקריאות לשיבוץ ועומס הטכנאים, עם נתוני דמו']] }
   ];
-  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var calm = false;                                   // the clips always play
   var opener = null, moved = 0;
 
   // Tomer stands in the section when it arrives. He claps, the projects fly out of his hands to their places, he opens
@@ -1822,7 +1826,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   fit();
 })();
 (function () {
-  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var calm = false;                                   // the clips always play
   var stage = document.getElementById('stage'), world = document.getElementById('world');
   var cam = document.getElementById('cam'), film = document.getElementById('film');
   var say = document.getElementById('say'), cta = document.getElementById('cta'), pauseBtn = document.getElementById('pause');
@@ -2048,7 +2052,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   }
   // the opening film: it plays when the Services page opens; where the browser will not start it, a play button waits
   var filmBox = document.getElementById('svc-film'), film = document.getElementById('svc-v'), playBtn = document.getElementById('svc-play');
-  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var still = false;                                  // the clips always play
   // Which part of the wide picture a narrow screen keeps, by time: the laptop while he sits down and the camera goes
   // in, then him on his way to the door, then him and the tile he touches, then him in front of the board.
   var FOCUS = [[0, 46], [0.9, 42], [3.3, 50], [5.8, 58], [7.1, 78], [9.5, 58], [10.5, 52], [14, 50], [16.6, 38]];
@@ -2148,8 +2152,8 @@ function tmFilm(cv, src, fh, off, th, o) {
     var box = document.getElementById('how-dragon'), cv = document.getElementById('dragon-c');
     var box2 = document.getElementById('how-dragon-2'), cv2 = document.getElementById('dragon-c2'), cx2 = cv2 && cv2.getContext('2d');
     if (!box) return;
-    var sec = how.querySelector('.how'), quiet = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var FLY = 7, WAIT = 4, t0 = -1, clipOn = null, seen = false;
+    var sec = how.querySelector('.how'), quiet = false;
+    var FLY = 7, WAIT = 0.4, t0 = -1, clipOn = null, seen = false, seqAt = 1e12;          // they come round again right away, without end
     function size() { return { w: sec.clientWidth, h: sec.clientHeight, d: box.clientWidth }; }
     if (quiet) {                                       // no flight: he hovers in the open space beside the title
       var q = size(); box.style.opacity = 1; box.style.transform = 'translate(' + (q.w * 0.26 - q.d / 2).toFixed(0) + 'px,' + (q.h * 0.03).toFixed(0) + 'px)';
@@ -2184,13 +2188,24 @@ function tmFilm(cv, src, fh, off, th, o) {
       var x0 = -d * 0.7, x1 = q.w + d * 0.7, wave = Math.sin(u * Math.PI * 5 + 1.3);
       return [x0 + (x1 - x0) * u, y + wave * d * 0.022, Math.cos(u * Math.PI * 5 + 1.3) * 2];
     }
+    // a phone that holds silent clips back (low power mode) lets them play after any touch: try again then
+    var asked = 0;
+    function nudge() { if (clipOn && clipOn.video && clipOn.loaded && clipOn.video.paused && !clipOn.dead && !how.hidden && !window.tmStill) { var g = clipOn.video.play(); if (g && g.catch) g.catch(function () {}); } }
+    ['touchstart', 'pointerdown', 'scroll', 'keydown'].forEach(function (e) { window.addEventListener(e, nudge, { passive: true }); });
+    document.addEventListener('visibilitychange', nudge);
     function frame(now) {
       requestAnimationFrame(frame);
       if (box2) box2.style.opacity = 0;
       if (window.tmStill) { box.style.opacity = 0; t0 = -1; return; }
       if (how.hidden || document.hidden) { t0 = -1; if (clipOn && clipOn.video && !clipOn.video.paused) clipOn.video.pause(); return; }
-      if (!seen) { seen = true; clip(); }
-      if (clipOn && clipOn.video && clipOn.loaded && clipOn.video.paused && !clipOn.dead) { var g = clipOn.video.play(); if (g && g.catch) g.catch(function () {}); }
+      if (!seen) { seen = true; clip(); seqAt = now + 1800; }
+      // no picture from the clip yet: the frame sheet takes over, and gives way again as soon as the clip plays
+      var live = box.classList.contains('is-live') && clipOn && clipOn.video && !clipOn.video.paused;
+      if (!live && now > seqAt) {
+        var fr = Math.floor(now / 1000 * 6.12) % 24, pos = ((fr % 6) / 5 * 100).toFixed(2) + '% ' + (Math.floor(fr / 6) / 3 * 100).toFixed(2) + '%';
+        [box, box2].forEach(function (b) { if (b) { b.classList.add('is-seq'); b.querySelector('.how-seq').style.backgroundPosition = pos; } });
+      } else if (live) [box, box2].forEach(function (b) { if (b) b.classList.remove('is-seq'); });
+      if (clipOn && clipOn.video && clipOn.loaded && clipOn.video.paused && !clipOn.dead && now - asked > 400) { asked = now; var g = clipOn.video.play(); if (g && g.catch) g.catch(function () {}); }
       if (t0 < 0) t0 = now + 500;
       var t = ((now - t0) / 1000) % (FLY + WAIT);
       if (now < t0 || t > FLY) { box.style.opacity = 0; return; }
@@ -2219,6 +2234,20 @@ function tmFilm(cv, src, fh, off, th, o) {
   window.addEventListener('resize', tone);
   window.addEventListener('hashchange', function () { requestAnimationFrame(tone); });
   tone();
+})();
+(function () {
+  // every looping clip on the open page that has stopped is started again; a touch or a key lets phones that hold clips back play them
+  function kick() {
+    if (window.tmStill || document.hidden) return;
+    [].forEach.call(document.querySelectorAll('video'), function (v) {
+      if (!v.loop || !v.paused || v.readyState < 2) return;
+      var host = v.parentNode; if (!host || !host.getClientRects().length || (host.closest && host.closest('[hidden]'))) return;
+      try { var g = v.play(); if (g && g.catch) g.catch(function () {}); } catch (e) {}
+    });
+  }
+  setInterval(kick, 1500);
+  ['touchend', 'click', 'keydown', 'pointerup'].forEach(function (t) { document.addEventListener(t, kick, { capture: true, passive: true }); });
+  document.addEventListener('visibilitychange', kick); window.addEventListener('pageshow', kick); window.addEventListener('focus', kick);
 })();
 </script>
 <script>
