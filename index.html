@@ -100,13 +100,16 @@ h1, h2, h3, p { margin: 0; }
 /* the logo sits at the far left, the sections at the far right */
 .header { display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
 /* A painted sun with Tomer's face under the logo: computers, and beside it on upright phones */
-.sun { display: none; }
+.sun, .nmoon { display: none; }
 @media (max-width: 760px) and (orientation: portrait) {                /* upright phones: the sun sits beside the first line of the title */
   .header { position: relative; }
-  .sun { display: block; position: absolute; left: max(8px, env(safe-area-inset-left)); top: calc(100% + 4px); width: min(24vw, 96px); aspect-ratio: 1; pointer-events: none; animation: sun-in .7s var(--ease-out) both; }
+  .sun { display: block; position: absolute; right: max(var(--gutter), env(safe-area-inset-right)); top: 4px; width: min(21vw, 92px); aspect-ratio: 1; pointer-events: none; animation: sun-in .7s var(--ease-out) both; }
   .sun img, .sun canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .sun.is-live img { opacity: 0; }
 }
+@keyframes ticker { to { transform: translateX(-50%); } }
+.nav-track, .nav-set { display: contents; }
+.nav-set[aria-hidden] { display: none; }
 @keyframes sun-in { from { opacity: 0; transform: translateY(-14px) scale(.85) rotate(-20deg); } }
 
 @media (min-width: 1024px) and (pointer: fine) and (min-height: 600px) {
@@ -126,9 +129,16 @@ h1, h2, h3, p { margin: 0; }
 /* a phone held upright: the logo on its own line, the menu in one row under it */
 @media (max-width: 760px) and (orientation: portrait) {
   .header { flex-wrap: wrap; justify-content: center; gap: 4px; padding-block: 8px 4px; }
-  .header .brand { width: 100%; display: flex; justify-content: center; }
-  .brand img { height: 40px; }
+  .header .brand { width: 100%; display: flex; justify-content: left; min-height: min(21vw, 92px); }
+  .brand img { height: clamp(40px, 12.5vw, 54px); }
   .nav { width: 100%; justify-content: space-between; gap: 0; }
+  /* the menu glides past slowly, like a ticker; touching it holds it still */
+  .nav.is-ticker { direction: ltr; display: block; overflow: hidden; margin-inline: calc(-1 * var(--gutter)); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .nav.is-ticker .nav-track { display: flex; width: max-content; animation: ticker 22s linear infinite; }
+  .nav.is-ticker:active .nav-track, .nav.is-ticker:focus-within .nav-track { animation-play-state: paused; }
+  .nav.is-ticker .nav-set { display: flex; flex-direction: row-reverse; gap: 40px; padding-right: 40px; }
+  .nav.is-ticker .nav-link.out { display: inline-flex; }
+  @media (prefers-reduced-motion: reduce) { .nav.is-ticker .nav-track { animation: none; } }
   .nav-link { min-height: 40px; font-size: .78rem; letter-spacing: .04em; white-space: nowrap; }
 }
 .nav-book { border: 0; background: none; padding: 0; cursor: pointer; font: inherit; }
@@ -630,6 +640,25 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 .foot-acts .foot-btn { width: 56px; height: 56px; min-height: 0; padding: 0 !important; justify-content: center; flex: none !important; border-radius: 50%; }
 .foot-acts .foot-btn svg, .foot-acts .foot-ig { display: block; width: 24px; height: 24px; }
 
+/* ---------- Night: the sideways view on a phone. The sun turns into the moon and the colours swap —
+   the opening is olive and Works is white. ---------- */
+@media (orientation: landscape) and (max-height: 500px) {
+  html:not(.no-night) body { background: #4B5519; }
+  html:not(.no-night) .header, html:not(.no-night) #top > .hero { --ink: #F3EEDD; --muted: rgba(243, 238, 221, .76); --line: rgba(243, 238, 221, .3); --accent: #C5D17A; --on-accent: #2A300C; --shade: rgba(0, 0, 0, .35); color: var(--ink); }
+  html:not(.no-night) .header { background: #4B5519; }
+  html:not(.no-night) #top > .hero { background: #4B5519 radial-gradient(70% 80% at 30% 40%, #5F6C22 0, #4B5519 100%); }
+  html:not(.no-night) .header .brand img { filter: brightness(0) invert(.94) sepia(.25); }
+  html:not(.no-night) .nav-link { color: rgba(243, 238, 221, .82); }
+  html:not(.no-night) .nav-link:hover, html:not(.no-night) .nav-link[aria-current] { color: #F3EEDD; }
+  html:not(.no-night) .works { background: #FFFFFF radial-gradient(64% 66% at 50% 46%, #FFFFFF 0, #F4F3EC 100%); color: #1D2014; }
+  html:not(.no-night) .works-hint, html:not(.no-night) .works-hint::before { color: #3A3F26; }
+  html:not(.no-night) .works .disc { box-shadow: inset -.04em -.07em .18em rgba(70, 72, 60, .15), 0 .12em .4em -.05em rgba(30, 36, 10, .35), 0 0 0 1px rgba(30, 36, 10, .06); }
+  html:not(.no-night) .header { position: relative; z-index: 6; }
+  html:not(.no-night) .nmoon { display: block; position: absolute; left: calc(50% - 34px); top: calc(100% + 2px); width: clamp(96px, 30vh, 140px); aspect-ratio: 1; pointer-events: none; z-index: 3; animation: sun-in .7s var(--ease-out) both; }
+  html:not(.no-night) .nmoon img, html:not(.no-night) .nmoon canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  html:not(.no-night) .nmoon.is-live img { opacity: 0; }
+}
+
 /* ---------- A phone held upright is asked to turn: the site is laid out for a wide screen ---------- */
 .turn { display: none; position: fixed; inset: 0; z-index: 100; place-content: center; justify-items: center; gap: 14px; padding: 32px var(--gutter); background: var(--bg); text-align: center; }
 .turn img { height: 58px; width: auto; margin-bottom: 26px; }
@@ -1033,6 +1062,15 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   .phone .go { height: 16px; }
   .toast { left: 66%; top: 42%; font-size: .8125rem; }
 }
+/* upright phones: the sun and the title stand together in the middle, everything under them is centred */
+@media (max-width: 760px) and (orientation: portrait) {
+  .hero > .copy { text-align: center; padding-top: 6vh; }
+  .copy h1[dir="ltr"] { text-align: center; font-size: clamp(2.6rem, 12.4vw, 4.6rem); line-height: 1.02; }
+  .lead { margin: 18px auto 0; max-width: 30ch; }
+  .actions { flex-direction: column; align-items: stretch; width: min(80%, 360px); margin: 34px auto 0; gap: 18px; }
+  .actions .btn { flex: none; white-space: nowrap; padding-inline: 18px; }
+  .actions .handle { align-self: flex-start; }
+}
 @media (prefers-reduced-motion: reduce) {
   .chat { clip-path: none; opacity: 0; transition: opacity .15s ease !important; }   /* a short fade, no turn */
   .chat.is-open { clip-path: none; opacity: 1; }
@@ -1053,6 +1091,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 
 <header class="wrap header">
   <div class="sun" id="sun" aria-hidden="true"><img src="sun.webp" alt="" width="400" height="400" decoding="async"><canvas id="sun-c" width="400" height="400" hidden></canvas></div>
+  <div class="nmoon" id="nmoon" aria-hidden="true"><img src="nmoon.webp" alt="" width="400" height="400" decoding="async"><canvas id="nmoon-c" width="400" height="400" hidden></canvas></div>
   <a class="brand" href="#top"><img src="logo.webp" alt="תומר מזוז, Tomer Mazuz · TM Studio TLV" width="900" height="295"></a>
   <nav class="nav" aria-label="ניווט"><a class="nav-link" href="#works" lang="en">Works</a><a class="nav-link" href="#services" id="nav-svc" lang="en">Services</a><a class="nav-link" href="#how" id="nav-how" lang="en">How I Work</a><button class="nav-link nav-book" id="nav-book" type="button" lang="en">Book a call</button><a class="nav-link out" href="https://www.instagram.com/tmstudio.tlv/" target="_blank" rel="noopener" lang="en">Instagram</a></nav>
 </header>
@@ -1281,6 +1320,44 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
     if (f) { var g = f.video.play(); if (g && g.catch) g.catch(function () {}); }
   }
   if (typeof tmFilm === 'function') go(); else document.addEventListener('DOMContentLoaded', go);   // straight away, no waiting for the rest of the page
+})();
+</script>
+<script>
+// Sideways on a phone it is night: the painted moon takes the sun's place and loops
+(function () {
+  var box = document.getElementById('nmoon'), cv = document.getElementById('nmoon-c'), f = null;
+  if (!box || !window.matchMedia) return;
+  var mq = matchMedia('(orientation: landscape) and (max-height: 500px)');
+  function go() {
+    if (!mq.matches || f || typeof tmFilm !== 'function') return;
+    f = tmFilm(cv, 'nmoon.mp4', 400, 400, 800, {
+      loop: true,
+      onPaint: function () { if (cv.hidden) { cv.hidden = false; box.classList.add('is-live'); } },
+      onDead: function () { cv.hidden = true; box.classList.remove('is-live'); }
+    });
+    if (f) { var g = f.video.play(); if (g && g.catch) g.catch(function () {}); }
+  }
+  if (mq.addEventListener) mq.addEventListener('change', go);
+  if (typeof tmFilm === 'function') go(); else document.addEventListener('DOMContentLoaded', go);
+})();
+</script>
+<script>
+// Upright phones: the menu becomes a slow ticker (two copies end to end); elsewhere it stays as it was
+(function () {
+  var nav = document.querySelector('.header .nav'); if (!nav || !window.matchMedia) return;
+  var mq = matchMedia('(max-width: 760px) and (orientation: portrait)');
+  var track = document.createElement('div'), set = document.createElement('div');
+  track.className = 'nav-track'; set.className = 'nav-set';
+  while (nav.firstChild) set.appendChild(nav.firstChild);
+  var copy = set.cloneNode(true); copy.setAttribute('aria-hidden', 'true');
+  [].forEach.call(copy.querySelectorAll('a, button'), function (el, i) {
+    el.removeAttribute('id'); el.tabIndex = -1;
+    var orig = set.querySelectorAll('a, button')[i];
+    if (el.tagName === 'BUTTON') el.addEventListener('click', function () { orig.click(); });
+  });
+  track.appendChild(set); track.appendChild(copy); nav.appendChild(track);
+  function apply() { nav.classList.toggle('is-ticker', mq.matches); }
+  apply(); if (mq.addEventListener) mq.addEventListener('change', apply);
 })();
 </script>
 <script>window.FOOT_ME = { src: 'foot-me.mp4', w: 900, h: 1086, ar: 900 / 1086, seat: 0.5752, point: 4.6, loopFrom: 0 };</script>
