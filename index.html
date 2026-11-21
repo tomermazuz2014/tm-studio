@@ -377,6 +377,11 @@ main { flex: 1; }
   .wpages button::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--cream); opacity: .28; transition: opacity .2s ease, transform .2s var(--ease-out); }
   .wpages button[aria-current="true"]::before { opacity: .85; transform: scale(1.25); }
   .works-hint { bottom: 80px; max-width: 12rem; }
+  /* he stands on the footer's edge: no fade under him, no empty band; the dots and the hint sit above */
+  .works { align-content: end; padding-bottom: 0; }
+  .works .host { -webkit-mask-image: none; mask-image: none; }
+  .wpages { top: auto; bottom: 10px; }
+  .works-hint { bottom: auto; top: 24px; }
 }
 
 /* ---------- How I Work: a page of its own, reached at #how. Light stone, olive headings, a lot of air. ---------- */
@@ -1094,14 +1099,14 @@ html.at-hero .ask { opacity: 0; visibility: hidden; pointer-events: none; }
 }
 /* upright phones: the sun and the title stand together in the middle, everything under them is centred */
 @media (max-width: 760px) and (orientation: portrait) {
-  .hero > .copy { text-align: center; padding-top: 6vh; }
+  .hero > .copy { text-align: center; padding-top: 1.5vh; }
   .copy h1[dir="ltr"] { text-align: center; font-size: clamp(2.9rem, 15.6vw, 5.6rem); line-height: 1.02; }
-  .lead { margin: 18px auto 0; max-width: 30ch; }
-  .actions { flex-direction: column; align-items: stretch; width: min(80%, 360px); margin: 34px auto 0; gap: 18px; }
+  .lead { margin: 10px auto 0; max-width: 30ch; }
+  .actions { flex-direction: column; align-items: stretch; width: min(80%, 360px); margin: 18px auto 0; gap: 6px; }
   .actions .btn { flex: none; white-space: nowrap; padding-inline: 18px; }
   .actions .handle { align-self: flex-start; }
   /* he is bigger here: the stage runs wider than the screen and stays centred; the cards stay inside the screen */
-  .hero > .stage { width: 122vw; max-width: none; justify-self: start; margin-inline: calc((100% - 122vw) / 2); }
+  .hero > .stage { width: var(--stw, 122vw); max-width: none; justify-self: start; margin-inline: var(--stm, calc((100% - 122vw) / 2)); margin-top: var(--stt, 0); }
   .stage .world { left: 11vw; right: 11vw; }                 /* the cards keep their places on the screen */
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1433,6 +1438,26 @@ html.at-hero .ask { opacity: 0; visibility: hidden; pointer-events: none; }
     el.addEventListener('click', function () { if (el.classList.contains('is-tap')) x[1](); });
     el.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && el.classList.contains('is-tap')) { e.preventDefault(); x[1](); } });
   });
+})();
+</script>
+<script>
+// Upright phones: he is sized so that all of him that the clip shows ends at the bottom of the first screen;
+// the empty top of his square tucks up behind the Instagram handle
+(function () {
+  var hero = document.querySelector('#top > .hero'), stage = document.getElementById('stage'), copy = hero && hero.querySelector('.copy');
+  if (!hero || !stage || !copy || !window.matchMedia) return;
+  var up = matchMedia('(max-width: 760px) and (orientation: portrait)'), TOP = 0.15;
+  function fit() {
+    if (!up.matches) { hero.style.removeProperty('--stw'); hero.style.removeProperty('--stm'); hero.style.removeProperty('--stt'); return; }
+    var bottom = copy.getBoundingClientRect().bottom + window.scrollY, room = window.innerHeight - bottom;
+    var col = copy.clientWidth, w = Math.max(col * 0.95, Math.min(innerWidth * 1.3, room / (1 - TOP)));
+    hero.style.setProperty('--stw', w.toFixed(1) + 'px');
+    hero.style.setProperty('--stm', ((col - w) / 2).toFixed(1) + 'px');
+    hero.style.setProperty('--stt', (-w * TOP).toFixed(1) + 'px');
+  }
+  fit(); addEventListener('resize', fit); addEventListener('orientationchange', function () { setTimeout(fit, 300); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  addEventListener('load', fit);
 })();
 </script>
 <script>window.FOOT_ME = { src: 'foot-me.mp4', w: 900, h: 1086, ar: 900 / 1086, seat: 0.5752, point: 4.6, loopFrom: 0 };</script>
