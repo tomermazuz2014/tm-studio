@@ -99,8 +99,16 @@ h1, h2, h3, p { margin: 0; }
 /* ---------- Header ---------- */
 /* the logo sits at the far left, the sections at the far right */
 .header { display: flex; flex-direction: row-reverse; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
-/* A painted sun with Tomer's face under the logo: computers only */
+/* A painted sun with Tomer's face under the logo: computers, and beside it on upright phones */
 .sun { display: none; }
+@media (max-width: 760px) and (orientation: portrait) {                /* upright phones: the sun sits beside the logo */
+  .header { position: relative; }
+  .sun { display: block; position: absolute; left: max(10px, env(safe-area-inset-left)); top: 2px; width: 66px; aspect-ratio: 1; pointer-events: none; animation: sun-in .7s var(--ease-out) both; }
+  .sun img, .sun canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .sun.is-live img { opacity: 0; }
+}
+@keyframes sun-in { from { opacity: 0; transform: translateY(-14px) scale(.85) rotate(-20deg); } }
+
 @media (min-width: 1024px) and (pointer: fine) and (min-height: 600px) {
   .header { position: relative; z-index: 6; }
   .sun { display: block; position: absolute; left: calc(max(var(--gutter), env(safe-area-inset-left)) + 3.2vw); top: calc(100% + 1.4vh); width: clamp(150px, min(15vw, 22vh), 250px); aspect-ratio: 1; pointer-events: none;
@@ -1262,7 +1270,7 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
 // The sun under the logo comes alive on a computer: its clip loops, the painted still waits underneath until it plays
 (function () {
   var box = document.getElementById('sun'), cv = document.getElementById('sun-c');
-  if (!box || !window.matchMedia || !matchMedia('(min-width: 1024px) and (pointer: fine) and (min-height: 600px)').matches) return;
+  if (!box || !window.matchMedia || !matchMedia('(min-width: 1024px) and (pointer: fine) and (min-height: 600px), (max-width: 760px) and (orientation: portrait)').matches) return;
   function go() {
     if (typeof tmFilm !== 'function') return;
     var f = tmFilm(cv, 'sun.mp4', 400, 400, 800, {
