@@ -677,14 +677,15 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
   html:not(.no-night):not(.is-sub) .actions .btn { min-height: 46px; padding-inline: 26px; }
   html:not(.no-night):not(.is-sub) .stage { justify-self: end; align-self: end; margin-inline-end: calc(-1 * var(--gutter) - 3vw); }
   html:not(.no-night):not(.is-sub) .stage .code { left: -30%; top: 55%; width: 42%; max-width: none; background: #F3F0DC; color: #2A2E1A; }
-  html:not(.no-night):not(.is-sub) .stage .phone { left: 4%; top: 49%; width: 18%; max-width: none; background: rgba(214, 226, 140, .32); border-color: rgba(243, 238, 221, .4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-  html:not(.no-night):not(.is-sub) .stage .toast { left: -24%; top: 88%; background: transparent; border-color: rgba(211, 227, 122, .6); color: #F3EEDD; box-shadow: none; }
+  html:not(.no-night):not(.is-sub) .stage .phone { left: 4%; top: 49%; width: 18%; max-width: none; background: #E9EFC4; border-color: #F3F0DC; }
+  html:not(.no-night):not(.is-sub) .stage .toast { left: -24%; top: 88%; background: #F3F0DC; border-color: #F3F0DC; color: #2A2E1A; box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .45); }
   html:not(.no-night):not(.is-sub) .nav { direction: ltr; gap: clamp(18px, 3.6vw, 40px); }
   html:not(.no-night):not(.is-sub) .nav .nav-link.out { display: inline-flex; order: 9; }
   html:not(.no-night):not(.is-sub) .header .brand img { height: 40px; }
   html:not(.no-night):not(.is-sub) .nmoon { display: block; position: absolute; left: calc(51% - min(19svh, 82px)); top: calc(100% + 3svh); width: min(38svh, 164px); aspect-ratio: 1; pointer-events: none; z-index: 3; animation: sun-in .7s var(--ease-out) both; }
   /* the chat button stands upright at the left edge, out of the way of the words */
   html:not(.no-night):not(.is-sub) .stage .code .ln { clip-path: none !important; }
+  html:not(.no-night):not(.is-sub) .is-idle .blk, html:not(.no-night):not(.is-sub) .is-idle .toast .in { opacity: 1; transform: none; }   /* the cards stay solid while he is away */
   html:not(.no-night):not(.is-sub) .stage .code pre { color: #2A2E1A; }
   html:not(.no-night):not(.is-sub) .stage .code b { color: #5E6C14; } html:not(.no-night):not(.is-sub) .stage .code u { color: #8B5E1A; }
   html:not(.no-night):not(.is-sub) .nmoon img, html:not(.no-night):not(.is-sub) .nmoon canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
