@@ -650,8 +650,9 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
    the opening is olive and Works is white. ---------- */
 @media (orientation: landscape) and (max-height: 500px) {
   html:not(.no-night):not(.is-sub) .header, html:not(.no-night):not(.is-sub) #top > .hero { --ink: #F3EEDD; --muted: rgba(243, 238, 221, .76); --line: rgba(243, 238, 221, .3); --accent: #C5D17A; --on-accent: #2A300C; --shade: rgba(0, 0, 0, .35); color: var(--ink); }
-  html:not(.no-night):not(.is-sub) .header { background: #4B5519; }
-  html:not(.no-night):not(.is-sub) #top > .hero { background: #4B5519 radial-gradient(70% 80% at 30% 40%, #5F6C22 0, #4B5519 100%); }
+  html:not(.no-night):not(.is-sub) .header { background: transparent; }
+  /* one surface behind the bar and the opening, so there is no seam between them */
+  html:not(.no-night):not(.is-sub) body { background: radial-gradient(55% 75% at 8% 100%, #6F7B2B 0, rgba(111, 123, 43, 0) 100%) 0 0 / 100% 100svh no-repeat, radial-gradient(60% 70% at 58% 45%, #56611D 0, #4B5519 100%) 0 0 / 100% 100svh no-repeat, var(--bg); }
   html:not(.no-night):not(.is-sub) .header .brand img { filter: brightness(0) invert(.94) sepia(.25); }
   html:not(.no-night):not(.is-sub) .nav-link { color: rgba(243, 238, 221, .82); }
   html:not(.no-night):not(.is-sub) .nav-link:hover, html:not(.no-night):not(.is-sub) .nav-link[aria-current] { color: #F3EEDD; }
@@ -660,7 +661,7 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
   html:not(.no-night):not(.is-sub) .works .disc { box-shadow: inset -.04em -.07em .18em rgba(70, 72, 60, .15), 0 .12em .4em -.05em rgba(30, 36, 10, .35), 0 0 0 1px rgba(30, 36, 10, .06); }
   html:not(.no-night):not(.is-sub) .header { position: relative; z-index: 6; }
   /* the sideways opening, laid out like the reference: words on the left, the moon and the cards in the middle, him on the right */
-  html:not(.no-night):not(.is-sub) #top > .hero { --accent: #D3E37A; --on-accent: #262C08; background: #4B5519 radial-gradient(55% 75% at 8% 105%, #6F7B2B 0, rgba(111, 123, 43, 0) 100%), radial-gradient(60% 70% at 58% 40%, #56611D 0, #4B5519 100%);
+  html:not(.no-night):not(.is-sub) #top > .hero { --accent: #D3E37A; --on-accent: #262C08; background: transparent;
     grid-template-columns: minmax(0, 1fr) minmax(0, 47vw); gap: 0; overflow: clip; }
   html:not(.no-night):not(.is-sub) .hero > .copy { align-self: center; padding: 0 0 3svh 0; width: fit-content; justify-self: left; }
   html:not(.no-night):not(.is-sub) .copy h1[dir="ltr"] { text-align: left; font-size: clamp(2.4rem, min(15.5svh, 6.6vw), 5rem); line-height: 1; }
@@ -676,7 +677,7 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
   html:not(.no-night):not(.is-sub) .nav { direction: ltr; gap: clamp(18px, 3.6vw, 40px); }
   html:not(.no-night):not(.is-sub) .nav .nav-link.out { display: inline-flex; order: 9; padding-left: clamp(18px, 3.6vw, 40px); border-left: 1px solid rgba(243, 238, 221, .5); min-height: 22px; }
   html:not(.no-night):not(.is-sub) .header .brand img { height: 40px; }
-  html:not(.no-night):not(.is-sub) .nmoon { display: block; position: absolute; left: calc(61% - min(19svh, 82px)); top: calc(100% + 1svh); width: min(38svh, 164px); aspect-ratio: 1; pointer-events: none; z-index: 3; animation: sun-in .7s var(--ease-out) both; }
+  html:not(.no-night):not(.is-sub) .nmoon { display: block; position: absolute; left: calc(51% - min(19svh, 82px)); top: calc(100% + 3svh); width: min(38svh, 164px); aspect-ratio: 1; pointer-events: none; z-index: 3; animation: sun-in .7s var(--ease-out) both; }
   html:not(.no-night):not(.is-sub) .nmoon::before { content: ""; position: absolute; left: -22%; right: -30%; top: 20%; bottom: 12%; border: 1px solid rgba(211, 227, 122, .45); border-radius: 50%; transform: rotate(-14deg); }
   /* the chat button stands upright at the left edge, out of the way of the words */
   html:not(.no-night):not(.is-sub) .stage .code .ln { clip-path: none !important; }
