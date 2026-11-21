@@ -387,7 +387,8 @@ main { flex: 1; }
 .how-steps h2 { margin-top: clamp(12px, 2.4vh, 28px); font-size: clamp(1.5rem, 2.6vw, 2.5rem); font-weight: 900; line-height: 1.12; color: var(--accent); text-wrap: balance; }
 .how-steps p { margin-top: clamp(10px, 1.6vh, 16px); font-size: clamp(1rem, 1.3vw, 1.1875rem); line-height: 1.65; color: var(--ink); opacity: .84; max-width: 34ch; }
 .how-cta { margin-top: clamp(44px, 10vh, 120px); }
-.how-cta .btn { border: 0; cursor: pointer; }
+.how-cta .btn, #cta { border: 0; cursor: pointer; }
+#cta { font-family: var(--font-en); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 @media (max-width: 640px) { .how-steps { grid-template-columns: 1fr; } }
 /* He rides a dragon across the page at the height of the title: in from the left, out to the right. The flight passes
    in front of the words (clicks still go through to them). */
@@ -1127,10 +1128,10 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
     <h1 lang="en" dir="ltr">Your idea.<br><span>I’ll build it.</span></h1>
     <p class="lead">בונה אתרים, אפליקציות ומערכות לעסקים, מהרעיון הראשון ועד מוצר שעובד.</p>
     <div class="actions">
-      <a class="btn" id="cta" href="https://ig.me/m/tmstudio.tlv" target="_blank" rel="noopener">
-        שלחו הודעה באינסטגרם
+      <button class="btn" id="cta" type="button" lang="en">
+        Book a call
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
-      </a>
+      </button>
       <a class="handle ltr" href="https://www.instagram.com/tmstudio.tlv/" target="_blank" rel="noopener">@tmstudio.tlv</a>
     </div>
   </div>
@@ -2284,6 +2285,7 @@ function tmFilm(cv, src, fh, off, th, o) {
   tabBook.addEventListener('click', function () { book(true); });
   $('nav-book').addEventListener('click', function () { book(true); openChat(); });
   $('how-book').addEventListener('click', function () { book(true); openChat(); });
+  $('cta').addEventListener('click', function () { book(true); openChat(); });
   window.addEventListener('message', function (e) {
     if (e.origin !== location.origin || !e.data || e.data.tm !== 'chat') return;
     document.documentElement.classList.add('is-chat-up'); book(!!e.data.book); openChat();
