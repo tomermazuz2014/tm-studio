@@ -589,7 +589,14 @@ button.handle { margin: 0; padding: 0; border: 0; background: none; font-family:
 /* inside the turned frame a sideways lock on scrolling would stop the page from being scrolled at all */
 html.is-framed, html.is-framed body { overflow-x: visible; }
 html.is-wide .turn { display: none !important; }
-html.is-wide body > :not(.wide):not(script):not(.orient) { display: none !important; }
+html.is-wide body > :not(.wide):not(script):not(.orient):not(.wide-wait) { display: none !important; }
+.wide-wait { position: fixed; inset: 0; z-index: 101; display: grid; place-content: center; justify-items: center; gap: 16px; background: var(--bg); color: var(--muted); }
+.wide-wait > * { transform: rotate(90deg); }
+.wide-wait { grid-auto-flow: column; direction: rtl; }
+.wide-wait img { height: 46px; width: auto; }
+.wide-wait i { width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent); animation: wide-spin .8s linear infinite; }
+@keyframes wide-spin { to { transform: rotate(450deg); } }
+html.is-wide body > .wide-wait { display: grid !important; }
 html.is-wide.is-chat-up body > #chat:not([hidden]) { display: flex !important; z-index: 120; }   /* the chat opens upright over the turned site */      /* nothing keeps running underneath */
 /* A small switch on phones: upright view <-> wide view, always within reach */
 .orient { display: none; position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(max(16px, env(safe-area-inset-bottom)) + 60px); z-index: 130; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; place-items: center; cursor: pointer; background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 8px 20px -10px rgba(0,0,0,.35); transition: transform .16s cubic-bezier(.23, 1, .32, 1); -webkit-tap-highlight-color: transparent; }
@@ -1401,14 +1408,18 @@ html.is-low .ask { background: var(--cream); color: var(--olive); }
   if (!window.matchMedia) return;
   var tall = window.matchMedia('(orientation: portrait) and (max-width: 760px) and (pointer: coarse)'), timer = 0, frame = null;
   function size() { if (frame) { frame.style.width = window.innerHeight + 'px'; frame.style.height = window.innerWidth + 'px'; } }
-  function drop() { if (frame) { frame.remove(); frame = null; } root.classList.remove('is-wide'); }
+  function drop() { if (frame) { frame.remove(); frame = null; } root.classList.remove('is-wide', 'is-wide-wait'); var w = document.querySelector('.wide-wait'); if (w) w.remove(); }
   function show() {
     timer = 0; if (upright || !tall.matches || frame) return;
     var f = frame = document.createElement('iframe'); f.className = 'wide'; f.title = document.title; f.setAttribute('allow', 'autoplay');
+    root.classList.add('is-wide', 'is-wide-wait');                   // the tap answers at once: the turned view opens, loading
+    var wait = document.createElement('div'); wait.className = 'wide-wait'; wait.setAttribute('role', 'status');
+    wait.innerHTML = '<img src="logo.webp" alt=""><i></i><span>מסובבים את האתר…</span>'; document.body.appendChild(wait);
     f.addEventListener('load', function () {
       var ok = false; try { ok = !!f.contentDocument.getElementById('top'); } catch (e) {}
       if (f !== frame) return;
-      if (ok) root.classList.add('is-wide'); else drop();           // where the page may not be framed, the request to turn stays
+      wait.remove(); root.classList.remove('is-wide-wait');
+      if (!ok) drop();                                                 // where the page may not be framed, the request to turn stays
     });
     f.src = location.pathname + '?wide=1' + location.hash;
     document.body.appendChild(f); size();
